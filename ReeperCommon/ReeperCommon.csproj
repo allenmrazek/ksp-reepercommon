@@ -56,8 +56,12 @@
     <Compile Include="Log\Log.cs" />
     <Compile Include="Log\LogFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\Test_KSPDirectory.cs" />
+    <Compile Include="Tests\Test_KSPFile.cs" />
+    <Compile Include="Tests\Test_KSPFileFactory.cs" />
     <Compile Include="UnitTesting\Commands\Immediate.cs" />
     <Compile Include="UnitTesting\ILoadStateCommand.cs" />
+    <Compile Include="UnitTesting\LoadStateDispatcher.cs" />
     <Compile Include="UnitTesting\LoadStateMarker.cs" />
     <Compile Include="UnitTesting\LoadStateReceiver.cs" />
   </ItemGroup>
