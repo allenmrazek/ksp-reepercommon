@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReeperCommon", "ReeperCommon\ReeperCommon.csproj", "{FECFA8FC-CF80-4685-A2BA-1566E0F3C26E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2ECA9700-8560-4D7E-822F-1F1C5072D3C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReeperCommonIntegrationTests", "ReeperCommonIntegrationTests\ReeperCommonIntegrationTests.csproj", "{BD317196-47B1-47D9-9B37-EF37B8E9F648}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,10 @@ Global
 		{FECFA8FC-CF80-4685-A2BA-1566E0F3C26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FECFA8FC-CF80-4685-A2BA-1566E0F3C26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FECFA8FC-CF80-4685-A2BA-1566E0F3C26E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2ECA9700-8560-4D7E-822F-1F1C5072D3C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2ECA9700-8560-4D7E-822F-1F1C5072D3C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2ECA9700-8560-4D7E-822F-1F1C5072D3C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2ECA9700-8560-4D7E-822F-1F1C5072D3C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD317196-47B1-47D9-9B37-EF37B8E9F648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD317196-47B1-47D9-9B37-EF37B8E9F648}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD317196-47B1-47D9-9B37-EF37B8E9F648}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD317196-47B1-47D9-9B37-EF37B8E9F648}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -38,7 +38,7 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        public KSPDirectory(IFileFactory fileFactory)
+        public KSPDirectory(IFileFactory fileFactory, IGameDataPathQuery gameDataPath)
         {
             if (GameDatabase.Instance.IsNull())
                 throw new InvalidOperationException("GameDatabase.Instance");
@@ -46,12 +46,14 @@ namespace ReeperCommon.FileSystem.Implementations
             if (fileFactory.IsNull())
                 throw new ArgumentNullException("fileFactory");
 
+            if (gameDataPath.IsNull())
+                throw new ArgumentNullException("gameDataPath");
+
             _fileFactory = fileFactory;
 
             // the GameData directory isn't uniquely named among root's children
             // so we must examine paths to locate it
-            _directory = GameDatabase.Instance.root.children.FirstOrDefault(
-                    u => u.path.EndsWith("\\GameData") || u.path.EndsWith("/GameData"));
+            _directory = gameDataPath.Directory();
 
             if (_directory.IsNull())
                 throw new FieldAccessException("_gameData");
