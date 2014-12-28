@@ -6,7 +6,6 @@ namespace ReeperCommon.GameLoadState.Triggers
 
     public interface ILoadStateTrigger
     {
-        void SetCallback(TriggerCallback cb);
-        void Execute();
+        void UpdateState();
     }
 }

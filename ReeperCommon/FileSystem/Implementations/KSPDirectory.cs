@@ -96,7 +96,6 @@ namespace ReeperCommon.FileSystem.Implementations
 
         public bool FileExists(string url)
         {
-            return true;
             return !File(url).IsNull();
         }
 

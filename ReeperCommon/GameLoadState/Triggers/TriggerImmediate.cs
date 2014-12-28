@@ -1,22 +1,36 @@
-﻿using ReeperCommon.GameLoadState.Attributes;
+﻿using System;
+using ReeperCommon.Extensions;
+using ReeperCommon.GameLoadState.Attributes;
+using ReeperCommon.GameLoadState.Commands;
+using ReeperCommon.GameLoadState.Views;
 using UnityEngine;
 
 namespace ReeperCommon.GameLoadState.Triggers
 {
-    internal class TriggerImmediate : MonoBehaviour, ILoadStateTrigger
+    internal class TriggerImmediate :  ILoadStateTrigger
     {
-        protected TriggerCallback Callback;
-
-        public void SetCallback(TriggerCallback cb)
+        private readonly IConstructCommand _command;
+        private readonly ITriggerView _view;
+        
+        public TriggerImmediate(ITriggerView view, IConstructCommand command)
         {
-            Callback = cb;
+            if (view.IsNull())
+                throw new ArgumentNullException("view");
+
+            if (command.IsNull())
+                throw new ArgumentNullException("command");
+
+            _view = view;
+            _command = command;
         }
 
-        public void Execute()
-        {
-            Callback(this, LoadStateMarker.State.Immediate);
-            Destroy(this);
-        }
 
+        public void UpdateState()
+        {
+            // logic goes here
+            // and then at some point:
+            _command.Execute();
+            _view.RemoveTrigger(this);
+        }
     }
 }

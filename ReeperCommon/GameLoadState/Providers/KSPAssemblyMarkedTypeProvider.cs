@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ReeperCommon.GameLoadState.Attributes;
+using UnityEngine;
 
 namespace ReeperCommon.GameLoadState.Providers
 {
@@ -17,7 +18,7 @@ namespace ReeperCommon.GameLoadState.Providers
         private IEnumerable<Type> GetMarkedTypes(Assembly assembly)
         {
             return assembly.GetTypes().Where(ty => ty.GetCustomAttributes(typeof(LoadStateMarker), true).Length > 0 &&
-                                                   ty.GetCustomAttributes(typeof(KSPAddon), true).Length > 0);
+                                                   ty.IsAssignableFrom(typeof(MonoBehaviour)));
         }
 
         private IEnumerable<Type> ForState(IEnumerable<Type> types, LoadStateMarker.State state)

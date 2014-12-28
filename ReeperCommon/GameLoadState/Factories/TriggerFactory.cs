@@ -1,26 +1,41 @@
 ﻿using System;
+using ReeperCommon.Extensions;
 using ReeperCommon.GameLoadState.Attributes;
+using ReeperCommon.GameLoadState.Commands;
 using ReeperCommon.GameLoadState.Handlers;
 using ReeperCommon.GameLoadState.Triggers;
+using ReeperCommon.GameLoadState.Views;
 using UnityEngine;
 
 namespace ReeperCommon.GameLoadState.Factories
 {
-    public class TriggerFactory
+    public class TriggerFactory : ITriggerFactory
     {
-        public ILoadStateTrigger Create(ILoadStateHandler handler, LoadStateMarker.State forState)
+        private readonly IConstructCommandFactory _commandFactory;
+        private readonly ITriggerView _triggerView;
+
+        public TriggerFactory(ITriggerView view, IConstructCommandFactory commandFactory)
         {
-            var go = new GameObject(string.Format("Trigger:{0}", forState));
+            if (view.IsNull())
+                throw new ArgumentNullException("view");
 
-            var trigger = go.AddComponent(ResolveType(forState)) as ILoadStateTrigger;
-            trigger.SetCallback(handler.Notify);
+            if (commandFactory.IsNull())
+                throw new ArgumentNullException("commandFactory");
 
-            return trigger;
+            _commandFactory = commandFactory;
+            _triggerView = view;
         }
 
 
 
-        private Type ResolveType(LoadStateMarker.State state)
+        public ILoadStateTrigger Create(ILoadStateHandler handler, LoadStateMarker.State forState)
+        {
+            return ConstructTriggerFor(handler, forState);
+        }
+
+
+
+        private ILoadStateTrigger ConstructTriggerFor(ILoadStateHandler handler, LoadStateMarker.State state)
         {
             switch (state)
             {
@@ -37,7 +52,7 @@ namespace ReeperCommon.GameLoadState.Factories
                     throw new NotImplementedException();
 
                 case LoadStateMarker.State.Immediate:
-                    return typeof (TriggerImmediate);
+                    return new TriggerImmediate(_triggerView, _commandFactory.Create(handler, state));
 
                 case LoadStateMarker.State.MainMenu:
                     throw new NotImplementedException();
