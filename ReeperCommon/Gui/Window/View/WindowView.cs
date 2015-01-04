@@ -29,9 +29,9 @@ namespace ReeperCommon.Gui.Window.View
 
             print("Drawing window of size " + Implementation.Dimensions.ToString());
 
-            Implementation.OnPreGUI();
-            Implementation.OnGUI();
-            Implementation.OnPostGUI();
+            Implementation.OnPreWindowDraw();
+            Implementation.OnWindowDraw();
+            Implementation.OnPostWindowDraw();
         }
     }
 }

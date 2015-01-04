@@ -30,11 +30,20 @@ namespace ReeperCommon.Gui.Window.Factory
         {
             var view = new GameObject("ReeperWindow").AddComponent<WindowView>();
 
-            var window = new WindowBase(rect, title, id, _skin);
-            var impl = window as WindowComponent;
+            WindowBase wbase = null;
 
             if (IsFlagSet(style, WindowDecorators.Draggable))
-                impl = new DraggableComponent(impl);
+                wbase = new DraggableWindow(rect, id, _skin);
+            else wbase = new WindowBase(rect, id, _skin);
+
+
+            wbase.Dimensions = rect;
+            wbase.Title = title;
+             
+
+            var impl = wbase as WindowComponent;
+
+
 
             view.Implementation = impl;
 

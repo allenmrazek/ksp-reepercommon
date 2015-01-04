@@ -14,19 +14,19 @@ namespace ReeperCommon.Gui.Window.Decorators
             _base = baseComponent;
         }
 
-        public override void OnPreGUI()
+        public override void OnPreWindowDraw()
         {
-            _base.OnPreGUI();
+            _base.OnPreWindowDraw();
         }
 
-        public override void OnGUI()
+        public override void OnWindowDraw()
         {
-            _base.OnGUI();
+            _base.OnWindowDraw();
         }
 
-        public override void OnPostGUI()
+        public override void OnPostWindowDraw()
         {
-            _base.OnPostGUI();
+            _base.OnPostWindowDraw();
         }
 
         public override void Update()
@@ -46,11 +46,6 @@ namespace ReeperCommon.Gui.Window.Decorators
             }
         }
 
-        public override int Id
-        {
-            get { return _base.Id; }
-            set { _base.Id = value; }
-        }
 
         public override string Title
         {
