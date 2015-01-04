@@ -10,6 +10,10 @@ namespace ReeperCommon.Log.Implementations
 
     public class StandardLog : Log
     {
+        internal StandardLog()
+        {
+        }
+
         public override void Debug(string format, params string[] args)
         {
 

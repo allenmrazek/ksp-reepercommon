@@ -7,6 +7,10 @@ namespace ReeperCommon.Log.Implementations
 {
     public class VerboseLog : StandardLog
     {
+        internal VerboseLog()
+        {
+        }
+
         public override void Performance(string format, params string[] args)
         {
             Normal(string.Format("[Performance] {0}", format), args);

@@ -7,6 +7,10 @@ namespace ReeperCommon.Log.Implementations
 {
     public class NothingLog : Log
     {
+        internal NothingLog()
+        {
+        }
+
         public override void Debug(string format, params string[] args)
         {
 

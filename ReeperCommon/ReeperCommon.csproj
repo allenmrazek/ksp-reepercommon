@@ -69,6 +69,13 @@
     <Compile Include="GameLoadState\LoadState_FileTreeReady.cs" />
     <Compile Include="GameLoadState\LoadState_Immediate.cs" />
     <Compile Include="GameLoadState\LoadState_TexturesLoaded.cs" />
+    <Compile Include="Gui\Window\Decorators\DraggableComponent.cs" />
+    <Compile Include="Gui\Window\DraggableWindow.cs" />
+    <Compile Include="Gui\Window\Factory\WindowFactory.cs" />
+    <Compile Include="Gui\Window\View\WindowView.cs" />
+    <Compile Include="Gui\Window\WindowBase.cs" />
+    <Compile Include="Gui\Window\Decorators\WindowComponent.cs" />
+    <Compile Include="Gui\Window\Decorators\WindowDecorator.cs" />
     <Compile Include="Log\Implementations\DebugLog.cs" />
     <Compile Include="Log\Implementations\NothingLog.cs" />
     <Compile Include="Log\Implementations\StandardLog.cs" />
@@ -81,7 +88,8 @@
     <Compile Include="GameLoadStateMothball\Handlers\LoadStateHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assembly\" />
+    <Folder Include="Assembly\Reloader\Attributes\" />
+    <Folder Include="Gui\Window\Logic\" />
     <Folder Include="Locators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

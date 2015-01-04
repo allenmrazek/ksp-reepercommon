@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace ReeperCommon.GameLoadState
 {
-    [KSPAddon(KSPAddon.Startup.Instantly, true)]
+    //[KSPAddon(KSPAddon.Startup.Instantly, true)]
     public class LoadStateMarkedTypeCreator : MonoBehaviour
     {
         void Start()
