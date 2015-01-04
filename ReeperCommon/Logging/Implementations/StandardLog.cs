@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
-namespace ReeperCommon.Log.Implementations
+﻿namespace ReeperCommon.Logging.Implementations
 {
-    using Unity = UnityEngine.Debug;
-
-    public class StandardLog : Log
+    public class StandardLog : Logging.Log
     {
         internal StandardLog()
         {
@@ -21,17 +13,17 @@ namespace ReeperCommon.Log.Implementations
 
         public override void Normal(string format, params string[] args)
         {
-            Unity.Log(DoFormat(format, args));
+            UnityEngine.Debug.Log(DoFormat(format, args));
         }
 
         public override void Warning(string format, params string[] args)
         {
-            Unity.LogWarning(DoFormat(format, args));
+            UnityEngine.Debug.LogWarning(DoFormat(format, args));
         }
 
         public override void Error(string format, params string[] args)
         {
-            Unity.LogError(DoFormat(format, args));
+            UnityEngine.Debug.LogError(DoFormat(format, args));
         }
 
         public override void Performance(string format, params string[] args)

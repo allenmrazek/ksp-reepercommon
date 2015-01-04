@@ -1,8 +1,8 @@
 ﻿using System;
-using ReeperCommon.Log.Implementations;
 using ReeperCommon.Extensions;
+using ReeperCommon.Logging.Implementations;
 
-namespace ReeperCommon.Log
+namespace ReeperCommon.Logging
 {
     public enum LogLevel
     {
@@ -14,7 +14,7 @@ namespace ReeperCommon.Log
 
     public static class LogFactory
     {
-        public static Log Create(LogLevel level)
+        public static Logging.Log Create(LogLevel level)
         {
             switch (level)
             {
@@ -31,7 +31,7 @@ namespace ReeperCommon.Log
             }
         }
 
-        public static Log Create(ConfigNode node)
+        public static Logging.Log Create(ConfigNode node)
         {
             if (node.HasValue("Level"))
             {

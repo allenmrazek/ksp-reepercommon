@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ReeperCommon.Log.Implementations
+﻿namespace ReeperCommon.Logging.Implementations
 {
-    public class NothingLog : Log
+    public class NothingLog : Logging.Log
     {
         internal NothingLog()
         {

@@ -10,28 +10,30 @@ namespace ReeperCommon.Gui.Window.View
 {
     public class WindowView : MonoBehaviour
     {
-        //private WindowLogic _logic = new DefaultLogic();
+        public IWindowComponent Implementation { get; set; }
 
-        //public WindowLogic Logic
-        //{
-        //    get
-        //    {
-        //        return _logic;
-        //    }
-        //    set { _logic = value ?? new DefaultLogic(); }
-        //}
-
-        public WindowComponent Implementation { get; set; }
+        private void OnDestroy()
+        {
+            print("WindowView is destructing...");
+        }
 
         private void OnGUI()
         {
             if (Implementation.IsNull()) return;
 
-            print("Drawing window of size " + Implementation.Dimensions.ToString());
-
             Implementation.OnPreWindowDraw();
             Implementation.OnWindowDraw();
             Implementation.OnPostWindowDraw();
+        }
+
+        public static WindowView Create(IWindowComponent window, string goName = "WindowView")
+        {
+            if (window == null) throw new ArgumentNullException("window");
+
+            var view = new GameObject(goName).AddComponent<WindowView>();
+            view.Implementation = window;
+
+            return view;
         }
     }
 }

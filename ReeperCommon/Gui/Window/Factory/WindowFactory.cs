@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ReeperCommon.Gui.Window.Decorators;
+using ReeperCommon.Gui.Window.Logic;
 using ReeperCommon.Gui.Window.View;
 using UnityEngine;
 
@@ -26,22 +27,19 @@ namespace ReeperCommon.Gui.Window.Factory
             _skin = skin;
         }
 
-        public WindowView Create(Rect rect, string title, int id, WindowDecorators style = WindowDecorators.None)
+        public WindowView Create(IWindowLogic windowLogic, Rect rect, string title, int id, WindowDecorators style = WindowDecorators.None)
         {
+            if (windowLogic == null) throw new ArgumentNullException("windowLogic");
+
             var view = new GameObject("ReeperWindow").AddComponent<WindowView>();
 
-            WindowBase wbase = null;
-
-            if (IsFlagSet(style, WindowDecorators.Draggable))
-                wbase = new DraggableWindow(rect, id, _skin);
-            else wbase = new WindowBase(rect, id, _skin);
+            var wbase = new BasicWindow(windowLogic, rect, id, _skin, IsFlagSet(style, WindowDecorators.Draggable),
+                true);
 
 
-            wbase.Dimensions = rect;
-            wbase.Title = title;
              
 
-            var impl = wbase as WindowComponent;
+            var impl = wbase as IWindowComponent;
 
 
 
