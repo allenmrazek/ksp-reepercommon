@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ReeperCommon.Extensions;
+using ReeperCommon.Gui.Window.Decorators.Buttons;
 using ReeperCommon.Logging;
 using UnityEngine;
 
@@ -10,11 +11,13 @@ namespace ReeperCommon.Gui.Window.Decorators
 {
     public class TitleBarButtons : WindowDecorator
     {
-        public delegate void ButtonCallback();
+        public delegate void ButtonCallback(string buttonName);
 
         private Rect _barRect = new Rect();
         private readonly List<TitleBarButton> _buttons = new List<TitleBarButton>();
         private readonly Vector2 _offset = Vector2.zero;
+
+
 
         public TitleBarButtons(IWindowComponent baseComponent, Vector2 offset = default(Vector2)) : base(baseComponent)
         {
@@ -23,10 +26,6 @@ namespace ReeperCommon.Gui.Window.Decorators
             this._offset = offset;
         }
 
-        ~TitleBarButtons()
-        {
-
-        }
 
 
         public override void OnPostWindowDraw()
@@ -52,13 +51,23 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
+        // obsolete -- factoring out new
+        //public void AddButton(GUIStyle style, ButtonCallback callback, string name = "")
+        //{
+        //    if (style == null) throw new ArgumentNullException("style");
+        //    if (callback == null) throw new ArgumentNullException("callback");
 
-        public void AddButton(GUIStyle style, ButtonCallback callback, string name = "")
+        //    _buttons.Add(new TitleBarButton(style, callback, name));
+        //}
+
+        public void AddButton(TitleBarButton button)
         {
-            if (style == null) throw new ArgumentNullException("style");
-            if (callback == null) throw new ArgumentNullException("callback");
+            if (button == null) throw new ArgumentNullException("button");
 
-            _buttons.Add(new TitleBarButton(style, callback, name));
+            if (_buttons.Contains(button))
+                throw new InvalidOperationException("TitleBar already contains " + button.Name);
+
+            _buttons.Add(button);
         }
 
 

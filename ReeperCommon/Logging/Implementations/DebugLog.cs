@@ -2,7 +2,7 @@
 {
     public class DebugLog : VerboseLog
     {
-        internal DebugLog()
+        public DebugLog(string name = "") : base(name)
         {
         }
 

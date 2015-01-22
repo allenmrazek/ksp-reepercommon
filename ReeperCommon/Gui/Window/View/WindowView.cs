@@ -19,11 +19,18 @@ namespace ReeperCommon.Gui.Window.View
 
         private void OnGUI()
         {
-            if (Implementation.IsNull()) return;
-
+            if (Implementation.IsNull() || !Implementation.Visible) return;
+           
             Implementation.OnPreWindowDraw();
             Implementation.OnWindowDraw();
             Implementation.OnPostWindowDraw();
+        }
+
+        private void Update()
+        {
+            if (Implementation.IsNull()) return;
+
+            Implementation.Update();
         }
 
         public static WindowView Create(IWindowComponent window, string goName = "WindowView")

@@ -7,8 +7,9 @@ namespace ReeperCommon.FileSystem.Implementations
     public class KSPFile : IFile
     {
         private readonly UrlDir.UrlFile _file;
-        private readonly FileInfo _info;
+        private readonly FileInfo _info = null;         
         private readonly IDirectory _directory;
+
 
         public KSPFile(IDirectory directory, UrlDir.UrlFile file)
         {
@@ -19,11 +20,10 @@ namespace ReeperCommon.FileSystem.Implementations
                 throw new ArgumentNullException("file");
 
             _directory = directory;
-            _info = new System.IO.FileInfo(file.fullPath);
-            
-            if (_info.IsNull()) throw new FileNotFoundException(file.fullPath);
-
-            _file = file;    
+            _file = file;
+            _info = new System.IO.FileInfo(FullPath);
+         
+            if (_info.IsNull()) throw new FileNotFoundException(file.fullPath);   
         }
 
         public UrlDir.UrlFile UrlFile

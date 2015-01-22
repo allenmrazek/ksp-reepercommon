@@ -142,7 +142,9 @@ namespace ReeperCommon.FileSystem.Implementations
 
         public IEnumerable<IFile> Files(string extension)
         {
-            return Files().Where(f => f.Extension == extension);
+            var sanitized = extension.TrimStart('.');
+
+            return Files().Where(f => f.Extension == sanitized);
         }
 
 
@@ -160,7 +162,9 @@ namespace ReeperCommon.FileSystem.Implementations
 
         public IEnumerable<IFile> RecursiveFiles(string extension)
         {
-            return RecursiveFiles().Where(f => f.Extension == extension);
+            var sanitized = extension.TrimStart('.');
+
+            return RecursiveFiles().Where(f => f.Extension == sanitized);
         }
 
 

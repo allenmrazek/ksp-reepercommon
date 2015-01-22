@@ -9,5 +9,7 @@ namespace ReeperCommon.Gui.Window.Logic
     {
         void Draw();
         void Update();
+        void OnAttached(IWindowComponent component);
+        void OnDetached(IWindowComponent component);
     }
 }

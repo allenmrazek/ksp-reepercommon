@@ -1,8 +1,8 @@
 ﻿namespace ReeperCommon.Logging.Implementations
 {
-    public class StandardLog : Logging.Log
+    public class StandardLog : Logging.BaseLog
     {
-        internal StandardLog()
+        public StandardLog(string name = "") : base(name)
         {
         }
 

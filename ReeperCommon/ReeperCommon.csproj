@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Containers\Maybe.cs" />
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
+    <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="FileSystem\Extensions\IDirectoryExtensions.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
@@ -51,48 +52,42 @@
     <Compile Include="FileSystem\Implementations\KSPFile.cs" />
     <Compile Include="FileSystem\Implementations\KSPFileFactory.cs" />
     <Compile Include="FileSystem\Implementations\KSPGameDataDirectoryProvider.cs" />
-    <Compile Include="GameLoadStateMothball\Commands\ConstructCommand.cs" />
-    <Compile Include="GameLoadStateMothball\Commands\ConstructImmediately.cs" />
-    <Compile Include="GameLoadStateMothball\Factories\ConstructCommandFactory.cs" />
-    <Compile Include="GameLoadStateMothball\Factories\IConstructCommandFactory.cs" />
-    <Compile Include="GameLoadStateMothball\Commands\IConstructCommand.cs" />
-    <Compile Include="GameLoadStateMothball\Factories\ITriggerFactory.cs" />
-    <Compile Include="GameLoadStateMothball\Handlers\ILoadStateHandler.cs" />
-    <Compile Include="GameLoadStateMothball\Providers\ILoadStateMarkedTypeProvider.cs" />
-    <Compile Include="GameLoadStateMothball\Providers\KSPAssemblyMarkedTypeProvider.cs" />
-    <Compile Include="GameLoadStateMothball\Factories\TriggerFactory.cs" />
-    <Compile Include="GameLoadStateMothball\Triggers\ILoadStateTrigger.cs" />
-    <Compile Include="GameLoadStateMothball\Views\ITriggerView.cs" />
-    <Compile Include="GameLoadStateMothball\Views\TriggerView.cs" />
     <Compile Include="GameLoadState\LoadStateMarkedTypeCreator.cs" />
     <Compile Include="GameLoadState\GameLoadStateObserver.cs" />
     <Compile Include="GameLoadState\LoadState_FileTreeReady.cs" />
     <Compile Include="GameLoadState\LoadState_Immediate.cs" />
     <Compile Include="GameLoadState\LoadState_TexturesLoaded.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
-    <Compile Include="Gui\Window\TitleBarButton.cs" />
+    <Compile Include="Gui\Window\Logic\DefaultWindowLogic.cs" />
+    <Compile Include="Gui\Window\Decorators\Buttons\TitleBarButton.cs" />
     <Compile Include="Gui\Window\Decorators\TitleBarButtons.cs" />
     <Compile Include="Gui\Window\Factory\WindowFactory.cs" />
     <Compile Include="Gui\Window\Logic\IWindowLogic.cs" />
+    <Compile Include="Gui\Window\Providers\UniqueWindowIdProvider.cs" />
     <Compile Include="Gui\Window\View\WindowView.cs" />
     <Compile Include="Gui\Window\BasicWindow.cs" />
     <Compile Include="Gui\Window\IWindowComponent.cs" />
     <Compile Include="Gui\Window\Decorators\WindowDecorator.cs" />
+    <Compile Include="Locators\Resources\Implementations\ResourceFromEmbeddedResource.cs" />
+    <Compile Include="Locators\Resources\Implementations\ResourceLocatorComposite.cs" />
+    <Compile Include="Locators\Resources\Implementations\ResourceProvider.cs" />
+    <Compile Include="Providers\IAssemblyLocationProvider.cs" />
+    <Compile Include="Locators\Resources\Implementations\ResourceRelativeToDirectory.cs" />
+    <Compile Include="Locators\Resources\IResourceLocator.cs" />
+    <Compile Include="Locators\Resources\IResourceProvider.cs" />
+    <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\Implementations\DebugLog.cs" />
     <Compile Include="Logging\Implementations\NothingLog.cs" />
     <Compile Include="Logging\Implementations\StandardLog.cs" />
+    <Compile Include="Logging\Implementations\TaggedLog.cs" />
     <Compile Include="Logging\Implementations\VerboseLog.cs" />
-    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\BaseLog.cs" />
     <Compile Include="Logging\LogFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GameLoadStateMothball\Triggers\TriggerImmediate.cs" />
     <Compile Include="GameLoadState\Attributes\LoadStateMarker.cs" />
-    <Compile Include="GameLoadStateMothball\Handlers\LoadStateHandler.cs" />
+    <Compile Include="Providers\Implementations\AssemblyLocation.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assembly\Reloader\Attributes\" />
-    <Folder Include="Locators\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

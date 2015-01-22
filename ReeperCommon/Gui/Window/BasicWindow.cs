@@ -11,7 +11,7 @@ namespace ReeperCommon.Gui.Window
 {
     public class BasicWindow : IWindowComponent
     {
-        private readonly IWindowLogic _windowLogic;
+        private IWindowLogic _windowLogic;
         private Rect _windowRect = new Rect(0f, 0f, 0f, 0f);
 
         public BasicWindow(
@@ -20,19 +20,27 @@ namespace ReeperCommon.Gui.Window
             int winid, 
             GUISkin skin, 
             bool draggable = true, 
-            bool clamp = false,
-            bool shrinkVertically = false)
+            bool clamp = false)
         {
             if (windowLogic == null) throw new ArgumentNullException("windowLogic");
             if (skin == null) throw new ArgumentNullException("skin");
 
-            _windowLogic = windowLogic;
             Id = winid;
             _windowRect = rect;
+            _windowLogic = windowLogic;
             Draggable = draggable;
             ClampToScreen = clamp;
-            ShrinkVertically = shrinkVertically;
+            Visible = true;
+
+            _windowLogic.OnAttached(this);
         }
+
+
+        ~BasicWindow()
+        {
+            _windowLogic.OnDetached(this);
+        }
+
 
         public virtual void OnPreWindowDraw()
         {
@@ -41,8 +49,6 @@ namespace ReeperCommon.Gui.Window
 
         public virtual void OnWindowDraw()
         {
-            if (ShrinkVertically) _windowRect.height = 1f;
-
             _windowRect = GUILayout.Window(Id, Dimensions, Draw, Title);
 
             if (ClampToScreen) _windowRect = KSPUtil.ClampRectToScreen(_windowRect);
@@ -69,9 +75,21 @@ namespace ReeperCommon.Gui.Window
         public GUISkin Skin { get; set; }
         public bool Draggable { get; set; }
         public bool ClampToScreen { get; set; }
-        public bool ShrinkVertically { get; set; }
         public bool Visible { get; set; }
         public int Id { get; set; }
+
+        public IWindowLogic Logic
+        {
+            get { return _windowLogic; }
+            set
+            {
+                if (!_windowLogic.IsNull() && !ReferenceEquals(_windowLogic, value))
+                    _windowLogic.OnDetached(this);
+
+                _windowLogic = value;
+                _windowLogic.OnAttached(this);
+            }
+        }
 
         protected virtual void Draw(int winid)
         {

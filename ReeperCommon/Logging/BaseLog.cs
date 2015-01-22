@@ -1,16 +1,16 @@
 ﻿using System.Text;
+using ReeperCommon.Logging.Implementations;
 
 namespace ReeperCommon.Logging
 {
-    public abstract class Log
+    public abstract class BaseLog : ILog
     {
-        protected readonly string _AssemblyName;
-        protected readonly string _ClassName;
+        protected readonly string _LogName;
 
-        internal Log()
+        protected BaseLog(string name = "")
         {
-            _AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-            _ClassName = this.GetType().Name;
+            _LogName = string.IsNullOrEmpty(name) ? System.Reflection.Assembly.GetExecutingAssembly().GetName().Name : name;
+            //_ClassName = this.GetType().Name;
         }
 
         public abstract void Debug(string format, params string[] args);
@@ -20,9 +20,14 @@ namespace ReeperCommon.Logging
         public abstract void Performance(string format, params string[] args);
         public abstract void Verbose(string format, params string[] args);
 
+        public ILog CreateTag(string tag)
+        {
+            return new TaggedLog(this, tag);
+        }
+
         protected virtual string DoFormat(string format, params string[] args)
         {
-            var builder = new StringBuilder(_ClassName, format.Length + args.Length * 7);
+            var builder = new StringBuilder(_LogName, format.Length + args.Length * 7);
             builder.Append(": ");
             builder.AppendFormat(format, args);
 

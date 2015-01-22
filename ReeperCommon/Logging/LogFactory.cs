@@ -14,7 +14,7 @@ namespace ReeperCommon.Logging
 
     public static class LogFactory
     {
-        public static Logging.Log Create(LogLevel level)
+        public static ILog Create(LogLevel level)
         {
             switch (level)
             {
@@ -31,7 +31,7 @@ namespace ReeperCommon.Logging
             }
         }
 
-        public static Logging.Log Create(ConfigNode node)
+        public static ILog Create(ConfigNode node)
         {
             if (node.HasValue("Level"))
             {

@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-namespace ReeperCommon.Gui.Window.Decorators
+namespace ReeperCommon.Gui.Window.Decorators.Buttons
 {
-    class TitleBarButton
+    public class TitleBarButton
     {
         public TitleBarButton(GUIStyle style, TitleBarButtons.ButtonCallback callback, string name)
         {

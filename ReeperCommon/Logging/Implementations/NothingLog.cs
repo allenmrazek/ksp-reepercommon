@@ -1,8 +1,8 @@
 ﻿namespace ReeperCommon.Logging.Implementations
 {
-    public class NothingLog : Logging.Log
+    public class NothingLog : Logging.BaseLog
     {
-        internal NothingLog()
+        public NothingLog()
         {
         }
 

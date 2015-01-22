@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ReeperCommon.Gui.Window.Logic;
+using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
 {
@@ -15,7 +16,7 @@ namespace ReeperCommon.Gui.Window
         GUISkin Skin { get; set;}
         bool Draggable { get; set; }
         bool ClampToScreen { get; set; }
-        bool ShrinkVertically { get; set; }
         bool Visible { get; set; }
+        IWindowLogic Logic { get; set; }
     }
 }

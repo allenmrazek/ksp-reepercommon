@@ -21,20 +21,22 @@ namespace ReeperCommon.Gui.Window.Decorators
             GameEvents.onShowUI.Remove(Show);
         }
 
-        private void Show()
+        protected void Show()
         {
             _state = true;
         }
 
-        private void Hide()
+        protected void Hide()
         {
             _state = false;
         }
 
-        public override void OnPreWindowDraw()
+        public override void Update()
         {
-            base.OnPreWindowDraw();
+            base.Update();
             Visible = _state; // update every frame in case of external change
+                              // done outside of GUI methods because they won't be called if
+                              // window is invisible
         }
     }
 }
