@@ -7,7 +7,12 @@ namespace ReeperCommon.Gui.Window.Decorators
 {
     public class HideOnF2 : WindowDecorator
     {
-        private bool _state = true;
+        private bool _interfaceVisible = false;
+        private bool _restoreVisibility = false; // because we don't want to accidentally show the window if it was
+                                                 // hidden when F2 was pressed (unless the caller explicitly makes it
+                                                 // visible during this time)
+
+
 
         public HideOnF2(IWindowComponent baseComponent) : base(baseComponent)
         {
@@ -15,28 +20,47 @@ namespace ReeperCommon.Gui.Window.Decorators
             GameEvents.onHideUI.Add(Hide);
         }
 
+
+
         ~HideOnF2()
         {
             GameEvents.onHideUI.Remove(Hide);
             GameEvents.onShowUI.Remove(Show);
         }
 
+
+
         private void Show()
         {
-            _state = true;
+            _interfaceVisible = true;
+            Visible = true;
         }
+
+
 
         private void Hide()
         {
-            _state = false;
+            _interfaceVisible = false;
+
+            base.Visible = false;
         }
 
-        public override void Update()
+
+
+        public override bool Visible
         {
-            base.Update();
-            Visible = _state; // update every frame in case of external change
-                              // done outside of GUI methods because they won't be called if
-                              // window is invisible
+            get
+            {
+                return base.Visible;
+            }
+            set
+            {
+                base.Visible = _restoreVisibility && _interfaceVisible; // if UI not visible, 
+                            // don't allow window to be explicitly made visible (although the change is 
+                            // cached so it will appear when UI is shown again)
+
+                _restoreVisibility = value;
+            }
         }
     }
 }

@@ -11,8 +11,8 @@ namespace ReeperCommon.Gui.Window
 {
     public class BasicWindow : IWindowComponent
     {
-        private IWindowLogic _windowLogic;
-        protected Rect _windowRect = new Rect(0f, 0f, 0f, 0f);
+        protected IWindowLogic WindowLogic;
+        protected Rect WindowRect = new Rect(0f, 0f, 0f, 0f);
 
         public BasicWindow(
             IWindowLogic windowLogic, 
@@ -26,42 +26,43 @@ namespace ReeperCommon.Gui.Window
             if (skin == null) throw new ArgumentNullException("skin");
 
             Id = winid;
-            _windowRect = rect;
-            _windowLogic = windowLogic;
+            WindowRect = rect;
+            WindowLogic = windowLogic;
             Draggable = draggable;
             ClampToScreen = clamp;
             Visible = true;
 
-            _windowLogic.OnAttached(this);
+            WindowLogic.OnAttached(this);
         }
 
 
         ~BasicWindow()
         {
-            _windowLogic.OnDetached(this);
+            WindowLogic.OnDetached(this);
         }
 
 
 
-        public virtual void OnWindowDraw()
+        public virtual void OnWindowDraw(int winid)
         {
-            _windowRect = GUILayout.Window(Id, Dimensions, Draw, Title);
+            if (!Skin.IsNull()) GUI.skin = Skin;
 
-            if (ClampToScreen) _windowRect = KSPUtil.ClampRectToScreen(_windowRect);
+            WindowLogic.Draw();
 
+            if (Draggable) GUI.DragWindow();
         }
 
 
 
         public virtual void Update()
         {
-            _windowLogic.Update();
+            WindowLogic.Update();
         }
 
         public Rect Dimensions
         {
-            get { return _windowRect; }
-            set { _windowRect = value; }
+            get { return WindowRect; }
+            set { WindowRect = value; }
         }
 
         public string Title { get; set; }
@@ -73,24 +74,24 @@ namespace ReeperCommon.Gui.Window
 
         public IWindowLogic Logic
         {
-            get { return _windowLogic; }
+            get { return WindowLogic; }
             set
             {
-                if (!_windowLogic.IsNull() && !ReferenceEquals(_windowLogic, value))
-                    _windowLogic.OnDetached(this);
+                if (!WindowLogic.IsNull() && !ReferenceEquals(WindowLogic, value))
+                    WindowLogic.OnDetached(this);
 
-                _windowLogic = value;
-                _windowLogic.OnAttached(this);
+                WindowLogic = value;
+                WindowLogic.OnAttached(this);
             }
         }
 
-        protected virtual void Draw(int winid)
-        {
-            if (!Skin.IsNull()) GUI.skin = Skin;
+        //protected virtual void Draw(int winid)
+        //{
+        //    if (!Skin.IsNull()) GUI.skin = Skin;
 
-            _windowLogic.Draw();
+        //    _windowLogic.Draw();
 
-            if (Draggable) GUI.DragWindow();
-        }
+        //    if (Draggable) GUI.DragWindow();
+        //}
     }
 }

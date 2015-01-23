@@ -17,9 +17,9 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        public virtual void OnWindowDraw()
+        public virtual void OnWindowDraw(int winid)
         {
-            _base.OnWindowDraw();
+            _base.OnWindowDraw(winid);
         }
 
 
@@ -59,15 +59,10 @@ namespace ReeperCommon.Gui.Window.Decorators
             set { _base.Draggable = value; }
         }
 
-        public bool ClampToScreen
-        {
-            get { return _base.ClampToScreen; }
-            set { _base.ClampToScreen = value; }
-        }
 
 
 
-        public bool Visible
+        public virtual bool Visible
         {
             get { return _base.Visible; }
             set { _base.Visible = value; }

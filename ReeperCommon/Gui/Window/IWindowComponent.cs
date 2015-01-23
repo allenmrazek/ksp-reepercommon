@@ -5,7 +5,7 @@ namespace ReeperCommon.Gui.Window
 {
     public interface IWindowComponent
     {
-        void OnWindowDraw();
+        void OnWindowDraw(int winid);
         void Update();
 
         Rect Dimensions { get; set; }
@@ -13,7 +13,6 @@ namespace ReeperCommon.Gui.Window
         string Title { get; set; }
         GUISkin Skin { get; set;}
         bool Draggable { get; set; }
-        bool ClampToScreen { get; set; }
         bool Visible { get; set; }
         IWindowLogic Logic { get; set; }
     }

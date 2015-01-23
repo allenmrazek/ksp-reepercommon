@@ -1,11 +1,12 @@
 using System;
+using ReeperCommon.Gui.Window.Decorators;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.Buttons
 {
     public class TitleBarButton
     {
-        public TitleBarButton(GUIStyle style, Texture texture, TitleBarButtonWindow.ButtonCallback callback, string name)
+        public TitleBarButton(GUIStyle style, Texture texture, TitleBarButtons.ButtonCallback callback, string name)
         {
             if (style == null) throw new ArgumentNullException("style");
             if (texture == null) throw new ArgumentNullException("texture");
@@ -15,12 +16,12 @@ namespace ReeperCommon.Gui.Window.Buttons
             Texture = texture;
             Callback = callback;
             Name = name;
-            Size = new Vector2(16f, 16f);
+            Size = new Vector2(texture.width, texture.height);
         }
 
 
 
-        public TitleBarButtonWindow.ButtonCallback Callback { get; private set;}
+        public TitleBarButtons.ButtonCallback Callback { get; private set;}
         public string Name { get; private set;}
         public GUIStyle Style { get; private set; }
         public Texture Texture { get; set; }

@@ -24,8 +24,12 @@ namespace ReeperCommon.Gui.Window.View
         private void OnGUI()
         {
             if (Implementation.IsNull() || !Implementation.Visible) return;
-           
-            Implementation.OnWindowDraw();
+
+            if (!Implementation.Skin.IsNull())
+                GUI.skin = Implementation.Skin;
+
+            Implementation.Dimensions = GUILayout.Window(Implementation.Id, Implementation.Dimensions, Implementation.OnWindowDraw,
+                Implementation.Title);
         }
 
 
