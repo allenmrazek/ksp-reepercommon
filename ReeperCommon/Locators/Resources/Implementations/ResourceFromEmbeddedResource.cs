@@ -13,15 +13,13 @@ namespace ReeperCommon.Locators.Resources.Implementations
     public class ResourceFromEmbeddedResource : IResourceLocator
     {
         private readonly Assembly _resource;
-        private readonly ILog _log;
+ 
 
-
-        public ResourceFromEmbeddedResource(Assembly resource, ILog log)
+        public ResourceFromEmbeddedResource(Assembly resource)
         {
             if (resource == null) throw new ArgumentNullException("resource");
-            if (log == null) throw new ArgumentNullException("log");
+
             _resource = resource;
-            _log = log;
         }
 
 
@@ -32,14 +30,8 @@ namespace ReeperCommon.Locators.Resources.Implementations
             var stream = _resource.GetManifestResourceStream(identifier);
 
             if (stream == null || stream.Length == 0)
-            {
-                _log.Verbose("Stream is null or contains nothing for '{0}'", identifier);
-
-                _log.Debug("Valid resources: " +
-                           _resource.GetManifestResourceNames().Aggregate((s1, s2) => s1 + ", " + s2));
-
                 return Maybe<byte[]>.None;
-            }
+            
 
             var data = new byte[stream.Length];
 
@@ -50,6 +42,13 @@ namespace ReeperCommon.Locators.Resources.Implementations
                 ms.Write(data, 0, read);
 
             return Maybe<byte[]>.With(data);
+        }
+
+
+
+        public IEnumerable<string> GetPossibilities()
+        {
+            return _resource.GetManifestResourceNames();
         }
     }
 }

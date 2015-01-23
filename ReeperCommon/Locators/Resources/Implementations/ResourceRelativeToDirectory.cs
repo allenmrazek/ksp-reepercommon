@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using ReeperCommon.Containers;
 using ReeperCommon.FileSystem;
+using System.Linq;
 
 namespace ReeperCommon.Locators.Resources.Implementations
 {
@@ -24,6 +26,11 @@ namespace ReeperCommon.Locators.Resources.Implementations
             if (!File.Exists(possiblePath)) return Maybe<byte[]>.None;
 
             return Maybe<byte[]>.With(File.ReadAllBytes(possiblePath));
+        }
+
+        public IEnumerable<string> GetPossibilities()
+        {
+            return _directory.Files().Select(f => f.FileName);
         }
     }
 }

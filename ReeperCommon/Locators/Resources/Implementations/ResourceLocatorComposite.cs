@@ -31,5 +31,12 @@ namespace ReeperCommon.Locators.Resources.Implementations
 
             return result;
         }
+
+
+
+        public IEnumerable<string> GetPossibilities()
+        {
+            return _locators.SelectMany(locator => locator.GetPossibilities());
+        }
     }
 }

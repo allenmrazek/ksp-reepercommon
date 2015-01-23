@@ -40,8 +40,15 @@ namespace ReeperCommon.Gui.Window.Decorators
 
             _buttons.ForEach(button =>
             {
-                GUILayout.Button("", button.Style, GUILayout.MaxWidth(16f), GUILayout.MinWidth(16f), GUILayout.MaxHeight(16f),
-                    GUILayout.MinHeight(16f));
+                if (GUILayout.Button(button.Texture, GUILayout.MaxWidth(16f), GUILayout.MinWidth(16f),
+                    GUILayout.MaxHeight(16f),
+                    GUILayout.MinHeight(16f)))
+                    button.Callback(button.Name);
+
+                ////if (GUILayout.Button(button.Texture, button.Style, GUILayout.MaxWidth(16f), GUILayout.MinWidth(16f),
+                ////    GUILayout.MaxHeight(16f),
+                ////    GUILayout.MinHeight(16f)))
+                ////    button.Callback(button.Name);
             });
 
             GUILayout.EndHorizontal();
@@ -51,14 +58,6 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        // obsolete -- factoring out new
-        //public void AddButton(GUIStyle style, ButtonCallback callback, string name = "")
-        //{
-        //    if (style == null) throw new ArgumentNullException("style");
-        //    if (callback == null) throw new ArgumentNullException("callback");
-
-        //    _buttons.Add(new TitleBarButton(style, callback, name));
-        //}
 
         public void AddButton(TitleBarButton button)
         {

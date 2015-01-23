@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ReeperCommon.Containers;
+using ReeperCommon.Extensions;
 using ReeperCommon.Logging;
 using UnityEngine;
 
@@ -11,14 +12,13 @@ namespace ReeperCommon.Locators.Resources.Implementations
     public class ResourceProvider : IResourceProvider
     {
         private readonly IResourceLocator _locator;
-        private readonly ILog _log;
 
-        public ResourceProvider(IResourceLocator locator, ILog log)
+
+
+        public ResourceProvider(IResourceLocator locator)
         {
             if (locator == null) throw new ArgumentNullException("locator");
-            if (log == null) throw new ArgumentNullException("log");
             _locator = locator;
-            _log = log;
         }
 
 
@@ -27,10 +27,7 @@ namespace ReeperCommon.Locators.Resources.Implementations
         {
             var data = _locator.FindResource(identifier);
             if (!data.Any())
-            {
-                _log.Verbose("Failed to find '{0}'", identifier);
                 return Maybe<Texture2D>.None;
-            }
             var texture = new Texture2D(1, 1);
 
             return texture.LoadImage(data.First()) ? Maybe<Texture2D>.With(texture) : Maybe<Texture2D>.None;
@@ -40,7 +37,29 @@ namespace ReeperCommon.Locators.Resources.Implementations
 
         public Maybe<Material> GetMaterial(string identifier)
         {
-            throw new NotImplementedException();
+            var strData = GetResourceAsString(identifier);
+            if (!strData.Any())
+                return Maybe<Material>.None;
+
+            var material = new Material(strData.Single());
+
+            return !material.IsNull() ? Maybe<Material>.With(material) : Maybe<Material>.None;
+        }
+
+
+
+        public Maybe<string> GetResourceAsString(string identifier)
+        {
+            var raw = GetResourceRaw(identifier);
+
+            return raw.Any() ? Maybe<string>.With(Convert.ToString(raw.Single())) : Maybe<string>.None;
+        }
+
+
+
+        public Maybe<byte[]> GetResourceRaw(string identifier)
+        {
+            return _locator.FindResource(identifier);
         }
     }
 }

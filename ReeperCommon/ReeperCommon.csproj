@@ -43,7 +43,6 @@
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="FileSystem\Extensions\IDirectoryExtensions.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
     <Compile Include="FileSystem\IFile.cs" />
     <Compile Include="FileSystem\IFileFactory.cs" />
