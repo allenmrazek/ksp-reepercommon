@@ -12,7 +12,7 @@ namespace ReeperCommon.Gui.Window
     public class BasicWindow : IWindowComponent
     {
         private IWindowLogic _windowLogic;
-        private Rect _windowRect = new Rect(0f, 0f, 0f, 0f);
+        protected Rect _windowRect = new Rect(0f, 0f, 0f, 0f);
 
         public BasicWindow(
             IWindowLogic windowLogic, 
@@ -42,10 +42,6 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-        public virtual void OnPreWindowDraw()
-        {
-
-        }
 
         public virtual void OnWindowDraw()
         {
@@ -55,10 +51,7 @@ namespace ReeperCommon.Gui.Window
 
         }
 
-        public virtual void OnPostWindowDraw()
-        {
 
-        }
 
         public virtual void Update()
         {
@@ -99,7 +92,5 @@ namespace ReeperCommon.Gui.Window
 
             if (Draggable) GUI.DragWindow();
         }
-
-        
     }
 }

@@ -58,8 +58,8 @@
     <Compile Include="GameLoadState\LoadState_TexturesLoaded.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
     <Compile Include="Gui\Window\Logic\DefaultWindowLogic.cs" />
-    <Compile Include="Gui\Window\Decorators\Buttons\TitleBarButton.cs" />
-    <Compile Include="Gui\Window\Decorators\TitleBarButtons.cs" />
+    <Compile Include="Gui\Window\Buttons\TitleBarButton.cs" />
+    <Compile Include="Gui\Window\TitleBarButtonWindow.cs" />
     <Compile Include="Gui\Window\Factory\WindowFactory.cs" />
     <Compile Include="Gui\Window\Logic\IWindowLogic.cs" />
     <Compile Include="Gui\Window\Providers\UniqueWindowIdProvider.cs" />

@@ -21,12 +21,12 @@ namespace ReeperCommon.Gui.Window.Decorators
             GameEvents.onShowUI.Remove(Show);
         }
 
-        protected void Show()
+        private void Show()
         {
             _state = true;
         }
 
-        protected void Hide()
+        private void Hide()
         {
             _state = false;
         }

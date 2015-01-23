@@ -12,19 +12,23 @@ namespace ReeperCommon.Gui.Window.View
     {
         public IWindowComponent Implementation { get; set; }
 
+
+
         private void OnDestroy()
         {
             print("WindowView is destructing...");
         }
 
+
+
         private void OnGUI()
         {
             if (Implementation.IsNull() || !Implementation.Visible) return;
            
-            Implementation.OnPreWindowDraw();
             Implementation.OnWindowDraw();
-            Implementation.OnPostWindowDraw();
         }
+
+
 
         private void Update()
         {
@@ -32,6 +36,8 @@ namespace ReeperCommon.Gui.Window.View
 
             Implementation.Update();
         }
+
+
 
         public static WindowView Create(IWindowComponent window, string goName = "WindowView")
         {

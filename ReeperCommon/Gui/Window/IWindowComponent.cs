@@ -5,9 +5,7 @@ namespace ReeperCommon.Gui.Window
 {
     public interface IWindowComponent
     {
-        void OnPreWindowDraw();
         void OnWindowDraw();
-        void OnPostWindowDraw();
         void Update();
 
         Rect Dimensions { get; set; }

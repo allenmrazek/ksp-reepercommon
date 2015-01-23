@@ -16,20 +16,13 @@ namespace ReeperCommon.Gui.Window.Decorators
             _base = baseComponent;
         }
 
-        public virtual void OnPreWindowDraw()
-        {
-            _base.OnPreWindowDraw();
-        }
 
         public virtual void OnWindowDraw()
         {
             _base.OnWindowDraw();
         }
 
-        public virtual void OnPostWindowDraw()
-        {
-            _base.OnPostWindowDraw();
-        }
+
 
         public virtual void Update()
         {
