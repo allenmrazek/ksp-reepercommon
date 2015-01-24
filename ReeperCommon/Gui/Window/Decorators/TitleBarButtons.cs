@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ReeperCommon.Extensions;
 using ReeperCommon.Gui.Window.Buttons;
 using UnityEngine;
 
@@ -45,7 +46,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private void DrawTitleBarButtons()
         {
-            GUILayout.BeginArea(new Rect(_offset.x, _offset.y, Dimensions.width - _offset.x, Dimensions.height));
+            GUILayout.BeginArea(new Rect(_offset.x, _offset.y, Dimensions.width - _offset.x * 2f, Dimensions.height));
 
                 GUILayout.BeginHorizontal();
                 {
@@ -53,23 +54,31 @@ namespace ReeperCommon.Gui.Window.Decorators
                     if (_alignment != ButtonAlignment.Left)
                         GUILayout.FlexibleSpace();
 
-                    _buttons.ForEach(button =>
-                    {
-                        if (GUILayout.Button(button.Texture, button.Style, GUILayout.MaxWidth(button.Size.x),
-                            GUILayout.MinWidth(button.Size.x),
-                            GUILayout.MaxHeight(button.Size.y),
-                            GUILayout.MinHeight(button.Size.y),
-                            GUILayout.ExpandWidth(false),
-                            GUILayout.ExpandHeight(false)))
-                            button.Callback(button.Name);
-                    });
+                    _buttons.ForEach(DrawButton);
 
                     if (_alignment != ButtonAlignment.Right)
                         GUILayout.FlexibleSpace();
+
                 }
                 GUILayout.EndHorizontal();
             GUILayout.EndArea();
 
+        }
+
+
+
+        private void DrawButton(TitleBarButton button)
+        {    
+            //if (GUILayout.Button(button.Texture, button.Style.IsNull() ? GUI.skin.button : button.Style, GUILayout.MaxWidth(button.Size.x),
+            //    GUILayout.MinWidth(button.Size.x),
+            //    GUILayout.MaxHeight(button.Size.y),
+            //    GUILayout.MinHeight(button.Size.y),
+            //    GUILayout.ExpandWidth(false),
+            //    GUILayout.ExpandHeight(false)))
+            if (GUILayout.Button(button.Texture, button.Style.IsNull() ? GUI.skin.button : button.Style,
+                GUILayout.ExpandWidth(false),
+                GUILayout.ExpandHeight(false)))
+                    button.Callback(button.Name);
         }
 
 

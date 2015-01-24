@@ -94,5 +94,14 @@ namespace ReeperCommon.Repositories.Resources.Implementations
 
             return (data.Any() && data.Single().isDone) ? Maybe<AudioClip>.With(data.Single().audioClip) : Maybe<AudioClip>.None;
         }
+
+
+        public override string ToString()
+        {
+            return string.Format("ResourceFromDirectory: '{0}'", _directory.Path) + System.Environment.NewLine +
+                   string.Join(System.Environment.NewLine,
+                       _directory.Directories().Select(d => "Directory: " + d).Union(
+                           _directory.Files().Select(f => "File: " + f)).ToArray());
+        }
     }
 }

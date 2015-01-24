@@ -14,22 +14,22 @@ namespace ReeperCommon.Gui.Window
         protected IWindowLogic WindowLogic;
         protected Rect WindowRect = new Rect(0f, 0f, 0f, 0f);
 
+
         public BasicWindow(
             IWindowLogic windowLogic, 
             Rect rect, 
             int winid, 
             GUISkin skin, 
-            bool draggable = true, 
-            bool clamp = false)
+            bool draggable = true)
         {
             if (windowLogic == null) throw new ArgumentNullException("windowLogic");
             if (skin == null) throw new ArgumentNullException("skin");
 
             Id = winid;
             WindowRect = rect;
+            Skin = skin;
             WindowLogic = windowLogic;
             Draggable = draggable;
-            ClampToScreen = clamp;
             Visible = true;
 
             WindowLogic.OnAttached(this);
@@ -68,7 +68,6 @@ namespace ReeperCommon.Gui.Window
         public string Title { get; set; }
         public GUISkin Skin { get; set; }
         public bool Draggable { get; set; }
-        public bool ClampToScreen { get; set; }
         public bool Visible { get; set; }
         public int Id { get; set; }
 
@@ -84,14 +83,5 @@ namespace ReeperCommon.Gui.Window
                 WindowLogic.OnAttached(this);
             }
         }
-
-        //protected virtual void Draw(int winid)
-        //{
-        //    if (!Skin.IsNull()) GUI.skin = Skin;
-
-        //    _windowLogic.Draw();
-
-        //    if (Draggable) GUI.DragWindow();
-        //}
     }
 }

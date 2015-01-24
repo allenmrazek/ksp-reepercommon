@@ -1,7 +1,8 @@
 ﻿using System;
 using ReeperCommon.Extensions;
+using ReeperCommon.FileSystem.Factories;
 
-namespace ReeperCommon.FileSystem.Implementations
+namespace ReeperCommon.FileSystem.Implementations.Factories
 {
     public class KSPFileFactory : IFileFactory
     {

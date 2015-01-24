@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace ReeperCommon.Repositories.Resources.Implementations.Decorators
 {
-    public class TransformIdentifier : IResourceRepository
+    public class ResourceIdentifierAdapter : IResourceRepository
     {
         private readonly IResourceRepository _repository;
         private readonly Func<string, string> _transformer;
 
-        public TransformIdentifier(IResourceRepository repository, Func<string, string> transformer)
+        public ResourceIdentifierAdapter(Func<string, string> transformer, IResourceRepository repository)
         {
             if (repository == null) throw new ArgumentNullException("repository");
             if (transformer == null) throw new ArgumentNullException("transformer");
@@ -36,6 +36,11 @@ namespace ReeperCommon.Repositories.Resources.Implementations.Decorators
         public Maybe<AudioClip> GetClip(string identifier)
         {
             return _repository.GetClip(_transformer(identifier));
+        }
+
+        public override string ToString()
+        {
+            return _repository.ToString();
         }
     }
 }

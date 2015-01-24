@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
-namespace ReeperCommon.FileSystem.Implementations
+namespace ReeperCommon.FileSystem.Implementations.Providers
 {
-    public class KSPGameDataDirectoryProvider : IGameDataPathQuery
+    public class KSPGameDataUrlDirProvider : IUrlDirProvider
     {
         public UrlDir Directory()
         {

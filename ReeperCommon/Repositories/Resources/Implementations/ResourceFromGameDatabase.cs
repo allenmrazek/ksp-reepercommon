@@ -1,10 +1,12 @@
-﻿using ReeperCommon.Containers;
+﻿using System;
+using System.Linq;
+using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 using UnityEngine;
 
 namespace ReeperCommon.Repositories.Resources.Implementations
 {
-    class ResourceFromGameDatabase : IResourceRepository
+    public class ResourceFromGameDatabase : IResourceRepository
     {
         public Maybe<byte[]> GetRaw(string identifier)
         {
@@ -28,6 +30,18 @@ namespace ReeperCommon.Repositories.Resources.Implementations
             var ac = GameDatabase.Instance.GetAudioClip(identifier);
 
             return ac.IsNull() ? Maybe<AudioClip>.None : Maybe<AudioClip>.With(ac);
+        }
+
+        public override string ToString()
+        {
+            return "ResourceFromGameDatabase:" + System.Environment.NewLine + String.Join(System.Environment.NewLine,
+                GameDatabase.Instance.databaseTexture
+                    .Select(ti => "Texture: " + ti.name)
+                    .Union(
+                        GameDatabase.Instance.databaseAudio.Select(ac => "AudioClip: " + ac.name))
+                    .Union(
+                        GameDatabase.Instance.databaseModel.Select(m => "Model: " + m.name))
+                    .ToArray());
         }
     }
 }

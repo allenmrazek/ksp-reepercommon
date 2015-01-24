@@ -6,19 +6,25 @@ namespace ReeperCommon.Gui.Window.Buttons
 {
     public class TitleBarButton
     {
-        public TitleBarButton(GUIStyle style, Texture texture, TitleBarButtons.ButtonCallback callback, string name)
+        public TitleBarButton(GUIStyle style, Texture texture, TitleBarButtons.ButtonCallback callback, string name):this(texture, callback, name)
         {
             if (style == null) throw new ArgumentNullException("style");
-            if (texture == null) throw new ArgumentNullException("texture");
-            if (callback == null) throw new ArgumentNullException("callback");
 
             Style = style;
+        }
+
+
+        public TitleBarButton(Texture texture, TitleBarButtons.ButtonCallback callback, string name)
+        {
+            if (texture == null) throw new ArgumentNullException("texture");
+            if (callback == null) throw new ArgumentNullException("callback");
+            if (name == null) throw new ArgumentNullException("name");
+
             Texture = texture;
             Callback = callback;
             Name = name;
             Size = new Vector2(texture.width, texture.height);
         }
-
 
 
         public TitleBarButtons.ButtonCallback Callback { get; private set;}

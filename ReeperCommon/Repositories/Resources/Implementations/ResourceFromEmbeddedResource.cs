@@ -70,5 +70,15 @@ namespace ReeperCommon.Repositories.Resources.Implementations
         {
             return Maybe<AudioClip>.None;
         }
+
+        public override string ToString()
+        {
+            return "ResourceFromEmbeddedResource:" + System.Environment.NewLine +
+                   string.Join(System.Environment.NewLine,
+                       _assembly.GetManifestResourceNames()
+                           .Select(name => "Embedded: " + name)
+                           .ToArray());
+
+        }
     }
 }

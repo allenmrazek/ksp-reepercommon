@@ -2,82 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using ReeperCommon.Extensions;
+using ReeperCommon.FileSystem.Factories;
+using ReeperCommon.Logging;
 
 namespace ReeperCommon.FileSystem.Implementations
 {
 // ReSharper disable once InconsistentNaming
     public class KSPDirectory : IDirectory
     {
-        // because the stock version doesn't handle filenames with multiple periods well
-        // which is a problem for us when we want to let people know a mu is a mu but also
-        // hide it from the stock loader by naming it model.mu.structure (or whatever)
-        private class Identifier
-        {
-            public readonly string _url;
-            public readonly string[] _parts;
-
-            public Identifier(string url)
-            {
-                url = url.Trim('\\', '/');
-
-                _url = url;
-                _parts = url.Split('/', '\\');
-            }
-
-            public string this[int i] 
-            {
-                get { return _parts[i]; }
-            }
-
-            public int Depth { get { return _parts.Length;  }}
-        }
-
-
         private readonly UrlDir _directory;
+        private readonly IDirectoryFactory _directoryFactory;
         private readonly IFileFactory _fileFactory;
 
 
 
-        public KSPDirectory(IFileFactory fileFactory, IGameDataPathQuery gameDataPath)
+
+        public KSPDirectory(
+            IDirectoryFactory directoryFactory,
+            IFileFactory fileFactory, 
+            UrlDir root)
         {
-            if (GameDatabase.Instance.IsNull())
-                throw new InvalidOperationException("GameDatabase.Instance");
-
-            if (fileFactory.IsNull())
-                throw new ArgumentNullException("fileFactory");
-
-            if (gameDataPath.IsNull())
-                throw new ArgumentNullException("gameDataPath");
-
-            _fileFactory = fileFactory;
-
-            // the GameData directory isn't uniquely named among root's children
-            // so we must examine paths to locate it
-            _directory = gameDataPath.Directory();
-
-            if (_directory.IsNull())
-                throw new FieldAccessException("_gameData");
-        }
-
-
-
-        public KSPDirectory(IFileFactory fileFactory, UrlDir root)
-        {
+            if (directoryFactory == null) throw new ArgumentNullException("directoryFactory");
             if (root.IsNull())
                 throw new ArgumentNullException("root");
 
             if (fileFactory.IsNull())
                 throw new ArgumentNullException("fileFactory");
 
+            _directoryFactory = directoryFactory;
             _directory = root;
             _fileFactory = fileFactory;
         }
 
 
 
+
         public IDirectory Directory(string url)
         {
-            return Directory(url, 0);
+            var identifier = new KSPUrlIdentifier(url);
+
+            if (identifier.Depth < 1) return null;
+
+            var dir = _directory.children.FirstOrDefault(d => d.name == identifier[0]);
+            if (dir.IsNull()) return null;
+
+            var found = _directoryFactory.Create(dir);
+
+            return identifier.Depth > 1 ? found.Directory(identifier.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2)) : found;
         }
 
 
@@ -85,13 +56,12 @@ namespace ReeperCommon.FileSystem.Implementations
         public IEnumerable<IDirectory> Directories()
         {
             return _directory.children
-                .Select(url => new KSPDirectory(_fileFactory, url))
-                .Cast<IDirectory>();
+                .Select(url => _directoryFactory.Create(url));
         }
 
         public IDirectory Parent
         {
-            get { return new KSPDirectory(_fileFactory, _directory.parent); }
+            get { return _directoryFactory.Create(_directory.parent); }
         }
 
         public bool FileExists(string url)
@@ -108,34 +78,13 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        private IDirectory Directory(string url, int depth)
-        {
-            return string.IsNullOrEmpty(url) ? this : Directory(new Identifier(url), 0);
-        }
-
-
-
-        private IDirectory Directory(Identifier id, int depth)
-        {
-            if (depth == id.Depth - 1)
-            {
-                var dir = _directory.children.FirstOrDefault(u => u.name == id[depth]);
-                return dir.IsNull() ? null : new KSPDirectory(_fileFactory, dir);
-            }
-            else
-            {
-                var childDir = _directory.children.FirstOrDefault(u => u.name == id[depth]);
-                return childDir.IsNull() ? null : new KSPDirectory(_fileFactory, childDir).Directory(id, depth + 1);
-            }
-        }
-
-
-
         public IEnumerable<IFile> Files()
         {
             return
                 _directory.files.Select(
-                    url => _fileFactory.Create(new KSPDirectory(_fileFactory, url.parent), url));
+                url => _fileFactory.Create(
+                    _directoryFactory.Create(url.parent), 
+                    url));
         }
 
 
@@ -154,7 +103,7 @@ namespace ReeperCommon.FileSystem.Implementations
             return
                 _directory.AllFiles
                     .Select(urlf => _fileFactory.Create(
-                        new KSPDirectory(_fileFactory, urlf.parent),
+                        _directoryFactory.Create(urlf.parent),
                         urlf));
         }
 
@@ -173,36 +122,80 @@ namespace ReeperCommon.FileSystem.Implementations
         {
             if (string.IsNullOrEmpty(url)) return null;
 
-            var found = FindFile(new Identifier(url), 0);
+            var filename = System.IO.Path.GetFileName(url);
+            var dirPath = System.IO.Path.GetDirectoryName(url);
 
-            return found.IsNull() ? null : _fileFactory.Create(new KSPDirectory(_fileFactory, found.parent), found);
+            if (!string.IsNullOrEmpty(dirPath) && DirectoryExists(dirPath))
+                return Directory(dirPath).File(filename);
+
+            var file = _directory.files
+                .FirstOrDefault(f => f.name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
+                                     ((System.IO.Path.HasExtension(filename) &&
+                                            System.IO.Path.GetExtension(filename) == ("." + f.fileExtension)))
+                                      ||
+                                      (!System.IO.Path.HasExtension(filename)));
+
+            return file.IsNull()
+                ? null
+                : _fileFactory.Create(
+                    _directoryFactory.Create(file.root), file);
         }
 
 
 
-        private UrlDir.UrlFile FindFile(Identifier id, int depth)
+        public IFile File(string url, ILog log)
         {
-            if (id.Depth - 1 == depth)
-            {
-                // support KSP-style names with no extension and files with extension
-                var urlFile = _directory.files.FirstOrDefault(f => f.name == id[depth]) ??
-                _directory.files.FirstOrDefault(f => f.name == System.IO.Path.GetFileNameWithoutExtension(id[depth]) &&
-                        "." + f.fileExtension == System.IO.Path.GetExtension(id[depth]));
+            if (string.IsNullOrEmpty(url)) return null;
 
-                return urlFile;
-            }
-            else
+            log.Normal("File with " + url);
+
+            var filename = System.IO.Path.GetFileName(url);
+            var dirPath = System.IO.Path.GetDirectoryName(url);
+
+            log.Normal("filename = " + filename);
+            log.Normal("dirpath = " + dirPath);
+
+            if (!string.IsNullOrEmpty(dirPath))// && DirectoryExists(dirPath))
             {
-                var subdirectory = Directory(id[depth]) as KSPDirectory;
-                return subdirectory.IsNull() ? null : subdirectory.FindFile(id, depth + 1);
+                log.Normal("looking for " + dirPath);
+
+                if (!DirectoryExists(dirPath)) log.Warning("direxists = false on " + dirPath);
+
+                var result = Directory(dirPath);
+
+                if (result.IsNull()) log.Error("didn't find dir");
+
+                    var fileresult = result.File(filename);
+
+                    if (fileresult.IsNull()) log.Error("didnt find file result");
+                else log.Normal("found dir");
+
+                    return fileresult;
             }
+
+            var file = _directory.files
+                .FirstOrDefault(f => f.name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
+                                     ((System.IO.Path.HasExtension(filename) &&
+                                            System.IO.Path.GetExtension(filename) == ("." + f.fileExtension)))
+                                      ||
+                                      (!System.IO.Path.HasExtension(filename)));
+
+            if (file.IsNull()) log.Error("didn't find " + url);
+
+            return file.IsNull()
+                ? null
+                : _fileFactory.Create(
+                    _directoryFactory.Create(file.root), file);
         }
+
 
 
         private string GetFileName(UrlDir.UrlFile file)
         {
             return string.IsNullOrEmpty(file.fileExtension) ? file.name : file.name + "." + file.fileExtension;
         }
+
+
 
         public string Path
         {

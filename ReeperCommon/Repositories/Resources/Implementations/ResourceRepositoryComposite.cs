@@ -68,5 +68,14 @@ namespace ReeperCommon.Repositories.Resources.Implementations
 
             return Maybe<byte[]>.None;
         }
+
+        public override string ToString()
+        {
+            return "Resource Repository Composite:" + System.Environment.NewLine +
+                   _providers
+                        .Select(p => p.ToString())
+                        .Aggregate((p1, p2) => string.Format("{0}{1}{1}{2}", p1, System.Environment.NewLine, p2));
+
+        }
     }
 }
