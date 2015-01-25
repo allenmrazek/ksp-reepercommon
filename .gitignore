@@ -4,3 +4,7 @@
 /ReeperCommon/bin/Debug
 /ReeperCommonIntegrationTests/GameData/ReeperCommonIntegrationTests/ReeperCommonIntegrationTests.dll
 /ReeperCommonIntegrationTests/bin/Debug
+/UnitTests/bin/Release
+/UnitTests/bin/Debug
+/UnitTests/obj/Debug
+/UnitTests/obj/Release

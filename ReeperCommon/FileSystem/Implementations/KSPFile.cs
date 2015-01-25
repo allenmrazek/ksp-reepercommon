@@ -66,5 +66,7 @@ namespace ReeperCommon.FileSystem.Implementations
                 return string.IsNullOrEmpty(Extension) ? Name : Name + "." + Extension;
             }
         }
+
+        public string Url { get { return _file.url; } }
     }
 }

@@ -9,5 +9,6 @@
         string FullPath { get; }
         string Name { get; }
         string FileName { get; } // includes extension (if any)
+        string Url { get; }
     }
 }

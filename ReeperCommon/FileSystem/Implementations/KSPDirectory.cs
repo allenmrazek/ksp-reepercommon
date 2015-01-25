@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 using ReeperCommon.FileSystem.Factories;
 using ReeperCommon.Logging;
@@ -37,18 +38,20 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        public IDirectory Directory(string url)
+        public Maybe<IDirectory> Directory(string url)
         {
             var identifier = new KSPUrlIdentifier(url);
 
-            if (identifier.Depth < 1) return null;
+            if (identifier.Depth < 1) return Maybe<IDirectory>.None;
 
             var dir = _directory.children.FirstOrDefault(d => d.name == identifier[0]);
-            if (dir.IsNull()) return null;
+            if (dir.IsNull()) return Maybe<IDirectory>.None;
 
             var found = _directoryFactory.Create(dir);
 
-            return identifier.Depth > 1 ? found.Directory(identifier.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2)) : found;
+            return identifier.Depth <= 1 ? Maybe<IDirectory>.With(found) : found.Directory(identifier.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2));
+
+            //return identifier.Depth > 1 ? found.Directory(identifier.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2)) : found;
         }
 
 
@@ -59,9 +62,9 @@ namespace ReeperCommon.FileSystem.Implementations
                 .Select(url => _directoryFactory.Create(url));
         }
 
-        public IDirectory Parent
+        public Maybe<IDirectory> Parent
         {
-            get { return _directoryFactory.Create(_directory.parent); }
+            get { return _directory.parent.IsNull() ? Maybe<IDirectory>.None : Maybe <IDirectory>.With(_directoryFactory.Create(_directory.parent)); }
         }
 
         public bool FileExists(string url)
@@ -118,59 +121,19 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        public IFile File(string url)
+
+        public Maybe<IFile> File(string url)
         {
-            if (string.IsNullOrEmpty(url)) return null;
+            if (string.IsNullOrEmpty(url)) return Maybe<IFile>.None;
 
             var filename = System.IO.Path.GetFileName(url);
             var dirPath = System.IO.Path.GetDirectoryName(url);
 
-            if (!string.IsNullOrEmpty(dirPath) && DirectoryExists(dirPath))
-                return Directory(dirPath).File(filename);
-
-            var file = _directory.files
-                .FirstOrDefault(f => f.name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
-                                     ((System.IO.Path.HasExtension(filename) &&
-                                            System.IO.Path.GetExtension(filename) == ("." + f.fileExtension)))
-                                      ||
-                                      (!System.IO.Path.HasExtension(filename)));
-
-            return file.IsNull()
-                ? null
-                : _fileFactory.Create(
-                    _directoryFactory.Create(file.root), file);
-        }
-
-
-
-        public IFile File(string url, ILog log)
-        {
-            if (string.IsNullOrEmpty(url)) return null;
-
-            log.Normal("File with " + url);
-
-            var filename = System.IO.Path.GetFileName(url);
-            var dirPath = System.IO.Path.GetDirectoryName(url);
-
-            log.Normal("filename = " + filename);
-            log.Normal("dirpath = " + dirPath);
-
-            if (!string.IsNullOrEmpty(dirPath))// && DirectoryExists(dirPath))
+            if (!string.IsNullOrEmpty(dirPath))
             {
-                log.Normal("looking for " + dirPath);
+                var owningDirectory = Directory(dirPath);
 
-                if (!DirectoryExists(dirPath)) log.Warning("direxists = false on " + dirPath);
-
-                var result = Directory(dirPath);
-
-                if (result.IsNull()) log.Error("didn't find dir");
-
-                    var fileresult = result.File(filename);
-
-                    if (fileresult.IsNull()) log.Error("didnt find file result");
-                else log.Normal("found dir");
-
-                    return fileresult;
+                return owningDirectory.IsNull() ? Maybe<IFile>.None : owningDirectory.Single().File(filename);
             }
 
             var file = _directory.files
@@ -180,12 +143,11 @@ namespace ReeperCommon.FileSystem.Implementations
                                       ||
                                       (!System.IO.Path.HasExtension(filename)));
 
-            if (file.IsNull()) log.Error("didn't find " + url);
 
             return file.IsNull()
-                ? null
-                : _fileFactory.Create(
-                    _directoryFactory.Create(file.root), file);
+                ? Maybe<IFile>.None
+                : Maybe<IFile>.With(_fileFactory.Create(
+                    _directoryFactory.Create(file.root), file));
         }
 
 
@@ -197,9 +159,11 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        public string Path
+        public string FullPath
         {
-            get { return _directory.path; }
+            get { return _directory.path; } // fully qualified path
         }
+
+        public string Url { get { return _directory.url; } }
     }
 }

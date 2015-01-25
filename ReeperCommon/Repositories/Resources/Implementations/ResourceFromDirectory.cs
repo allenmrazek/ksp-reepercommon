@@ -13,12 +13,14 @@ namespace ReeperCommon.Repositories.Resources.Implementations
         private readonly float _accessTimeout;
 
 
+
         public ResourceFromDirectory(IDirectory directory, float accessTimeout = 1f)
         {
             if (directory == null) throw new ArgumentNullException("directory");
             _directory = directory;
             _accessTimeout = accessTimeout;
         }
+
 
 
         private Maybe<WWW> LoadFromDisk(string path)
@@ -55,7 +57,7 @@ namespace ReeperCommon.Repositories.Resources.Implementations
         {
             var file = _directory.File(identifier);
 
-            return file.IsNull() ? Maybe<byte[]>.None : Maybe<byte[]>.With(System.IO.File.ReadAllBytes(file.FullPath));
+            return file.IsNull() ? Maybe<byte[]>.None : Maybe<byte[]>.With(System.IO.File.ReadAllBytes(file.Single().FullPath));
         }
 
 
@@ -75,11 +77,13 @@ namespace ReeperCommon.Repositories.Resources.Implementations
 
         public Maybe<Texture2D> GetTexture(string identifier)
         {
-            if (!_directory.FileExists(identifier)) return Maybe<Texture2D>.None;
+            var file = _directory.File(identifier);
+
+            if (!file.Any()) return Maybe<Texture2D>.None;
 
             // we could LoadImage here, but since we're already implementing WWW for AudioClips
             // we might as well be consistent
-            var data = LoadFromDisk(_directory.File(identifier).FullPath);
+            var data = LoadFromDisk(file.Single().FullPath);
 
             return (data.Any() && data.Single().isDone) ? Maybe<Texture2D>.With(data.Single().texture) : Maybe<Texture2D>.None;
         }
@@ -90,18 +94,19 @@ namespace ReeperCommon.Repositories.Resources.Implementations
         {
             if (!_directory.FileExists(identifier)) return Maybe<AudioClip>.None;
 
-            var data = LoadFromDisk(_directory.File(identifier).FullPath);
+            var data = LoadFromDisk(_directory.File(identifier).Single().FullPath);
 
             return (data.Any() && data.Single().isDone) ? Maybe<AudioClip>.With(data.Single().audioClip) : Maybe<AudioClip>.None;
         }
 
 
+
         public override string ToString()
         {
-            return string.Format("ResourceFromDirectory: '{0}'", _directory.Path) + System.Environment.NewLine +
+            return string.Format("ResourceFromDirectory: '{0}'", _directory.Url) + System.Environment.NewLine +
                    string.Join(System.Environment.NewLine,
-                       _directory.Directories().Select(d => "Directory: " + d).Union(
-                           _directory.Files().Select(f => "File: " + f)).ToArray());
+                       _directory.Directories().Select(d => "Directory: " + d.Url).Union(
+                           _directory.Files().Select(f => "File: " + f.Url + "/" + f.FileName)).ToArray());
         }
     }
 }
