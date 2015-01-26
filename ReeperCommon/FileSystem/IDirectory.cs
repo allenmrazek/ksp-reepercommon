@@ -22,5 +22,6 @@ namespace ReeperCommon.FileSystem
         Maybe<IDirectory> Parent { get; }
         string FullPath { get; }
         string Url { get; }
+        IUrlDir UrlDir { get; }
     }
 }

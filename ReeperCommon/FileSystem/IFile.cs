@@ -1,9 +1,11 @@
-﻿namespace ReeperCommon.FileSystem
+﻿using ReeperCommon.Containers;
+
+namespace ReeperCommon.FileSystem
 {
     public interface IFile
     {
-        UrlDir.UrlFile UrlFile { get; }
-        System.IO.FileInfo Info { get; }
+        IUrlFile UrlFile { get; }
+        Maybe<System.IO.FileInfo> Info { get; }
         IDirectory Directory { get; }
         string Extension { get; }
         string FullPath { get; }

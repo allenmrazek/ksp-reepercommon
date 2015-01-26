@@ -1,17 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 
 namespace ReeperCommon.FileSystem.Implementations
 {
     public class KSPFile : IFile
     {
-        private readonly UrlDir.UrlFile _file;
-        private readonly FileInfo _info = null;         
+        private readonly IUrlFile _file;
+        private FileInfo _info = null;         
         private readonly IDirectory _directory;
 
 
-        public KSPFile(IDirectory directory, UrlDir.UrlFile file)
+        public KSPFile(IDirectory directory, IUrlFile file)
         {
             if (directory.IsNull())
                 throw new ArgumentNullException("directory");
@@ -21,19 +23,22 @@ namespace ReeperCommon.FileSystem.Implementations
 
             _directory = directory;
             _file = file;
-            _info = new System.IO.FileInfo(FullPath);
-         
-            if (_info.IsNull()) throw new FileNotFoundException(file.fullPath);   
         }
 
-        public UrlDir.UrlFile UrlFile
+        public IUrlFile UrlFile
         {
             get { return _file; }
         }
 
-        public FileInfo Info
+        public Maybe<FileInfo> Info
         {
-            get { return _info; }
+            get
+            {
+                if (_info.IsNull())
+                    _info = new System.IO.FileInfo(FullPath);
+
+                return _info.IsNull() ? Maybe<FileInfo>.None : Maybe<FileInfo>.With(_info);
+            }
         }
 
         public IDirectory Directory
@@ -41,21 +46,22 @@ namespace ReeperCommon.FileSystem.Implementations
             get { return _directory; }
         }
 
+
         public string Extension
         {
-            get { return _file.fileExtension; }
+            get { return _file.Extension; }
         }
 
         public string FullPath
         {
-            get { return _file.fullPath; }
+            get { return _file.FullPath; }
         }
 
         public string Name
         {
             get
             {
-                return _file.name.Trim('/', '\\');
+                return _file.Name.Trim('/', '\\');
             }
         }
 
@@ -67,6 +73,6 @@ namespace ReeperCommon.FileSystem.Implementations
             }
         }
 
-        public string Url { get { return _file.url; } }
+        public string Url { get { return _file.Url; } }
     }
 }

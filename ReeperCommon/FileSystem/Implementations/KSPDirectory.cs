@@ -11,28 +11,23 @@ namespace ReeperCommon.FileSystem.Implementations
 // ReSharper disable once InconsistentNaming
     public class KSPDirectory : IDirectory
     {
-        private readonly UrlDir _directory;
-        private readonly IDirectoryFactory _directoryFactory;
-        private readonly IFileFactory _fileFactory;
+        private readonly IFileSystemFactory _fsFactory;
+        private readonly IUrlDir _directory;
 
 
 
 
         public KSPDirectory(
-            IDirectoryFactory directoryFactory,
-            IFileFactory fileFactory, 
-            UrlDir root)
+            IFileSystemFactory fsFactory,
+            IUrlDir root)
         {
-            if (directoryFactory == null) throw new ArgumentNullException("directoryFactory");
+            if (fsFactory == null) throw new ArgumentNullException("fsFactory");
             if (root.IsNull())
                 throw new ArgumentNullException("root");
 
-            if (fileFactory.IsNull())
-                throw new ArgumentNullException("fileFactory");
-
-            _directoryFactory = directoryFactory;
+  
+            _fsFactory = fsFactory;
             _directory = root;
-            _fileFactory = fileFactory;
         }
 
 
@@ -44,27 +39,25 @@ namespace ReeperCommon.FileSystem.Implementations
 
             if (identifier.Depth < 1) return Maybe<IDirectory>.None;
 
-            var dir = _directory.children.FirstOrDefault(d => d.name == identifier[0]);
+            var dir = _directory.Children.FirstOrDefault(d => d.Name == identifier[0]);
             if (dir.IsNull()) return Maybe<IDirectory>.None;
 
-            var found = _directoryFactory.Create(dir);
+            var found = _fsFactory.GetDirectory(dir);
 
             return identifier.Depth <= 1 ? Maybe<IDirectory>.With(found) : found.Directory(identifier.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2));
-
-            //return identifier.Depth > 1 ? found.Directory(identifier.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2)) : found;
         }
 
 
 
         public IEnumerable<IDirectory> Directories()
         {
-            return _directory.children
-                .Select(url => _directoryFactory.Create(url));
+            return _directory.Children
+                .Select(url => _fsFactory.GetDirectory(url));
         }
 
         public Maybe<IDirectory> Parent
         {
-            get { return _directory.parent.IsNull() ? Maybe<IDirectory>.None : Maybe <IDirectory>.With(_directoryFactory.Create(_directory.parent)); }
+            get { return _directory.Parent.IsNull() ? Maybe<IDirectory>.None : Maybe <IDirectory>.With(_fsFactory.GetDirectory(_directory.Parent)); }
         }
 
         public bool FileExists(string url)
@@ -84,10 +77,10 @@ namespace ReeperCommon.FileSystem.Implementations
         public IEnumerable<IFile> Files()
         {
             return
-                _directory.files.Select(
-                url => _fileFactory.Create(
-                    _directoryFactory.Create(url.parent), 
-                    url));
+                _directory.Files
+                .Select(url => _fsFactory.GetFile(
+                    this, 
+                    url.UrlFile));
         }
 
 
@@ -105,9 +98,9 @@ namespace ReeperCommon.FileSystem.Implementations
         {
             return
                 _directory.AllFiles
-                    .Select(urlf => _fileFactory.Create(
-                        _directoryFactory.Create(urlf.parent),
-                        urlf));
+               .Select(url => _fsFactory.GetFile(
+                    this,
+                    url.UrlFile));
         }
 
 
@@ -136,34 +129,27 @@ namespace ReeperCommon.FileSystem.Implementations
                 return owningDirectory.IsNull() ? Maybe<IFile>.None : owningDirectory.Single().File(filename);
             }
 
-            var file = _directory.files
-                .FirstOrDefault(f => f.name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
+            var file = _directory.Files
+                .FirstOrDefault(f => f.Name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
                                      ((System.IO.Path.HasExtension(filename) &&
-                                            System.IO.Path.GetExtension(filename) == ("." + f.fileExtension)))
+                                            System.IO.Path.GetExtension(filename) == ("." + f.Extension)))
                                       ||
                                       (!System.IO.Path.HasExtension(filename)));
 
 
             return file.IsNull()
                 ? Maybe<IFile>.None
-                : Maybe<IFile>.With(_fileFactory.Create(
-                    _directoryFactory.Create(file.root), file));
-        }
-
-
-
-        private string GetFileName(UrlDir.UrlFile file)
-        {
-            return string.IsNullOrEmpty(file.fileExtension) ? file.name : file.name + "." + file.fileExtension;
+                : Maybe<IFile>.With(file);
         }
 
 
 
         public string FullPath
         {
-            get { return _directory.path; } // fully qualified path
+            get { return _directory.FullPath; } // fully qualified path
         }
 
-        public string Url { get { return _directory.url; } }
+        public string Url { get { return _directory.Url; } }
+        public IUrlDir UrlDir { get { return _directory; }}
     }
 }
