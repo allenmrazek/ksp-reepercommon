@@ -78,9 +78,7 @@ namespace ReeperCommon.FileSystem.Implementations
         {
             return
                 _directory.Files
-                .Select(url => _fsFactory.GetFile(
-                    this, 
-                    url.UrlFile));
+                .Select(url => _fsFactory.GetFile(this, url));
         }
 
 
@@ -98,9 +96,7 @@ namespace ReeperCommon.FileSystem.Implementations
         {
             return
                 _directory.AllFiles
-               .Select(url => _fsFactory.GetFile(
-                    this,
-                    url.UrlFile));
+               .Select(url => _fsFactory.GetFile(this, url));
         }
 
 
@@ -126,7 +122,7 @@ namespace ReeperCommon.FileSystem.Implementations
             {
                 var owningDirectory = Directory(dirPath);
 
-                return owningDirectory.IsNull() ? Maybe<IFile>.None : owningDirectory.Single().File(filename);
+                return !owningDirectory.Any() ? Maybe<IFile>.None : owningDirectory.Single().File(filename);
             }
 
             var file = _directory.Files
@@ -139,7 +135,7 @@ namespace ReeperCommon.FileSystem.Implementations
 
             return file.IsNull()
                 ? Maybe<IFile>.None
-                : Maybe<IFile>.With(file);
+                : Maybe<IFile>.With(_fsFactory.GetFile(this, file));
         }
 
 

@@ -41,6 +41,7 @@ namespace UnitTests.FileSystem
         }
 
 
+        [Test]
         public void File_InSameDir()
         {
             /*
@@ -50,16 +51,6 @@ namespace UnitTests.FileSystem
             var first = Make_UrlFile("testfile", "txt", "/testfile", "C:/GameData/testfile.txt");
             var second = Make_UrlFile("subfile", "txt", "/subdir/subfile", "C:/GameData/subdir/subfile.txt");
 
-            //var root = Make_UrlDir("GameData", "", "C:/GameData/",
-            //    new []
-            //    {
-            //        new Mock<IFile>().SetupProperty(p => p.UrlFile, first).Object
-            //    },
-            //    new []
-            //    {
-            //        new Mock<IFile>().SetupProperty(p => p.UrlFile, first).Object
-            //    });
-  
 
 
 
@@ -68,14 +59,52 @@ namespace UnitTests.FileSystem
             fsf.Setup(t => t.GetFile(It.IsAny<IDirectory>(), It.IsAny<IUrlFile>()))
                 .Returns((IDirectory dir, IUrlFile f) => new KSPFile(dir, f));
 
-            //var mainFile = new KSPFile(new KSPDirectory(fsf, 
-            //uf.SetupProperty(t => t.Files, new[]
-            //{
-            //    new Mock<IFile>().SetupProperty(p => p.Url
-            //});
+            fsf.Setup(t => t.GetDirectory(It.IsAny<IUrlDir>()))
+                .Returns((IUrlDir dir) => new KSPDirectory(fsf.Object, dir));
 
 
-            //var d = new KSPDirectory(new Mock<IFileSystemFactory>().Object, uf.Object);
+            var urldirSub = Make_UrlDir("subdir", "/subdir", "C:/GameData/subdir/", new[] { second.Object },
+                new[] { second.Object }, Enumerable.Empty<IUrlDir>());
+
+            var urldirBase = Make_UrlDir("GameData", "/", "C:/GameData", new[] {first.Object}, new[] {first.Object, second.Object}, new[]{urldirSub.Object});
+            
+
+
+
+            var topDir = new KSPDirectory(fsf.Object, urldirBase.Object);
+            var subDir = new KSPDirectory(fsf.Object, urldirSub.Object);
+
+
+            // file in main dir
+            Assert.IsNotNull(topDir.File("testfile"));
+            Assert.IsNotNull(topDir.File("/testfile"));
+            Assert.IsNotNull(topDir.File("testfile.txt"));
+            Assert.IsNotNull(topDir.File("/testfile.txt"));
+            Assert.IsNotNull(topDir.File("\\testfile"));
+            Assert.IsNotNull(topDir.File("\\testfile.txt"));
+
+            // file in subdir, accessed from top dir
+            Assert.IsNotNull(topDir.File("subdir/subfile"));
+            Assert.IsNotNull(topDir.File("/subdir/subfile"));
+            Assert.IsNotNull(topDir.File("subdir/subfile.txt"));
+            Assert.IsNotNull(topDir.File("/subdir/subfile.txt"));
+            Assert.IsNotNull(topDir.File("subdir\\subfile"));
+            Assert.IsNotNull(topDir.File("\\subdir\\subfile"));
+            Assert.IsNotNull(topDir.File("subdir\\subfile.txt"));
+            Assert.IsNotNull(topDir.File("\\subdir\\subfile.txt"));
+
+            Assert.IsTrue(topDir.Directory("subdir").Any());
+            Assert.IsTrue(topDir.Directory("/subdir").Any());
+            Assert.IsTrue(topDir.Directory("/subdir/").Any());
+            Assert.IsTrue(topDir.Directory("\\subdir").Any());
+            Assert.IsTrue(topDir.Directory("\\subdir\\").Any());
+
+            Assert.IsFalse(topDir.Directory("invalid").Any());
+            Assert.IsFalse(topDir.Directory("/invalid").Any());
+            Assert.IsFalse(topDir.Directory("/invalid/").Any());
+            Assert.IsFalse(topDir.Directory("\\invalid").Any());
+            Assert.IsFalse(topDir.Directory("\\invalid\\").Any());
+
         }
 
 
@@ -87,11 +116,14 @@ namespace UnitTests.FileSystem
             string url,
             string fullpath)
         {
-            return new Mock<IUrlFile>()
-                .SetupProperty(f => f.Name, name)
-                .SetupProperty(f => f.FullPath, fullpath)
-                .SetupProperty(f => f.Url, url)
-                .SetupProperty(f => f.Extension, extension);
+            var mock = new Mock<IUrlFile>();
+
+            mock.SetupGet(t => t.Name).Returns(name);
+            mock.SetupGet(f => f.FullPath).Returns(fullpath);
+            mock.SetupGet(f => f.Url).Returns(url);
+            mock.SetupGet(f => f.Extension).Returns(extension);
+
+            return mock;
         }
            
 
@@ -99,16 +131,21 @@ namespace UnitTests.FileSystem
             string name,
             string url,
             string fullpath,
-            IEnumerable<IFile> files,
-            IEnumerable<IFile> allFiles)
+            IEnumerable<IUrlFile> files,
+            IEnumerable<IUrlFile> allFiles,
+            IEnumerable<IUrlDir> children)
         {
-            return new Mock<IUrlDir>()
-                .SetupProperty(p => p.Name, name)
-                .SetupProperty(p => p.Parent, null)
-                .SetupProperty(p => p.Url, url)
-                .SetupProperty(p => p.FullPath, fullpath)
-                .SetupProperty(p => p.Files, files)
-                .SetupProperty(p => p.AllFiles, allFiles);
+            var mock = new Mock<IUrlDir>();
+            
+            mock.SetupGet(p => p.Name).Returns(name);
+            //mock.SetupGet(p => p.Parent).Returns(null);
+            mock.SetupGet(p => p.Url).Returns(url);
+            mock.SetupGet(p => p.FullPath).Returns(fullpath);
+            mock.SetupGet(p => p.Files).Returns(files);
+            mock.SetupGet(p => p.AllFiles).Returns(allFiles);
+            mock.SetupGet(p => p.Children).Returns(children);
+                   
+            return mock;
         }
     }
 }

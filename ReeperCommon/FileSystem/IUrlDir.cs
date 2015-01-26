@@ -15,7 +15,7 @@ namespace ReeperCommon.FileSystem
 
 
         IEnumerable<IUrlDir> Children { get; }
-        IEnumerable<IFile> Files { get; }
-        IEnumerable<IFile> AllFiles { get; }
+        IEnumerable<IUrlFile> Files { get; }
+        IEnumerable<IUrlFile> AllFiles { get; }
     }
 }

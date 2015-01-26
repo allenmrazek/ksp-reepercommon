@@ -2,6 +2,6 @@
 {
     public interface IUrlDirProvider
     {
-        UrlDir Directory();
+        UrlDir Get();
     }
 }

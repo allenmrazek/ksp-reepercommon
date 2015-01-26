@@ -7,17 +7,13 @@ namespace ReeperCommon.FileSystem.Implementations
     {
         private readonly IDirectory _gameData;
 
-        public KSPFileSystemFactory(IDirectory gameData)
+        public KSPFileSystemFactory(IUrlDir gameData)
         {
             if (gameData == null) throw new ArgumentNullException("gameData");
-            _gameData = gameData;
+            _gameData = GetDirectory(gameData);
         }
 
 
-        public IUrlFile GetUrlFile(UrlDir.UrlFile file)
-        {
-            return new KSPUrlFile(file);
-        }
 
         public IFile GetFile(IDirectory directory, IUrlFile file)
         {

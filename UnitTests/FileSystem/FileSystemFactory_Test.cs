@@ -22,10 +22,10 @@ namespace UnitTests.FileSystem
         [Test]
         public void GetGameDataDirectory_Correct()
         {
-            var gdMock = new Mock<IDirectory>();
+            var gdMock = new Mock<IUrlDir>();
             var fsFactory = new KSPFileSystemFactory(gdMock.Object);
 
-            Assert.AreEqual(gdMock.Object, fsFactory.GetGameDataDirectory());
+            Assert.AreEqual(gdMock.Object, fsFactory.GetGameDataDirectory().UrlDir);
         }
     }
 }
