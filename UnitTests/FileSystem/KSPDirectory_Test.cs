@@ -16,9 +16,9 @@ namespace UnitTests.FileSystem
 {
     public class KSPDirectory_Test
     {
-        internal static class Factory
+        private static class Factory
         {
-            static IUrlFile CreateFileNoSubdir()
+            static IUrlFile CreateFileNoSubdirectory()
             {
                 var file = Substitute.For<IUrlFile>();
 
@@ -30,7 +30,7 @@ namespace UnitTests.FileSystem
                 return file;
             }
 
-            static IUrlFile CreateFileInSubdir()
+            static IUrlFile CreateFileInSubdirectory()
             {
                 var file = Substitute.For<IUrlFile>();
 
@@ -42,31 +42,53 @@ namespace UnitTests.FileSystem
                 return file;
             }
 
+            static IUrlFile CreateFileInSub_Subdirectory()
+            {
+                var file = Substitute.For<IUrlFile>();
+
+                file.Name.Returns("subsubfile");
+                file.Extension.Returns("sub");
+                file.FullPath.Returns("C:/GameData/subdir/subsubdir/subsubfile.txt");
+                file.Url.Returns("/subdir/subsubdir/subsubfile");
+
+                return file;
+            }
+
             static IUrlDir CreateUrlDirGameData()
             {
-                var dir = Substitute.For<IUrlDir>();
+                var gdDir = Substitute.For<IUrlDir>();
 
-                var fileNoSubDir = CreateFileNoSubdir();
-                var fileSubDir = CreateFileInSubdir();
+                var fileNoSubDir = CreateFileNoSubdirectory();
+                var fileSubDir = CreateFileInSubdirectory();
+                var fileSubSubDir = CreateFileInSub_Subdirectory();
 
-                dir.Name.Returns("GameData");
-                dir.Parent.Returns((IUrlDir)null);
-                dir.FullPath.Returns("C:/GameData");
-                dir.Files.Returns(new[] { fileNoSubDir });
-                dir.AllFiles.Returns(new[] { fileNoSubDir, fileSubDir });
-                dir.Url.Returns("/");
+                gdDir.Name.Returns("GameData");
+                gdDir.Parent.Returns((IUrlDir)null);
+                gdDir.FullPath.Returns("C:/GameData");
+                gdDir.Files.Returns(new[] { fileNoSubDir });
+                gdDir.AllFiles.Returns(new[] { fileNoSubDir, fileSubDir, fileSubSubDir });
+                gdDir.Url.Returns("/");
 
-                var child = Substitute.For<IUrlDir>();
-                child.Name.Returns("subdir");
-                child.Parent.Returns((IUrlDir)null);
-                child.FullPath.Returns("C:/GameData/subdir");
-                child.Files.Returns(new[] { fileSubDir });
-                child.AllFiles.Returns(new[] { fileSubDir });
-                child.Url.Returns("/");
+                var subdir = Substitute.For<IUrlDir>();
+                subdir.Name.Returns("subdir");
+                subdir.Parent.Returns(gdDir);
+                subdir.FullPath.Returns("C:/GameData/subdir");
+                subdir.Files.Returns(new[] { fileSubDir });
+                subdir.AllFiles.Returns(new[] { fileSubDir, fileSubSubDir });
+                subdir.Url.Returns("/subdir");
 
-                dir.Children.Returns(new[] {child});
+                var subsubdir = Substitute.For<IUrlDir>();
+                subsubdir.Name.Returns("subsubdir");
+                subsubdir.Parent.Returns(subdir);
+                subsubdir.FullPath.Returns("C:/GameData/subdir/subsubdir");
+                subsubdir.Url.Returns("/subdir/subsubdir/");
+                subsubdir.Files.Returns(new[] {fileSubSubDir});
+                subsubdir.AllFiles.Returns(new[] {fileSubSubDir});
 
-                return dir;
+                gdDir.Children.Returns(new[] {subdir});
+                subdir.Children.Returns(new[] {subsubdir});
+
+                return gdDir;
             }
 
             static IFileSystemFactory CreateFileSystemFactory()
@@ -129,7 +151,7 @@ namespace UnitTests.FileSystem
         [InlineData("\\subdir/subfile")]
         [InlineData("/subdir\\subfile.txt")]
         [InlineData("/subdir\\subfile")]
-        public void FileExists_InSubDir_ReturnsTrue_WithExistingFile(string filename)
+        public void FileExists_InExistingSubDir_ReturnsTrue_WithExistingFile(string filename)
         {
             var sut = Factory.Create();
 
@@ -154,166 +176,297 @@ namespace UnitTests.FileSystem
 
 
 
-        //[Test]
-        //public void FileExists_InSameDir_WithNonexistentFile()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
+        [Theory]
+        [InlineData("subdir/doesntExist.txt")]
+        [InlineData("/subdir/doesntExist.txt")]
+        [InlineData("subdir/doesntExist")]
+        [InlineData("/subdir/doesntExist")]
+        [InlineData("\\subdir\\doesntExist.txt")]
+        [InlineData("\\subdir\\doesntExist")]
+        [InlineData("\\subdir/doesntExist.txt")]
+        [InlineData("\\subdir/doesntExist")]
+        [InlineData("/subdir\\doesntExist.txt")]
+        [InlineData("/subdir\\doesntExist")]
+        void FileExists_InExistingSubDir_ReturnsFalse_WithNonExistentFile(string filename)
+        {
+            var sut = Factory.Create();
 
-        //    Assert.IsFalse(gameData.FileExists("fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("/fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("fake"));
-        //    Assert.IsFalse(gameData.FileExists("/fake"));
-        //    Assert.IsFalse(gameData.FileExists("\\fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("\\fake"));
-        //}
-
-
-
-        //[Test]
-        //public void FileExists_InSubDir_WithNonexistentFile()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
-
-        //    Assert.IsFalse(gameData.FileExists("Subdir/fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("/Subdir/fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("Subdir/fake"));
-        //    Assert.IsFalse(gameData.FileExists("/Subdir/fake"));
-        //    Assert.IsFalse(gameData.FileExists("\\Subdir\\fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("\\Subdir\\fake"));
-        //    Assert.IsFalse(gameData.FileExists("\\Subdir/fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("\\Subdir/fake"));
-        //    Assert.IsFalse(gameData.FileExists("/Subdir\\fake.txt"));
-        //    Assert.IsFalse(gameData.FileExists("/Subdir\\fake"));
-        //}
+            Assert.False(sut.FileExists(filename));
+        }
 
 
+        [Theory]
+        [InlineData("badsubdir/doesntExist.txt")]
+        [InlineData("/badsubdir/doesntExist.txt")]
+        [InlineData("badsubdir/doesntExist")]
+        [InlineData("/badsubdir/doesntExist")]
+        [InlineData("\\badsubdir\\doesntExist.txt")]
+        [InlineData("\\badsubdir\\doesntExist")]
+        [InlineData("\\badsubdir/doesntExist.txt")]
+        [InlineData("\\badsubdir/doesntExist")]
+        [InlineData("/badsubdir\\doesntExist.txt")]
+        [InlineData("/badsubdir\\doesntExist")]
+        void FileExists_InNonexistingSubDir_ReturnsFalse_WithNonExistentFile(string filename)
+        {
+            var sut = Factory.Create();
 
-        //[Test]
-        //public void File_InSameDir()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
-
-        //    Assert.IsTrue(gameData.File("test.txt").Any());
-        //    Assert.IsTrue(gameData.File("/test.txt").Any());
-        //    Assert.IsTrue(gameData.File("test").Any());
-        //    Assert.IsTrue(gameData.File("/test").Any());
-        //    Assert.IsTrue(gameData.File("\\test.txt").Any());
-        //    Assert.IsTrue(gameData.File("\\test").Any());
-        //}
+            Assert.False(sut.FileExists(filename));
+        }
 
 
 
-        //[Test]
-        //public void File_InSubDir()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
+        [Theory]
+        [InlineData("subdir/subsubdir/subsubfile.sub")]
+        [InlineData("subdir/subsubdir/subsubfile")]
+        [InlineData("subdir/subsubdir\\subsubfile.sub")]
+        [InlineData("subdir/subsubdir\\subsubfile")]
+        [InlineData("subdir\\subsubdir\\subsubfile.sub")]
+        [InlineData("subdir\\subsubdir\\subsubfile")]
+        [InlineData("subdir\\subsubdir/subsubfile.sub")]
+        [InlineData("subdir\\subsubdir/subsubfile")]
+        [InlineData("subdir/subsubdir\\subsubfile.sub")]
+        [InlineData("subdir/subsubdir\\subsubfile")]
+        [InlineData("/subdir/subsubdir/subsubfile.sub")]
+        [InlineData("/subdir/subsubdir/subsubfile")]
+        [InlineData("\\subdir\\subsubdir\\subsubfile.sub")]
+        [InlineData("\\subdir\\subsubdir\\subsubfile")]
+        void FileExists_InSubSubDir_ReturnsTrue_WithExistingFile(string filename)
+        {
+            var sut = Factory.Create();
 
-        //    Assert.IsTrue(gameData.File("Subdir/subfile.txt").Any());
-        //    Assert.IsTrue(gameData.File("/Subdir/subfile.txt").Any());
-        //    Assert.IsTrue(gameData.File("Subdir/subfile").Any());
-        //    Assert.IsTrue(gameData.File("/Subdir/subfile").Any());
-        //    Assert.IsTrue(gameData.File("\\Subdir\\subfile.txt").Any());
-        //    Assert.IsTrue(gameData.File("\\Subdir\\subfile").Any());
-        //    Assert.IsTrue(gameData.File("\\Subdir/subfile.txt").Any());
-        //    Assert.IsTrue(gameData.File("\\Subdir/subfile").Any());
-        //    Assert.IsTrue(gameData.File("/Subdir\\subfile.txt").Any());
-        //    Assert.IsTrue(gameData.File("/Subdir\\subfile").Any());
-        //}
-
-
-
-        //[Test]
-        //public void File_InSameDir_WithNonexistentFile()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
-
-        //    Assert.IsFalse(gameData.File("fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("/fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("fake").Any());
-        //    Assert.IsFalse(gameData.File("/fake").Any());
-        //    Assert.IsFalse(gameData.File("\\fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("\\fake").Any());
-        //}
+            Assert.True(sut.FileExists(filename));
+        }
 
 
 
-        //[Test]
-        //public void File_InSubDir_WithNonexistentFile()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
+        [Theory]
+        [InlineData("file.txt")]
+        [InlineData("/file.txt")]
+        [InlineData("file")]
+        [InlineData("/file")]
+        [InlineData("\\file.txt")]
+        [InlineData("\\file")]
+        public void File_InSameDir_ReturnsFileWhichExists(string filename)
+        {
+            var sut = Factory.Create();
 
-        //    Assert.IsFalse(gameData.File("Subdir/fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("/Subdir/fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("Subdir/fake").Any());
-        //    Assert.IsFalse(gameData.File("/Subdir/fake").Any());
-        //    Assert.IsFalse(gameData.File("\\Subdir\\fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("\\Subdir\\fake").Any());
-        //    Assert.IsFalse(gameData.File("\\Subdir/fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("\\Subdir/fake").Any());
-        //    Assert.IsFalse(gameData.File("/Subdir\\fake.txt").Any());
-        //    Assert.IsFalse(gameData.File("/Subdir\\fake").Any());
-        //}
+            Assert.True(sut.File(filename).Any());
+        }
 
 
 
-        //[Test]
-        //public void DirectoryExists_SubDirOfGameData()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
+        [Theory]
+        [InlineData("doesntExist.txt")]
+        [InlineData("/doesntExist.txt")]
+        [InlineData("doesntExist")]
+        [InlineData("/doesntExist")]
+        [InlineData("\\doesntExist.txt")]
+        [InlineData("\\doesntExist")]
+        public void File_InSameDir_ReturnsNone_ForNonexistingFile(string filename)
+        {
+            var sut = Factory.Create();
 
-        //    Assert.IsTrue(gameData.DirectoryExists("Subdir"));
-        //    Assert.IsTrue(gameData.DirectoryExists("/Subdir"));
-        //    Assert.IsTrue(gameData.DirectoryExists("\\Subdir"));
-        //    Assert.IsTrue(gameData.DirectoryExists("/Subdir/"));
-        //    Assert.IsTrue(gameData.DirectoryExists("\\Subdir\\"));
-        //}
-
-
-
-        //[Test]
-        //public void DirectoryExists_SubDirOfGameData_WithNonexistentDirectory()
-        //{
-        //    var gameData = Make_Directory(_gameDataUrlDir);
-
-        //    Assert.IsFalse(gameData.DirectoryExists("Fake"));
-        //    Assert.IsFalse(gameData.DirectoryExists("/Fake"));
-        //    Assert.IsFalse(gameData.DirectoryExists("\\Fake"));
-        //    Assert.IsFalse(gameData.DirectoryExists("/Fake/"));
-        //    Assert.IsFalse(gameData.DirectoryExists("\\Fake\\"));
-        //}
+            Assert.False(sut.File(filename).Any());
+        }
 
 
+        [Theory]
+        [InlineData("subdir/subfile.txt")]
+        [InlineData("/subdir/subfile.txt")]
+        [InlineData("subdir/subfile")]
+        [InlineData("/subdir/subfile")]
+        [InlineData("\\subdir\\subfile.txt")]
+        [InlineData("\\subdir\\subfile")]
+        [InlineData("\\subdir/subfile.txt")]
+        [InlineData("\\subdir/subfile")]
+        [InlineData("/subdir\\subfile.txt")]
+        [InlineData("/subdir\\subfile")]
+        public void File_InExistingSubDir_ReturnsFileWhichExists(string filename)
+        {
+            var sut = Factory.Create();
+
+            Assert.True(sut.File(filename).Any());
+        }
 
 
 
+        [Theory]
+        [InlineData("subdir/doesntExist.txt")]
+        [InlineData("/subdir/doesntExist.txt")]
+        [InlineData("subdir/doesntExist")]
+        [InlineData("/subdir/doesntExist")]
+        [InlineData("\\subdir\\doesntExist.txt")]
+        [InlineData("\\subdir\\doesntExist")]
+        [InlineData("\\subdir/doesntExist.txt")]
+        [InlineData("\\subdir/doesntExist")]
+        [InlineData("/subdir\\doesntExist.txt")]
+        [InlineData("/subdir\\doesntExist")]
+        public void File_InExistingSubDir_ReturnsNone_ForNonexistingFile(string filename)
+        {
+            var sut = Factory.Create();
 
-        //private static IDirectory Make_Directory(Mock<IUrlDir> urlDir)
-        //{
-        //    var fsf = new Mock<IFileSystemFactory>();
+            Assert.False(sut.File(filename).Any());
+        }
 
-        //    fsf.Setup(t => t.GetFile(It.IsAny<IDirectory>(), It.IsAny<IUrlFile>()))
-        //        .Returns((IDirectory dir, IUrlFile f) => { 
-        //            var mockFile = new Mock<IFile>();
 
-        //            mockFile.SetupGet(p => p.Directory).Returns(dir);
-        //            mockFile.SetupGet(p => p.Extension).Returns(f.Extension);
-        //            mockFile.SetupGet(p => p.Name).Returns(f.Name);
-        //            mockFile.SetupGet(p => p.UrlFile).Returns(f);
-        //            mockFile.SetupGet(p => p.Url).Returns(f.Url);
-        //            mockFile.SetupGet(p => p.FileName)
-        //                .Returns(f.Name + "." + f.Extension);
-        //            mockFile.SetupGet(p => p.FullPath).Returns(f.FullPath);
-        //            mockFile.SetupGet(p => p.Info).Returns(Maybe<FileInfo>.None);
 
-        //            return mockFile.Object;
-        //        });
+        [Theory]
+        [InlineData("badsubdir/doesntExist.txt")]
+        [InlineData("/badsubdir/doesntExist.txt")]
+        [InlineData("badsubdir/doesntExist")]
+        [InlineData("/badsubdir/doesntExist")]
+        [InlineData("\\badsubdir\\doesntExist.txt")]
+        [InlineData("\\badsubdir\\doesntExist")]
+        [InlineData("\\badsubdir/doesntExist.txt")]
+        [InlineData("\\badsubdir/doesntExist")]
+        [InlineData("/badsubdir\\doesntExist.txt")]
+        [InlineData("/badsubdir\\doesntExist")]
+        public void File_InNonexistingSubDir_ReturnsNone_ForNonexistingFile(string filename)
+        {
+            var sut = Factory.Create();
 
-        //    fsf.Setup(t => t.GetDirectory(It.IsAny<IUrlDir>()))
-        //        .Returns((IUrlDir dir) => new KSPDirectory(fsf.Object, dir));
+            Assert.False(sut.File(filename).Any());
+        }
 
-        //    var mockedDirectory = new KSPDirectory(fsf.Object, urlDir.Object);
 
-        //    return mockedDirectory;
-        //}
+
+        [Theory]
+        [InlineData("subdir")]
+        [InlineData("/subdir")]
+        [InlineData("/subdir/")]
+        [InlineData("\\subdir")]
+        [InlineData("\\subdir\\")]
+        [InlineData("\\subdir/")]
+        [InlineData("/subdir\\")]
+        public void DirectoryExists_ThatIsADirectSubDir_ReturnsTrue_ForExistingDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.True(sut.DirectoryExists(dirname));
+        }
+
+
+
+        [Theory]
+        [InlineData("subdir")]
+        [InlineData("/subdir")]
+        [InlineData("/subdir/")]
+        [InlineData("\\subdir")]
+        [InlineData("\\subdir\\")]
+        [InlineData("\\subdir/")]
+        [InlineData("/subdir\\")]
+        public void Directory_ThatIsADirectSubDir_ReturnsValid_ForExistingDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.True(sut.Directory(dirname).Any());
+        }
+
+
+
+        [Theory]
+        [InlineData("nonexistent")]
+        [InlineData("/nonexistent")]
+        [InlineData("/nonexistent/")]
+        [InlineData("\\nonexistent")]
+        [InlineData("\\nonexistent\\")]
+        [InlineData("\\nonexistent/")]
+        [InlineData("/nonexistent\\")]
+        public void DirectoyrExists_ThatIsADirectSubDir_ReturnsNone_ForNonexistingDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.False(sut.DirectoryExists(dirname));
+        }
+
+
+
+        [Theory]
+        [InlineData("nonexistent")]
+        [InlineData("/nonexistent")]
+        [InlineData("/nonexistent/")]
+        [InlineData("\\nonexistent")]
+        [InlineData("\\nonexistent\\")]
+        [InlineData("\\nonexistent/")]
+        [InlineData("/nonexistent\\")]
+        public void Directory_ThatIsADirectSubDir_ReturnsNone_ForNonexistingDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.False(sut.Directory(dirname).Any());
+        }
+
+
+
+        [Theory]
+        [InlineData("subsubdir")]
+        [InlineData("/subsubdir")]
+        [InlineData("/subsubdir/")]
+        [InlineData("\\subsubdir")]
+        [InlineData("\\subsubdir\\")]
+        [InlineData("/subsubdir\\")]
+        [InlineData("\\subsubdir/")]
+        public void DirectoryExists_ThatIsNotDirectSubDir_ReturnsFalse_WhenAccessedLikeSubDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.False(sut.DirectoryExists(dirname));
+        }
+
+
+
+        [Theory]
+        [InlineData("subsubdir")]
+        [InlineData("/subsubdir")]
+        [InlineData("/subsubdir/")]
+        [InlineData("\\subsubdir")]
+        [InlineData("\\subsubdir\\")]
+        [InlineData("/subsubdir\\")]
+        [InlineData("\\subsubdir/")]
+        public void Directory_ThatIsNotDirectSubDir_ReturnsNone_WhenAccessingLikeSubDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.False(sut.Directory(dirname).Any());
+        }
+
+
+
+        [Theory]
+        [InlineData("subdir/subsubdir")]
+        [InlineData("/subdir/subsubdir")]
+        [InlineData("/subdir/subsubdir/")]
+        [InlineData("subdir\\subsubdir")]
+        [InlineData("\\subdir\\subsubdir")]
+        [InlineData("\\subdir\\subsubdir\\")]
+        [InlineData("/subdir/subsubdir\\")]
+        [InlineData("\\subdir\\subsubdir/")]
+        public void Directory_ThatIsNotDirectSubDir_ReturnsTrue_WhenAccessedLikeSubSubDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.True(sut.DirectoryExists(dirname));
+        }
+
+
+
+        [Theory]
+        [InlineData("subdir/subsubdir")]
+        [InlineData("/subdir/subsubdir")]
+        [InlineData("/subdir/subsubdir/")]
+        [InlineData("subdir\\subsubdir")]
+        [InlineData("\\subdir\\subsubdir")]
+        [InlineData("\\subdir\\subsubdir\\")]
+        [InlineData("/subdir/subsubdir\\")]
+        [InlineData("\\subdir\\subsubdir/")]
+        public void Directory_ThatIsNotDirectSubDir_ReturnsDir_WhenAccessedLikeSubSubDir(string dirname)
+        {
+            var sut = Factory.Create();
+
+            Assert.True(sut.Directory(dirname).Any());
+        }
+
+
+        
     }
 }
