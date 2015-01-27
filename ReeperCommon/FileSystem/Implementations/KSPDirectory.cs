@@ -55,21 +55,25 @@ namespace ReeperCommon.FileSystem.Implementations
                 .Select(url => _fsFactory.GetDirectory(url));
         }
 
+
+
         public Maybe<IDirectory> Parent
         {
             get { return _directory.Parent.IsNull() ? Maybe<IDirectory>.None : Maybe <IDirectory>.With(_fsFactory.GetDirectory(_directory.Parent)); }
         }
 
+
+
         public bool FileExists(string url)
         {
-            return !File(url).IsNull();
+            return File(url).Any();
         }
 
 
 
         public bool DirectoryExists(string url)
         {
-            return !Directory(url).IsNull();
+            return Directory(url).Any();
         }
 
 
@@ -113,6 +117,8 @@ namespace ReeperCommon.FileSystem.Implementations
 
         public Maybe<IFile> File(string url)
         {
+            url = url.TrimStart('\\', '/');
+
             if (string.IsNullOrEmpty(url)) return Maybe<IFile>.None;
 
             var filename = System.IO.Path.GetFileName(url);
@@ -127,10 +133,9 @@ namespace ReeperCommon.FileSystem.Implementations
 
             var file = _directory.Files
                 .FirstOrDefault(f => f.Name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
-                                     ((System.IO.Path.HasExtension(filename) &&
-                                            System.IO.Path.GetExtension(filename) == ("." + f.Extension)))
+                                     (((System.IO.Path.HasExtension(filename) && System.IO.Path.GetExtension(filename) == ("." + f.Extension)))
                                       ||
-                                      (!System.IO.Path.HasExtension(filename)));
+                                      (!System.IO.Path.HasExtension(filename))));
 
 
             return file.IsNull()
@@ -145,7 +150,11 @@ namespace ReeperCommon.FileSystem.Implementations
             get { return _directory.FullPath; } // fully qualified path
         }
 
+
+
         public string Url { get { return _directory.Url; } }
+
+
         public IUrlDir UrlDir { get { return _directory; }}
     }
 }
