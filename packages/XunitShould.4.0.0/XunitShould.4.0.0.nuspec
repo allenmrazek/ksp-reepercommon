@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>XunitShould</id>
+    <version>4.0.0</version>
+    <title>XUnit Should Assertion Extensions</title>
+    <authors>Eddie Garmon</authors>
+    <owners>Eddie Garmon</owners>
+    <licenseUrl>https://github.com/EddieGarmon/XunitShould/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/EddieGarmon/XunitShould</projectUrl>
+    <iconUrl>http://eddiegarmon.github.io/MyLogo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Should assertion extensions for the XUnit v1 framework</description>
+    <releaseNotes />
+    <copyright>Copyright © Eddie Garmon 2011-2013</copyright>
+    <language />
+    <tags>should xunit</tags>
+    <dependencies>
+      <dependency id="xunit" version="[1.9.2, 2.0)" />
+    </dependencies>
+  </metadata>
+</package>
