@@ -2,7 +2,9 @@
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
 using ReeperCommon.FileSystem;
+using ReeperCommon.FileSystem.Implementations;
 using UnityEngine;
 
 namespace ReeperCommon.Repositories.Resources.Implementations
@@ -55,7 +57,7 @@ namespace ReeperCommon.Repositories.Resources.Implementations
 
         public Maybe<byte[]> GetRaw(string identifier)
         {
-            var file = _directory.File(identifier);
+            var file = _directory.File(new KSPUrlIdentifier(identifier));
 
             return file.IsNull() ? Maybe<byte[]>.None : Maybe<byte[]>.With(System.IO.File.ReadAllBytes(file.Single().FullPath));
         }
@@ -77,7 +79,7 @@ namespace ReeperCommon.Repositories.Resources.Implementations
 
         public Maybe<Texture2D> GetTexture(string identifier)
         {
-            var file = _directory.File(identifier);
+            var file = _directory.File(new KSPUrlIdentifier(identifier));
 
             if (!file.Any()) return Maybe<Texture2D>.None;
 
@@ -92,9 +94,9 @@ namespace ReeperCommon.Repositories.Resources.Implementations
 
         public Maybe<AudioClip> GetClip(string identifier)
         {
-            if (!_directory.FileExists(identifier)) return Maybe<AudioClip>.None;
+            if (!_directory.FileExists(new KSPUrlIdentifier(identifier))) return Maybe<AudioClip>.None;
 
-            var data = LoadFromDisk(_directory.File(identifier).Single().FullPath);
+            var data = LoadFromDisk(_directory.File(new KSPUrlIdentifier(identifier)).Single().FullPath);
 
             return (data.Any() && data.Single().isDone) ? Maybe<AudioClip>.With(data.Single().audioClip) : Maybe<AudioClip>.None;
         }

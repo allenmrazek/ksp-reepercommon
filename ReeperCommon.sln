@@ -5,12 +5,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReeperCommon", "ReeperCommo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReeperCommonIntegrationTests", "ReeperCommonIntegrationTests\ReeperCommonIntegrationTests.csproj", "{BD317196-47B1-47D9-9B37-EF37B8E9F648}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{1357D99D-A242-4418-AEF8-460C02A46EA0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DA35E781-0C84-42E2-B30A-F48B8F4EBD5C}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReeperCommonUnitTests", "UnitTests\ReeperCommonUnitTests.csproj", "{1357D99D-A242-4418-AEF8-460C02A46EA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

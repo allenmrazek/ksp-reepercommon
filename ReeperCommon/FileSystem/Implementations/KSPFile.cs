@@ -1,15 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
 
 namespace ReeperCommon.FileSystem.Implementations
 {
     public class KSPFile : IFile
     {
         private readonly IUrlFile _file;
-        private FileInfo _info = null;         
+        private FileInfo _info;         
         private readonly IDirectory _directory;
 
 
@@ -35,7 +35,7 @@ namespace ReeperCommon.FileSystem.Implementations
             get
             {
                 if (_info.IsNull())
-                    _info = new System.IO.FileInfo(FullPath);
+                    _info = new FileInfo(FullPath);
 
                 return _info.IsNull() ? Maybe<FileInfo>.None : Maybe<FileInfo>.With(_info);
             }

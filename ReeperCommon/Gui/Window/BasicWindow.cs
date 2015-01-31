@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
+using ReeperCommon.Gui.Logic;
 using ReeperCommon.Gui.Window.Decorators;
-using ReeperCommon.Gui.Window.Logic;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
 {
     public class BasicWindow : IWindowComponent
     {
-        protected IWindowLogic WindowLogic;
         protected Rect WindowRect = new Rect(0f, 0f, 0f, 0f);
-
+        protected IWindowLogic WindowLogic;
 
         public BasicWindow(
             IWindowLogic windowLogic, 
@@ -28,17 +28,16 @@ namespace ReeperCommon.Gui.Window
             Id = winid;
             WindowRect = rect;
             Skin = skin;
-            WindowLogic = windowLogic;
+            Logic = windowLogic;
             Draggable = draggable;
             Visible = true;
-
-            WindowLogic.OnAttached(this);
+            WindowLogic = windowLogic;
         }
 
 
         ~BasicWindow()
         {
-            WindowLogic.OnDetached(this);
+
         }
 
 
@@ -47,7 +46,7 @@ namespace ReeperCommon.Gui.Window
         {
             if (!Skin.IsNull()) GUI.skin = Skin;
 
-            WindowLogic.Draw();
+            Logic.Draw();
 
             if (Draggable) GUI.DragWindow();
         }
@@ -56,7 +55,7 @@ namespace ReeperCommon.Gui.Window
 
         public virtual void Update()
         {
-            WindowLogic.Update();
+            Logic.Update();
         }
 
         public Rect Dimensions
@@ -74,14 +73,7 @@ namespace ReeperCommon.Gui.Window
         public IWindowLogic Logic
         {
             get { return WindowLogic; }
-            set
-            {
-                if (!WindowLogic.IsNull() && !ReferenceEquals(WindowLogic, value))
-                    WindowLogic.OnDetached(this);
-
-                WindowLogic = value;
-                WindowLogic.OnAttached(this);
-            }
+            set { if (value.IsNull()) throw new ArgumentNullException("value"); WindowLogic = value; }
         }
     }
 }

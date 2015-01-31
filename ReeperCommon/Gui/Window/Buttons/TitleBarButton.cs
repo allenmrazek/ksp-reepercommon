@@ -4,9 +4,11 @@ using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.Buttons
 {
+    public delegate void ButtonCallback(string buttonName);
+
     public class TitleBarButton
     {
-        public TitleBarButton(GUIStyle style, Texture texture, TitleBarButtons.ButtonCallback callback, string name):this(texture, callback, name)
+        public TitleBarButton(GUIStyle style, Texture texture, ButtonCallback callback, string name):this(texture, callback, name)
         {
             if (style == null) throw new ArgumentNullException("style");
 
@@ -14,7 +16,7 @@ namespace ReeperCommon.Gui.Window.Buttons
         }
 
 
-        public TitleBarButton(Texture texture, TitleBarButtons.ButtonCallback callback, string name)
+        public TitleBarButton(Texture texture, ButtonCallback callback, string name)
         {
             if (texture == null) throw new ArgumentNullException("texture");
             if (callback == null) throw new ArgumentNullException("callback");
@@ -27,7 +29,7 @@ namespace ReeperCommon.Gui.Window.Buttons
         }
 
 
-        public TitleBarButtons.ButtonCallback Callback { get; private set;}
+        public ButtonCallback Callback { get; private set;}
         public string Name { get; private set;}
         public GUIStyle Style { get; private set; }
         public Texture Texture { get; set; }

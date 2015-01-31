@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
 
 namespace ReeperCommon.Containers
 {

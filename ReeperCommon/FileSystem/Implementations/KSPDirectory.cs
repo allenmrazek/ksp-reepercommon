@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
 using ReeperCommon.FileSystem.Factories;
 using ReeperCommon.Logging;
 
@@ -33,18 +34,19 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        public Maybe<IDirectory> Directory(string url)
+        public Maybe<IDirectory> Directory(IUrlIdentifier url)
         {
-            var identifier = new KSPUrlIdentifier(url);
+            if (url.Depth < 1) return Maybe<IDirectory>.None;
 
-            if (identifier.Depth < 1) return Maybe<IDirectory>.None;
-
-            var dir = _directory.Children.FirstOrDefault(d => d.Name == identifier[0]);
+            var dir = _directory.Children.FirstOrDefault(d => d.Name == url[0]);
             if (dir.IsNull()) return Maybe<IDirectory>.None;
 
             var found = _fsFactory.GetDirectory(dir);
 
-            return identifier.Depth <= 1 ? Maybe<IDirectory>.With(found) : found.Directory(identifier.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2));
+            //return url.Depth <= 1 ? Maybe<IDirectory>.With(found) : found.Directory(url.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2));
+            return url.Depth <= 1 ? 
+                Maybe<IDirectory>.With(found) : 
+                found.Directory(new KSPUrlIdentifier(url.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2)));
         }
 
 
@@ -57,6 +59,17 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
+        public IEnumerable<IDirectory> RecursiveDirectories()
+        {
+            return _directory.Children
+                .Select(child => _fsFactory.GetDirectory(child))
+                .Union(
+                    _directory.Children
+                        .SelectMany(child => _fsFactory.GetDirectory(child).RecursiveDirectories()));
+        }
+
+
+
         public Maybe<IDirectory> Parent
         {
             get { return _directory.Parent.IsNull() ? Maybe<IDirectory>.None : Maybe <IDirectory>.With(_fsFactory.GetDirectory(_directory.Parent)); }
@@ -64,14 +77,14 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        public bool FileExists(string url)
+        public bool FileExists(IUrlIdentifier url)
         {
             return File(url).Any();
         }
 
 
 
-        public bool DirectoryExists(string url)
+        public bool DirectoryExists(IUrlIdentifier url)
         {
             return Directory(url).Any();
         }
@@ -91,7 +104,11 @@ namespace ReeperCommon.FileSystem.Implementations
         {
             var sanitized = extension.TrimStart('.');
 
-            return Files().Where(f => f.Extension == sanitized);
+            var files = Files();
+
+            var withExt = files.Where(f => f.Extension == sanitized);
+
+            return withExt;
         }
 
 
@@ -115,20 +132,16 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
 
-        public Maybe<IFile> File(string url)
+        public Maybe<IFile> File(IUrlIdentifier url)
         {
-            url = url.TrimStart('\\', '/');
-
-            if (string.IsNullOrEmpty(url)) return Maybe<IFile>.None;
-
-            var filename = System.IO.Path.GetFileName(url);
-            var dirPath = System.IO.Path.GetDirectoryName(url);
+            var filename = System.IO.Path.GetFileName(url.Path);
+            var dirPath = System.IO.Path.GetDirectoryName(url.Path);
 
             if (!string.IsNullOrEmpty(dirPath))
             {
-                var owningDirectory = Directory(dirPath);
+                var owningDirectory = Directory(new KSPUrlIdentifier(dirPath));
 
-                return !owningDirectory.Any() ? Maybe<IFile>.None : owningDirectory.Single().File(filename);
+                return !owningDirectory.Any() ? Maybe<IFile>.None : owningDirectory.Single().File(new KSPUrlIdentifier(filename));
             }
 
             var file = _directory.Files
@@ -156,5 +169,10 @@ namespace ReeperCommon.FileSystem.Implementations
 
 
         public IUrlDir UrlDir { get { return _directory; }}
+
+        public string Name
+        {
+            get { return _directory.Name; }
+        }
     }
 }

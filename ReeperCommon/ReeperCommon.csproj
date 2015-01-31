@@ -41,9 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Containers\Maybe.cs" />
-    <Compile Include="Extensions\ConfigNodeExtensions.cs" />
-    <Compile Include="Extensions\GameObjectExtensions.cs" />
-    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Events\IGameEventSubscriber.cs" />
+    <Compile Include="Events\IGameEventSubscription.cs" />
+    <Compile Include="Events\Implementations\GameEventSubscriber.cs" />
+    <Compile Include="Events\Implementations\GameEventSubscription.cs" />
+    <Compile Include="Extensions\ConfigNode\ConfigNodeExtensions.cs" />
+    <Compile Include="Extensions\GameObject\GameObjectExtensions.cs" />
+    <Compile Include="Extensions\Object\ObjectExtensions.cs" />
     <Compile Include="FileSystem\IFileSystemFactory.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
     <Compile Include="FileSystem\IFile.cs" />
@@ -57,6 +61,7 @@
     <Compile Include="FileSystem\Implementations\KSPFile.cs" />
     <Compile Include="FileSystem\Implementations\Providers\KSPGameDataUrlDirProvider.cs" />
     <Compile Include="FileSystem\IUrlFile.cs" />
+    <Compile Include="FileSystem\IUrlIdentifier.cs" />
     <Compile Include="GameLoadState\LoadStateMarkedTypeCreator.cs" />
     <Compile Include="GameLoadState\GameLoadStateObserver.cs" />
     <Compile Include="GameLoadState\LoadState_FileTreeReady.cs" />
@@ -64,10 +69,10 @@
     <Compile Include="GameLoadState\LoadState_TexturesLoaded.cs" />
     <Compile Include="Gui\Window\Decorators\ClampToScreen.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
-    <Compile Include="Gui\Window\Logic\DefaultWindowLogic.cs" />
+    <Compile Include="Gui\Logic\DefaultWindowLogic.cs" />
     <Compile Include="Gui\Window\Buttons\TitleBarButton.cs" />
     <Compile Include="Gui\Window\Decorators\TitleBarButtons.cs" />
-    <Compile Include="Gui\Window\Logic\IWindowLogic.cs" />
+    <Compile Include="Gui\Logic\IWindowLogic.cs" />
     <Compile Include="Gui\Window\Providers\UniqueWindowIdProvider.cs" />
     <Compile Include="Gui\Window\View\WindowView.cs" />
     <Compile Include="Gui\Window\BasicWindow.cs" />
@@ -86,13 +91,15 @@
     <Compile Include="Logging\Implementations\StandardLog.cs" />
     <Compile Include="Logging\Implementations\TaggedLog.cs" />
     <Compile Include="Logging\Implementations\VerboseLog.cs" />
-    <Compile Include="Logging\BaseLog.cs" />
-    <Compile Include="Logging\LogFactory.cs" />
+    <Compile Include="Logging\Implementations\BaseLog.cs" />
+    <Compile Include="Logging\Factories\LogFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameLoadState\Attributes\LoadStateMarker.cs" />
     <Compile Include="Providers\Implementations\AssemblyLocation.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Events\Implementations\Override\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

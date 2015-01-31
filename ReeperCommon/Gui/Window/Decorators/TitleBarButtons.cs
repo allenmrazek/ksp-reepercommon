@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
 using ReeperCommon.Gui.Window.Buttons;
 using UnityEngine;
 
@@ -8,8 +9,6 @@ namespace ReeperCommon.Gui.Window.Decorators
 {
     public class TitleBarButtons : WindowDecorator
     {
-        public delegate void ButtonCallback(string buttonName);
-
         private readonly List<TitleBarButton> _buttons = new List<TitleBarButton>();
         private readonly ButtonAlignment _alignment;
         private readonly Vector2 _offset = Vector2.zero;

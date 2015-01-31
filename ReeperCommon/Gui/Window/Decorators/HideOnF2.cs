@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ReeperCommon.Gui.Window.Decorators
+﻿namespace ReeperCommon.Gui.Window.Decorators
 {
     public class HideOnF2 : WindowDecorator
     {

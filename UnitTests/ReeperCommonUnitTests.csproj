@@ -65,6 +65,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystem\FileSystemFactory_Test.cs" />
+    <Compile Include="FileSystem\Framework\IDirectoryBuilder.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\Directory.cs" />
+    <Compile Include="FileSystem\Framework\IDirectory.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\InnerDirectory.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\KSPDirectoryBuilder.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\UrlFileMocker.cs" />
+    <Compile Include="FileSystem\Framework\IUrlFileMocker.cs" />
+    <Compile Include="FileSystem\Framework\Tests\Directory_Test.cs" />
+    <Compile Include="FileSystem\Framework\Tests\InnerDirectory_Test.cs" />
+    <Compile Include="FileSystem\Framework\Tests\KSPDirectoryBuilder_Test.cs" />
+    <Compile Include="FileSystem\Framework\Tests\UrlFileMocker_Test.cs" />
     <Compile Include="FileSystem\KSPDirectory_Test.cs" />
     <Compile Include="FileSystem\KSPFile_Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +90,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

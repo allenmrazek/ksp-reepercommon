@@ -3,25 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
 using ReeperCommon.Gui.Window.Decorators;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.View
 {
+    // note: do not hide this behind an interface; it will mess with Unity's operator overloads of == and Equals
+// ReSharper disable once ClassNeverInstantiated.Global
     public class WindowView : MonoBehaviour
     {
-        public IWindowComponent Implementation { get; set; }
+        private IWindowComponent Implementation { get; set; }
 
 
 
-        private void OnDestroy()
+// ReSharper disable once UnusedMember.Global
+        public void OnDestroy()
         {
             print("WindowView is destructing...");
         }
 
 
 
-        private void OnGUI()
+// ReSharper disable once InconsistentNaming
+// ReSharper disable once UnusedMember.Global
+        public void OnGUI()
         {
             if (Implementation.IsNull() || !Implementation.Visible) return;
 
@@ -34,7 +40,8 @@ namespace ReeperCommon.Gui.Window.View
 
 
 
-        private void Update()
+// ReSharper disable once UnusedMember.Global
+        public void Update()
         {
             if (Implementation.IsNull()) return;
 

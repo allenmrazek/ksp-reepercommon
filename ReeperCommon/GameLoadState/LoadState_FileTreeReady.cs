@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ReeperCommon.Extensions;
+using ReeperCommon.Extensions.Object;
 
 namespace ReeperCommon.GameLoadState
 {

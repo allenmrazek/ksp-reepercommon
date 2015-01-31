@@ -1,6 +1,7 @@
 ﻿using System;
+using ReeperCommon.Extensions.Object;
 
-namespace ReeperCommon.Extensions
+namespace ReeperCommon.Extensions.ConfigNode
 {
     public static class ConfigNodeExtensions
     {
@@ -12,7 +13,7 @@ namespace ReeperCommon.Extensions
         /// <param name="valueName"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T ParseEnum<T>(this ConfigNode node, string valueName, T defaultValue)
+        public static T ParseEnum<T>(this global::ConfigNode node, string valueName, T defaultValue)
         {
             if (!node.HasValue(valueName))
                 return defaultValue;
@@ -33,7 +34,7 @@ namespace ReeperCommon.Extensions
         /// <param name="valueName"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T Parse<T>(this ConfigNode node, string valueName, T defaultValue)
+        public static T Parse<T>(this global::ConfigNode node, string valueName, T defaultValue)
         {
             if (!node.HasValue(valueName))
                 return defaultValue;
@@ -68,7 +69,7 @@ namespace ReeperCommon.Extensions
         /// <param name="node"></param>
         /// <param name="valueName"></param>
         /// <param name="value"></param>
-        public static void Set<T>(this ConfigNode node, string valueName, T value)
+        public static void Set<T>(this global::ConfigNode node, string valueName, T value)
         {
             // something seems to be broken with ConfigNode.SetValue so the
             // following is buggy:

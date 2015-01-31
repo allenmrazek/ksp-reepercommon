@@ -1,4 +1,4 @@
-﻿using ReeperCommon.Gui.Window.Logic;
+﻿using ReeperCommon.Gui.Logic;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
