@@ -78,6 +78,7 @@
     <Compile Include="FileSystem\Framework\Tests\UrlFileMocker_Test.cs" />
     <Compile Include="FileSystem\KSPDirectory_Test.cs" />
     <Compile Include="FileSystem\KSPFile_Test.cs" />
+    <Compile Include="FileSystem\KSPUrlIdentifier_Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

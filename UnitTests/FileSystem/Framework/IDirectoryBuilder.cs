@@ -8,6 +8,7 @@ namespace UnitTests.FileSystem.Framework
     public interface IDirectoryBuilder
     {
         ReeperCommon.FileSystem.IDirectory Build();
+        ReeperCommon.FileSystem.IDirectory BuildAll();
 
         IDirectoryBuilder WithDirectory(string name);
         IDirectoryBuilder WithFile(string filename);

@@ -41,8 +41,6 @@ namespace UnitTests.FileSystem.Framework.Implementations
 
         public ReeperCommon.FileSystem.IDirectory Build()
         {
-            if (!_parent.IsNull()) return _parent.Build();
-
             var root = _thisDirectory.Build();
 
             var fss = new KSPFileSystemFactory(root);
@@ -53,6 +51,12 @@ namespace UnitTests.FileSystem.Framework.Implementations
             return dir;
         }
 
+
+
+        public ReeperCommon.FileSystem.IDirectory BuildAll()
+        {
+            return !_parent.IsNull() ? _parent.BuildAll() : Build();
+        }
 
 
 

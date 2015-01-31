@@ -4,8 +4,10 @@ using ReeperCommon.FileSystem;
 using ReeperCommon.FileSystem.Factories;
 using ReeperCommon.FileSystem.Implementations;
 using NSubstitute;
+using UnitTests.FileSystem.Framework;
 using UnitTests.FileSystem.Framework.Implementations;
 using Xunit;
+using IDirectory = ReeperCommon.FileSystem.IDirectory;
 
 namespace UnitTests.FileSystem
 {
@@ -27,6 +29,11 @@ namespace UnitTests.FileSystem
                 fsf.GetFile(Arg.Any<IDirectory>(), Arg.Any<IUrlFile>()).Returns(d => new KSPFile(d.Arg<IDirectory>(), d.Arg<IUrlFile>()));
 
                 return fsf;
+            }
+
+            public static IDirectoryBuilder CreateBuilder()
+            {
+                return new KSPDirectoryBuilder("GameData", new UrlFileMocker());
             }
         }
 
@@ -58,10 +65,11 @@ namespace UnitTests.FileSystem
 
             var directChildDirectories = sut.Directories();
 
-            Assert.Equal(new[] {"TestDirectory", "AnotherTest", "Subdir"},
+            Assert.Equal(new[] { "TestDirectory", "AnotherTest", "Subdir" },
                 directChildDirectories.Select(dir => dir.Name));
 
         }
+
 
 
         [Fact]
@@ -75,10 +83,7 @@ namespace UnitTests.FileSystem
                             .MakeDirectory("second")
                                 .MakeDirectory("third")
                                 .WithFile("first_second_third.txt")
-                                .Parent()
-                            .Parent()
-                        .Parent()
-                        .Build(); // builds "second" dir
+                        .BuildAll();
             
             var allDirs = sut.RecursiveDirectories();
 
@@ -91,23 +96,95 @@ namespace UnitTests.FileSystem
         [Fact]
         void Directory()
         {
-            //var sut = KSPDirec
+            var sut = Factory.CreateBuilder()
+                        .WithDirectory("first")
+                        .WithDirectory("second")
+                        .MakeDirectory("third")
+                            .WithDirectory("fourth")
+                            .BuildAll();
+
+            Assert.True(sut.Directory(new KSPUrlIdentifier("first")).Any());
+            Assert.True(sut.Directory(new KSPUrlIdentifier("third/fourth")).Any());
+            Assert.False(sut.Directory(new KSPUrlIdentifier("nonexistent")).Any());
+            Assert.False(sut.Directory(new KSPUrlIdentifier("fake/fourth")).Any());
         }
 
+
+
+        [Fact]
         void DirectoryExists()
         {
-            
+            var sut = Factory.CreateBuilder()
+                .MakeDirectory("test")
+                .WithDirectory("subdir").BuildAll();
+
+            Assert.True(sut.DirectoryExists(new KSPUrlIdentifier("test")));
+            Assert.True(sut.DirectoryExists(new KSPUrlIdentifier("test/subdir")));
+            Assert.False(sut.DirectoryExists(new KSPUrlIdentifier("fake")));
+            Assert.False(sut.DirectoryExists(new KSPUrlIdentifier("fake/subdir")));
         }
 
+
+
+        [Fact]
         void File()
         {
-            
+            var sut = Factory.CreateBuilder()
+                                .WithFile("test.txt")
+                                .WithFile("another")
+                                    .MakeDirectory("subdir")
+                                    .WithFile("subfile.txt").BuildAll();
+
+            Assert.True(sut.File(new KSPUrlIdentifier("test.txt")).Any());
+            Assert.True(sut.File(new KSPUrlIdentifier("test")).Any()); // remember -- we accept extensionless also
+            Assert.True(sut.File(new KSPUrlIdentifier("another")).Any());
+            Assert.True(sut.File(new KSPUrlIdentifier("subdir/subfile.txt")).Any());
+            Assert.True(sut.File(new KSPUrlIdentifier("subdir/subfile")).Any());
+
+            Assert.False(sut.File(new KSPUrlIdentifier("nonexistent")).Any());
+            Assert.False(sut.File(new KSPUrlIdentifier("subdir/nonexistent")).Any());
+            Assert.False(sut.File(new KSPUrlIdentifier("nonexistent/subfile.txt")).Any());
         }
 
+
+
+        [Fact]
+        void File_FindsBestMatch()
+        {
+            var sut = Factory.CreateBuilder()
+                .WithFile("test.txt")
+                .WithFile("test.txt.txt")
+                .WithFile("test")
+                .Build();
+
+            Assert.Equal("test", sut.File(new KSPUrlIdentifier("test")).Single().FileName);
+            Assert.Equal("test.txt", sut.File(new KSPUrlIdentifier("test.txt")).Single().FileName);
+            Assert.Equal("test.txt.txt", sut.File(new KSPUrlIdentifier("test.txt.txt")).Single().FileName);
+        }
+
+
+
+        [Fact]
         void FileExists()
         {
-            
+            var sut = Factory.CreateBuilder()
+                                .WithFile("test.txt")
+                                .WithFile("test")
+                                .MakeDirectory("subdir")
+                                    .WithFile("subfile.txt")
+                                    .BuildAll();
+
+            Assert.True(sut.FileExists(new KSPUrlIdentifier("test.txt")));
+            Assert.True(sut.FileExists(new KSPUrlIdentifier("test")));
+            Assert.True(sut.FileExists(new KSPUrlIdentifier("subdir/subfile.txt")));
+            Assert.True(sut.FileExists(new KSPUrlIdentifier("subdir/subfile")));
+
+            Assert.False(sut.FileExists(new KSPUrlIdentifier("nonexistent")));
+            Assert.False(sut.FileExists(new KSPUrlIdentifier("subdir/nonexistent")));
+            Assert.False(sut.FileExists(new KSPUrlIdentifier("nonexistent/subfile.txt")));
         }
+
+
 
         void Files()
         {

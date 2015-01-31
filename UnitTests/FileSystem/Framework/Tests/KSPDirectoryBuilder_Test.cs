@@ -67,13 +67,13 @@ namespace UnitTests.FileSystem.Framework.Tests
 
 
         [Fact]
-        private void Build_OperatesOnTopmostBuilder()
+        private void BuildAll_OperatesOnTopmostBuilder()
         {
             var sut = KSPDirectoryBuilderFactory.Create();
 
             var result = sut.MakeDirectory("subdir")
                                 .MakeDirectory("subsubdir")
-                                .Build(); // should result in equivalent of sut.Build
+                                .BuildAll(); // should result in equivalent of sut.Build
 
             var expected = sut.Build();
 
