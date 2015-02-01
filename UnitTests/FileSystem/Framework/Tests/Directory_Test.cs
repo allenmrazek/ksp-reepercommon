@@ -26,11 +26,13 @@ namespace UnitTests.FileSystem.Framework.Tests
 
 
         [Fact]
-        void Constructor_ThrowsExceptionOnNull_OrEmpty_String()
+        void Constructor_ThrowsExceptionOnNull_OrEmpty_OrBad_String()
         {
             Assert.Throws<ArgumentNullException>(() => new Directory(null, Substitute.For<IUrlFileMocker>()));
             Assert.Throws<ArgumentNullException>(() => new Directory("", Substitute.For<IUrlFileMocker>()));
             Assert.Throws<ArgumentNullException>(() => new Directory("anonymous", null));
+            Assert.Throws<ArgumentNullException>(() => new Directory("/", Substitute.For<IUrlFileMocker>()));
+            Assert.Throws<ArgumentNullException>(() => new Directory("\\", Substitute.For<IUrlFileMocker>()));
         }
 
 
@@ -51,5 +53,7 @@ namespace UnitTests.FileSystem.Framework.Tests
             // assert
             builder.Build().Received();
         }
+
+
     }
 }

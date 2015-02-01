@@ -14,6 +14,6 @@ namespace UnitTests.FileSystem.Framework
         List<IDirectory> Directories { get; }
 
         IUrlDir Build();
-
+        IUrlDir Build(IUrlDir parent);
     }
 }

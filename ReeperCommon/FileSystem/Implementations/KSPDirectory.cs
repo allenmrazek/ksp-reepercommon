@@ -43,7 +43,6 @@ namespace ReeperCommon.FileSystem.Implementations
 
             var found = _fsFactory.GetDirectory(dir);
 
-            //return url.Depth <= 1 ? Maybe<IDirectory>.With(found) : found.Directory(url.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2));
             return url.Depth <= 1 ? 
                 Maybe<IDirectory>.With(found) : 
                 found.Directory(new KSPUrlIdentifier(url.Parts.Skip(1).Aggregate((s1, s2) => s1 + "/" + s2)));
@@ -141,9 +140,12 @@ namespace ReeperCommon.FileSystem.Implementations
             {
                 var owningDirectory = Directory(new KSPUrlIdentifier(dirPath));
 
-                return !owningDirectory.Any() ? Maybe<IFile>.None : owningDirectory.Single().File(new KSPUrlIdentifier(filename));
+                return !owningDirectory.Any()
+                    ? Maybe<IFile>.None
+                    : owningDirectory.Single().File(new KSPUrlIdentifier(filename));
             }
 
+   
             var file = _directory.Files
                 .FirstOrDefault(f => f.Name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
                                      (((System.IO.Path.HasExtension(filename) && System.IO.Path.GetExtension(filename) == ("." + f.Extension)))

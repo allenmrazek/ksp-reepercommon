@@ -183,6 +183,34 @@ namespace UnitTests.FileSystem.Framework.Tests
 
 
         [Fact]
+        private void MakeDirectory_ThenWithDirectory_AddsDirAsSubDir()
+        {
+            var sut = KSPDirectoryBuilderFactory.Create();
+            var subBuilder = sut.MakeDirectory("subdir");
+
+            var resultNoDirs = subBuilder.Build();
+            var sutResultNoDirs = sut.Build();
+
+            var resultOneDir = subBuilder.WithDirectory("test").Build();
+            var buildAllResult = subBuilder.BuildAll();
+            var buildResult = sut.Build();
+
+            Assert.Empty(resultNoDirs.Directories());
+            Assert.NotEmpty(resultOneDir.Directories());
+            Assert.Equal(1, resultOneDir.Directories().Count());
+            Assert.Equal(1, buildAllResult.Directories().Count());
+            Assert.Equal(1, buildResult.Directories().Count());
+
+            Assert.Empty(resultNoDirs.Directories());
+            Assert.Empty(sutResultNoDirs.Directory(new KSPUrlIdentifier("subdir")).Single().Directories());
+          
+            Assert.NotEmpty(resultOneDir.Directories());
+            Assert.NotEmpty(buildAllResult.Directory(new KSPUrlIdentifier("subdir")).Single().Directories());
+        }
+
+
+
+        [Fact]
         private void Parent_ThrowsInvalidOperation_WhenNoParentDir()
         {
             var sut = KSPDirectoryBuilderFactory.Create();
