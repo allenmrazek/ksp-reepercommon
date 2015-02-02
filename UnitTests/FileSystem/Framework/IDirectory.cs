@@ -6,7 +6,7 @@ using ReeperCommon.FileSystem;
 
 namespace UnitTests.FileSystem.Framework
 {
-    interface IDirectory
+    public interface IDirectory
     {
         string Name { get; }
         List<string> Files { get; }

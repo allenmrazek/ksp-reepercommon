@@ -17,12 +17,12 @@ namespace UnitTests.FileSystem.Framework.Implementations
         private readonly List<Action<KSPDirectory>> _actions = new List<Action<KSPDirectory>>();
 
 
-       
+
 
         public KSPDirectoryBuilder(string name, IUrlFileMocker fmocker)
         {
             if (fmocker == null) throw new ArgumentNullException("fmocker");
-            
+
             if (name == null || string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
             _fmocker = fmocker;
@@ -31,7 +31,7 @@ namespace UnitTests.FileSystem.Framework.Implementations
 
 
 
-        public KSPDirectoryBuilder(string name, IDirectoryBuilder parent, IUrlFileMocker fmocker):this(name, fmocker)
+        public KSPDirectoryBuilder(string name, IDirectoryBuilder parent, IUrlFileMocker fmocker) : this(name, fmocker)
         {
             if (parent == null) throw new ArgumentNullException("parent");
             _parent = parent;
@@ -103,6 +103,11 @@ namespace UnitTests.FileSystem.Framework.Implementations
                 throw new InvalidOperationException(_thisDirectory.Name + " does not have a parent directory");
 
             return _parent;
+        }
+
+        public IEnumerable<IDirectory> Directories
+        {
+            get { return _thisDirectory.Directories; }
         }
     }
 }

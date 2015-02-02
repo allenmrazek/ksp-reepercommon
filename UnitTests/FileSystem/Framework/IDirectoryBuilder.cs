@@ -14,5 +14,7 @@ namespace UnitTests.FileSystem.Framework
         IDirectoryBuilder WithFile(string filename);
         IDirectoryBuilder MakeDirectory(string name);
         IDirectoryBuilder Parent();
+
+        IEnumerable<IDirectory> Directories { get; }
     }
 }

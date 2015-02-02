@@ -92,9 +92,28 @@ namespace UnitTests.FileSystem
         }
 
 
-        
+
         [Fact]
-        void Directory()
+        void Directory_BugHunting()
+        {
+            var sut = Factory.CreateBuilder().MakeDirectory("first").WithDirectory("second").BuildAll();
+
+            var test = Factory.CreateBuilder().MakeDirectory("subdir");
+
+            int dirs = test.Directories.Count();
+
+            test.WithDirectory("another");
+
+            int dirs2 = test.Directories.Count();
+            
+            Assert.True(sut.Directory(new KSPUrlIdentifier("first")).Any());
+            Assert.True(sut.Directory(new KSPUrlIdentifier("first/second")).Any());
+        }
+        
+
+
+        [Fact]
+        void Directory_Returns_ImmediateDir_AndSubDirFromUrl()
         {
             var sut = Factory.CreateBuilder()
                         .WithDirectory("first")
