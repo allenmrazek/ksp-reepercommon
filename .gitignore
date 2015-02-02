@@ -8,3 +8,9 @@
 /UnitTests/bin/Debug
 /UnitTests/obj/Debug
 /UnitTests/obj/Release
+/ReeperCommonUnitTests/bin/Coverage
+/ReeperCommon/bin/Release
+/ReeperCommonUnitTests/obj/Coverage
+/ReeperCommonUnitTests/obj/Release
+/ReeperCommon/obj/Release
+/ReeperCommonUnitTests/obj/Debug

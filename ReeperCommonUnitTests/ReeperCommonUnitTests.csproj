@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\xunit.runner.visualstudio.2.0.0-rc1-build1030\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.0.0-rc1-build1030\build\net20\xunit.runner.visualstudio.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1357D99D-A242-4418-AEF8-460C02A46EA0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ReeperCommonUnitTests</RootNamespace>
+    <AssemblyName>ReeperCommonUnitTests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\ReeperCommon\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Coverage|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Coverage\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.1.8.1.0\lib\net35\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture">
+      <HintPath>..\packages\AutoFixture.2.16.2\lib\net35\Ploeh.AutoFixture.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture.AutoNSubstitute">
+      <HintPath>..\packages\AutoFixture.AutoNSubstitute.2.16.2\lib\net35\Ploeh.AutoFixture.AutoNSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.SemanticComparison">
+      <HintPath>..\packages\AutoFixture.2.16.2\lib\net35\Ploeh.SemanticComparison.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\packages\xunit.extensions.1.9.2\lib\net20\xunit.extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="XunitShould">
+      <HintPath>..\packages\XunitShould.4.0.0\lib\net35\XunitShould.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FileSystem\FileSystemFactory_Test.cs" />
+    <Compile Include="FileSystem\Framework\IFakeDirectoryBuilder.cs" />
+    <Compile Include="FileSystem\Framework\IFakeDirectoryFactory.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\FakeDirectory.cs" />
+    <Compile Include="FileSystem\Framework\IFakeDirectory.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\FakeDirectoryBuilder.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\FakeDirectoryFactory.cs" />
+    <Compile Include="FileSystem\Framework\Implementations\UrlFileMocker.cs" />
+    <Compile Include="FileSystem\Framework\IUrlFileMocker.cs" />
+    <Compile Include="FileSystem\Framework\Tests\FakeDirectory_Test.cs" />
+    <Compile Include="FileSystem\Framework\Tests\KSPDirectoryBuilder_Test.cs" />
+    <Compile Include="FileSystem\Framework\Tests\UrlFileMocker_Test.cs" />
+    <Compile Include="FileSystem\KSPDirectory_Test.cs" />
+    <Compile Include="FileSystem\KSPFile_Test.cs" />
+    <Compile Include="FileSystem\KSPUrlIdentifier_Test.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReeperCommon\ReeperCommon.csproj">
+      <Project>{fecfa8fc-cf80-4685-a2ba-1566e0f3c26e}</Project>
+      <Name>ReeperCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if NOT $(Configuration) == Coverage GOTO NoCoverage
+
+CALL :DeleteCached
+CALL :GenerateCoverageReport
+set rce = %25ERROR_LEVEL%25
+
+if NOT %25rce%25 == 0 )
+ECHO OpenCover did not exit successfully
+EXIT %25rce%25
+)
+
+CALL :GenerateHTML
+
+set rce = %25ERROR_LEVEL%25
+
+if NOT %25rce%25 == 0 (
+ECHO ReportGenerator failed to generate HTML report from coverage results.
+EXIT %25rce%25
+)
+
+GOTO :eof
+
+
+:NoCoverage
+ECHO [Coverage not available in $(Configuration)]
+EXIT 0
+:end
+
+:DeleteCached
+ECHO Removing any existing coverage report data...
+RMDIR /Q /S coverage
+DEL results.xml
+:end
+
+:GenerateCoverageReport
+ECHO Running tests and generating coverage report for '$(TargetFilename)' ...
+..\..\..\packages\OpenCover.4.5.3522\OpenCover.Console.exe -target:"..\..\..\packages\xunit.runners.1.9.2\tools\xunit.console.exe" -targetargs:"$(TargetFilename)" -register:user -filter:+[$(SolutionName)]*
+:end
+
+:GenerateHTML
+ECHO Creating HTML for report
+..\..\..\packages\ReportGenerator.2.0.4.0\ReportGenerator.exe -reports:results.xml -targetdir:coverage
+:end</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
