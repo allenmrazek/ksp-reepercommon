@@ -32,14 +32,14 @@ namespace ReeperCommon.FileSystem.Implementations
             get { return new KSPUrlDir(_kspDir.parent); }
         }
 
-        public IEnumerable<IUrlDir> Children { get { return _kspDir.children.Select(child => new KSPUrlDir(child)).Cast<IUrlDir>(); } }
+        public IEnumerable<IUrlDir> Children { get { return _kspDir.children.Select(child => new KSPUrlDir(child)).Cast<IUrlDir>().ToList(); } }
 
 
         public IEnumerable<IUrlFile> Files
         {
             get
             {
-                return _kspDir.files.Select(f => new KSPUrlFile(f)).Cast<IUrlFile>();
+                return _kspDir.files.Select(f => new KSPUrlFile(f)).Cast<IUrlFile>().ToList();
             }
         }
 
@@ -47,7 +47,7 @@ namespace ReeperCommon.FileSystem.Implementations
         {
             get
             {
-                return _kspDir.AllFiles.Select(f => new KSPUrlFile(f)).Cast<IUrlFile>();
+                return _kspDir.AllFiles.Select(f => new KSPUrlFile(f)).Cast<IUrlFile>().ToList();
             }
         }
     }

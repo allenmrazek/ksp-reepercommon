@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NSubstitute;
 using ReeperCommon.FileSystem;
@@ -61,18 +62,17 @@ namespace ReeperCommonUnitTests.FileSystem.Framework.Implementations
             root.Parent.Returns(parent);
             root.Url.Returns(Name); // stock KSP behaviour is to return dir name only, no slashes
 
-            var mockedFiles = Files.Select(filename => _fmocker.Get(filename)); // uses NSubstitute, so don't put inside Returns()
+            // has to be done outside .Returns()
+            var children = Directories.Select(dir => dir.Construct(root)).ToList();
+            root.Children.Returns(children);
 
+            var mockedFiles = Files.Select(filename => _fmocker.Get(filename)).ToList(); // uses NSubstitute, so don't put inside Returns()
             root.Files.Returns(mockedFiles); // files in same dir
 
-            var allMockedFiles = AllFiles.Select(f => _fmocker.Get(f));
-
+            var allMockedFiles = AllFiles.Select(f => _fmocker.Get(f)).ToList();
             root.AllFiles.Returns(allMockedFiles);
 
-            // has to be done outside .Returns()
-            var children = Directories.Select(dir => dir.Construct(root));
 
-            root.Children.Returns(children);
 
             return root;  
         }

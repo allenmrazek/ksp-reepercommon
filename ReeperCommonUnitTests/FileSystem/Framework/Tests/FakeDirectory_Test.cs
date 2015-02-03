@@ -1,4 +1,11 @@
-﻿using ReeperCommonUnitTests.FileSystem.Framework.Implementations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NSubstitute;
+using ReeperCommon.FileSystem;
+using ReeperCommonUnitTests.FileSystem.Framework.Implementations;
+using Xunit;
+using XunitShould;
 
 namespace ReeperCommonUnitTests.FileSystem.Framework.Tests
 {
@@ -19,34 +26,43 @@ namespace ReeperCommonUnitTests.FileSystem.Framework.Tests
 
 
 
-        //[Fact]
-        //void Constructor_ThrowsExceptionOnNull_OrEmpty_OrBad_String()
-        //{
-        //    Assert.Throws<ArgumentNullException>(() => new FakeDirectory(null));
-        //    Assert.Throws<ArgumentNullException>(() => new FakeDirectory(""));
- 
-        //    Assert.Throws<ArgumentNullException>(() => new FakeDirectory("/"));
-        //    Assert.Throws<ArgumentNullException>(() => new FakeDirectory("\\"));
-        //}
+        [Fact]
+        void Constructor_ThrowsExceptionOnNull_OrEmpty_OrBad_String()
+        {
+            Assert.Throws<ArgumentNullException>(() => DirectoryFactory.Create(null, Substitute.For<IUrlFileMocker>()));
+            Assert.Throws<ArgumentNullException>(() => DirectoryFactory.Create("", Substitute.For<IUrlFileMocker>()));
+
+            Assert.Throws<ArgumentNullException>(() => DirectoryFactory.Create("/", Substitute.For<IUrlFileMocker>()));
+            Assert.Throws<ArgumentNullException>(() => DirectoryFactory.Create("\\", Substitute.For<IUrlFileMocker>()));
+
+            Assert.Throws<ArgumentNullException>(() => DirectoryFactory.Create("valid", null));
+            Assert.Throws<ArgumentNullException>(() => DirectoryFactory.Create("valid", null));
+        }
 
 
 
-        //[Fact]
-        //void Build_CallsAssignedBuilder()
-        //{
-        //    // arrange
-        //    var builder = Substitute.For<IFakeDirectoryBuilder>();
-
-        //    var sut = DirectoryFactory.Create("Test");
-
-
-        //    // act
-        //    sut.
+        [Fact]
+        void Construct_CallsConstructOnChildren_PassingCorrectParent()
+        {
+            // arrange
+            var shouldReceiveConstruct = Substitute.For<IFakeDirectory>();
+            shouldReceiveConstruct.Name.Returns("ConstructReceiver");
 
 
-        //    // assert
-        //    builder.Build().Received();
-        //}
+            var sut = DirectoryFactory.Create("valid", Substitute.For<IUrlFileMocker>());
+
+            
+
+            sut.Directories.Add(shouldReceiveConstruct);
+
+            // act
+            var result = sut.Construct(null);
+
+
+            // assert
+            shouldReceiveConstruct.Received(1).Construct(Arg.Is<IUrlDir>(result));
+            Assert.NotEmpty(result.Children);
+        }
 
 
     }

@@ -3,6 +3,5 @@
     public interface IFakeDirectoryFactory
     {
         IFakeDirectory Create(string name);
-     
     }
 }

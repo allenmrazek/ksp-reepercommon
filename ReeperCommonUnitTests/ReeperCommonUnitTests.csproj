@@ -74,7 +74,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileSystem\FileSystemFactory_Test.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryBuilder.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryFactory.cs" />
     <Compile Include="FileSystem\Framework\Implementations\FakeDirectory.cs" />
@@ -84,7 +83,7 @@
     <Compile Include="FileSystem\Framework\Implementations\UrlFileMocker.cs" />
     <Compile Include="FileSystem\Framework\IUrlFileMocker.cs" />
     <Compile Include="FileSystem\Framework\Tests\FakeDirectory_Test.cs" />
-    <Compile Include="FileSystem\Framework\Tests\KSPDirectoryBuilder_Test.cs" />
+    <Compile Include="FileSystem\Framework\Tests\FakeDirectoryBuilder_Test.cs" />
     <Compile Include="FileSystem\Framework\Tests\UrlFileMocker_Test.cs" />
     <Compile Include="FileSystem\KSPDirectory_Test.cs" />
     <Compile Include="FileSystem\KSPFile_Test.cs" />

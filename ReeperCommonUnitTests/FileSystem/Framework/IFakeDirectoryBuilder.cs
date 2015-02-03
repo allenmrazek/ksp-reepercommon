@@ -5,6 +5,7 @@ namespace ReeperCommonUnitTests.FileSystem.Framework
     public interface IFakeDirectoryBuilder
     {
         ReeperCommon.FileSystem.IDirectory Build();
+        ReeperCommon.FileSystem.IDirectory BuildIgnoreParents();
 
         IFakeDirectoryBuilder WithDirectory(string name);
         IFakeDirectoryBuilder WithFile(string filename);
@@ -12,6 +13,5 @@ namespace ReeperCommonUnitTests.FileSystem.Framework
         IFakeDirectoryBuilder Parent();
 
         IEnumerable<IFakeDirectory> Directories { get; }
-        //IFakeDirectory FakeDirectory { get; }
     }
 }
