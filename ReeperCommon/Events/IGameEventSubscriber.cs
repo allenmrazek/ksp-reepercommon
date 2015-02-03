@@ -8,8 +8,5 @@ namespace ReeperCommon.Events
         void RemoveListener(Action<T> callback);
 
         void OnEvent(T arg);
-
-        void SubscribeTo(EventData<T> evt);
-        void UnsubscribeTo(EventData<T> evt);
     }
 }

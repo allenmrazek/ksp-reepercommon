@@ -41,10 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Containers\Maybe.cs" />
+    <Compile Include="Events\IEventData.cs" />
     <Compile Include="Events\IGameEventSubscriber.cs" />
     <Compile Include="Events\IGameEventSubscription.cs" />
     <Compile Include="Events\Implementations\GameEventSubscriber.cs" />
     <Compile Include="Events\Implementations\GameEventSubscription.cs" />
+    <Compile Include="Events\Implementations\KSPEventData.cs" />
     <Compile Include="Extensions\ConfigNode\ConfigNodeExtensions.cs" />
     <Compile Include="Extensions\GameObject\GameObjectExtensions.cs" />
     <Compile Include="Extensions\Object\ObjectExtensions.cs" />

@@ -60,7 +60,7 @@ namespace ReeperCommonUnitTests.FileSystem.Framework.Tests
 
 
             // assert
-            shouldReceiveConstruct.Received(1).Construct(Arg.Is<IUrlDir>(result));
+            shouldReceiveConstruct.Received(1).Construct(Arg.Is(result));
             Assert.NotEmpty(result.Children);
         }
 

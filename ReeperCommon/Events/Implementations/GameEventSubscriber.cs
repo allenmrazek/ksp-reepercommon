@@ -1,23 +1,22 @@
 ﻿using System;
 using ReeperCommon.Extensions.Object;
-using ReeperCommon.Logging;
 
 namespace ReeperCommon.Events.Implementations
 {
-    internal class GameEventSubscriber<T> : IGameEventSubscriber<T>
+    public class GameEventSubscriber<T> : IGameEventSubscriber<T>
     {
-
-        private readonly ILog _log;
-        private WeakReference _subscribed;
+        private readonly WeakReference _subscribed;
         private Action<T> _actions = delegate(T arg) { };
 
 
-        public GameEventSubscriber(ILog log)
+        public GameEventSubscriber(IEventData<T> evt)
         {
-            if (log == null) throw new ArgumentNullException("log");
-            _log = log;
-        }
+            if (evt == null) throw new ArgumentNullException("evt");
 
+            _subscribed = new WeakReference(evt);
+
+            evt.Add(OnEvent);
+        }
 
 
 
@@ -32,8 +31,13 @@ namespace ReeperCommon.Events.Implementations
         {
             if (!_subscribed.IsNull() && _subscribed.IsAlive)
             {
-                _log.Debug("GameEventSubscriber<" + typeof (T).FullName + "> disposing");
-                UnsubscribeTo(_subscribed.Target as EventData<T>);
+                if (_subscribed.IsAlive)
+                {
+                    var publisher = _subscribed.Target as IEventData<T>;
+
+                    if (!publisher.IsNull())
+                        publisher.Remove(OnEvent);
+                }
             }
             GC.SuppressFinalize(this);
         }
@@ -63,34 +67,7 @@ namespace ReeperCommon.Events.Implementations
 
         public virtual void OnEvent(T arg)
         {
-            _log.Debug("Triggered with arg " + arg.ToString());
             _actions(arg);
-        }
-
-
-
-        public virtual void SubscribeTo(EventData<T> evt)
-        {
-            if (evt == null) throw new ArgumentNullException("evt");
-            if (!_subscribed.IsNull())
-                throw new InvalidOperationException("Already subscribed to an event");
-
-            _subscribed = new WeakReference(evt);
-
-            evt.Add(OnEvent);
-        }
-
-
-
-        public virtual void UnsubscribeTo(EventData<T> evt)
-        {
-            if (_subscribed.IsAlive)
-            {
-                var publisher = _subscribed.Target as EventData<T>;
-
-                if (!publisher.IsNull())
-                    publisher.Remove(OnEvent);
-            }
         }
     }
 }

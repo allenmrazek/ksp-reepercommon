@@ -2,7 +2,7 @@
 
 namespace ReeperCommon.Events.Implementations
 {
-    class GameEventSubscription<T> : IGameEventSubscription
+    public class GameEventSubscription<T> : IGameEventSubscription
     {
         private readonly IGameEventSubscriber<T> _src;
         private readonly Action<T> _callback;
@@ -12,6 +12,7 @@ namespace ReeperCommon.Events.Implementations
         public GameEventSubscription(IGameEventSubscriber<T> src, Action<T> callback)
         {
             if (src == null) throw new ArgumentNullException("src");
+            if (callback == null) throw new ArgumentNullException("callback");
 
             _src = src;
             _callback = callback;

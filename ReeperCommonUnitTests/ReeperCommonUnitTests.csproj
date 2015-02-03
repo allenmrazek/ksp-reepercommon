@@ -74,6 +74,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Containers\Maybe_Test.cs" />
+    <Compile Include="Events\GameEventSubscriber_Test.cs" />
+    <Compile Include="Events\GameEventSubscription_Test.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryBuilder.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryFactory.cs" />
     <Compile Include="FileSystem\Framework\Implementations\FakeDirectory.cs" />
@@ -138,7 +141,7 @@ DEL results.xml
 
 :GenerateCoverageReport
 ECHO Running tests and generating coverage report for '$(TargetFilename)' ...
-..\..\..\packages\OpenCover.4.5.3522\OpenCover.Console.exe -target:"..\..\..\packages\xunit.runners.1.9.2\tools\xunit.console.exe" -targetargs:"$(TargetFilename)" -register:user -filter:+[$(SolutionName)]*
+..\..\..\packages\OpenCover.4.5.3522\OpenCover.Console.exe -target:"..\..\..\packages\xunit.runners.1.9.2\tools\xunit.console.exe" -targetargs:"$(TargetFilename)" -register:user -filter:+[ReeperCommon]*
 :end
 
 :GenerateHTML

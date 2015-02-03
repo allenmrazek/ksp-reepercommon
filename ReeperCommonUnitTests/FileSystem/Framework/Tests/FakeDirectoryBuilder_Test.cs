@@ -64,7 +64,7 @@ namespace ReeperCommonUnitTests.FileSystem.Framework.Tests
 
 
         [Fact]
-        private void BuildAll_OperatesOnTopmostBuilder()
+        private void Build_OperatesOnTopmostBuilder()
         {
             var sut = FakeDirectoryBuilderFactory.Create();
 
