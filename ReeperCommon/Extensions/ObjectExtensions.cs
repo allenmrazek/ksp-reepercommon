@@ -1,5 +1,5 @@
 ﻿
-namespace ReeperCommon.Extensions.Object
+namespace ReeperCommon.Extensions
 {
     public static class ObjectExtensions
     {

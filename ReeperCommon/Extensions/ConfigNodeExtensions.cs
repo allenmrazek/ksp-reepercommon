@@ -1,5 +1,4 @@
 ﻿using System;
-using ReeperCommon.Extensions.Object;
 
 namespace ReeperCommon.Extensions.ConfigNode
 {

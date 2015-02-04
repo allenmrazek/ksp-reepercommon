@@ -1,5 +1,5 @@
 ﻿using System;
-using ReeperCommon.Extensions.Object;
+using ReeperCommon.Extensions;
 
 namespace ReeperCommon.Events.Implementations
 {

@@ -47,9 +47,9 @@
     <Compile Include="Events\IEventSubscription.cs" />
     <Compile Include="Events\Implementations\EventSubscriber.cs" />
     <Compile Include="Events\Implementations\EventSubscription.cs" />
-    <Compile Include="Extensions\ConfigNode\ConfigNodeExtensions.cs" />
-    <Compile Include="Extensions\GameObject\GameObjectExtensions.cs" />
-    <Compile Include="Extensions\Object\ObjectExtensions.cs" />
+    <Compile Include="Extensions\ConfigNodeExtensions.cs" />
+    <Compile Include="Extensions\GameObjectExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="FileSystem\IFileSystemFactory.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
     <Compile Include="FileSystem\IFile.cs" />

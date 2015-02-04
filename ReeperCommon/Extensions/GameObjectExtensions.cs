@@ -2,7 +2,7 @@
 using ReeperCommon.Logging;
 using UnityEngine;
 
-namespace ReeperCommon.Extensions.GameObject
+namespace ReeperCommon.Extensions
 {
     public static class GameObjectExtensions
     {

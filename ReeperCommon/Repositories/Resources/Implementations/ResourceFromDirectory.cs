@@ -2,7 +2,6 @@
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
-using ReeperCommon.Extensions.Object;
 using ReeperCommon.FileSystem;
 using ReeperCommon.FileSystem.Implementations;
 using UnityEngine;

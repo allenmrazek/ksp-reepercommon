@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
-using ReeperCommon.Extensions.Object;
 using ReeperCommon.FileSystem.Factories;
 using ReeperCommon.Logging;
 

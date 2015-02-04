@@ -2,7 +2,6 @@
 using System.IO;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
-using ReeperCommon.Extensions.Object;
 
 namespace ReeperCommon.FileSystem.Implementations
 {

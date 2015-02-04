@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
-using ReeperCommon.Extensions.Object;
 using UnityEngine;
 
 namespace ReeperCommon.Repositories.Resources.Implementations
