@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NSubstitute;
 using ReeperCommon.Events;
 using Xunit;
@@ -9,18 +6,18 @@ using ReeperCommon.Events.Implementations;
 
 namespace ReeperCommonUnitTests.Events
 {
-    public class GameEventSubscription_Test
+    public class EventSubscription_Test
     {
         [Fact]
         void Constructor_NullArgCheck()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new GameEventSubscription<string>(null,
-                    Substitute.For<Action<string>>()));
+                new EventSubscription<string>(null,
+                    (s) => { }));
 
             Assert.Throws<ArgumentNullException>(() =>
-                new GameEventSubscription<string>(
-                    Substitute.For<IGameEventSubscriber<string>>(),
+                new EventSubscription<string>(
+                    Substitute.For<IEventSubscriber<string>>(),
                     null));
 
         }
@@ -31,8 +28,10 @@ namespace ReeperCommonUnitTests.Events
         {
             Action<string> callback = a => { };
 
-            var shouldReceiveRemoveListener = Substitute.For<IGameEventSubscriber<string>>();
-            var sut = new GameEventSubscription<string>(shouldReceiveRemoveListener, callback);
+            var shouldReceiveRemoveListener = Substitute.For<IEventSubscriber<string>>();
+
+         
+            var sut = new EventSubscription<string>(shouldReceiveRemoveListener, callback);
 
 
             sut.Dispose();

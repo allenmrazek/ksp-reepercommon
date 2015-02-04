@@ -2,7 +2,7 @@
 
 namespace ReeperCommon.Events
 {
-    public interface IGameEventSubscription : IDisposable
+    public interface IEventSubscription : IDisposable
     {
         
     }

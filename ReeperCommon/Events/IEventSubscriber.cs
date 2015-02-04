@@ -2,9 +2,9 @@
 
 namespace ReeperCommon.Events
 {
-    public interface IGameEventSubscriber<T> : IDisposable
+    public interface IEventSubscriber<T>
     {
-        IGameEventSubscription AddListener(Action<T> callback);
+        IEventSubscription AddListener(Action<T> callback);
         void RemoveListener(Action<T> callback);
 
         void OnEvent(T arg);

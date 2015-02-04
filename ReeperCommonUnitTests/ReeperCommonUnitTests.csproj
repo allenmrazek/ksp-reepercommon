@@ -14,6 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\AssemblyReloader\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -75,8 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Containers\Maybe_Test.cs" />
-    <Compile Include="Events\GameEventSubscriber_Test.cs" />
-    <Compile Include="Events\GameEventSubscription_Test.cs" />
+    <Compile Include="Events\EventSubscriber_Test.cs" />
+    <Compile Include="Events\EventSubscription_Test.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryBuilder.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryFactory.cs" />
     <Compile Include="FileSystem\Framework\Implementations\FakeDirectory.cs" />
@@ -149,6 +151,7 @@ ECHO Creating HTML for report
 ..\..\..\packages\ReportGenerator.2.0.4.0\ReportGenerator.exe -reports:results.xml -targetdir:coverage
 :end</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
