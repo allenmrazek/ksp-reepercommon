@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ReeperCommon.Extensions;
-using ReeperCommon.Gui.Window.Decorators;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.View

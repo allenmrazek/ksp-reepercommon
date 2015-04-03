@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ReeperCommon.Gui.Window.Providers
+﻿namespace ReeperCommon.Gui.Window.Providers
 {
     public class UniqueWindowIdProvider
     {

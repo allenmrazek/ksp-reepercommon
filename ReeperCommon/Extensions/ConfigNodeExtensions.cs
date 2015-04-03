@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReeperCommon.Extensions.ConfigNode
+namespace ReeperCommon.Extensions
 {
     public static class ConfigNodeExtensions
     {
@@ -33,7 +33,7 @@ namespace ReeperCommon.Extensions.ConfigNode
         /// <param name="valueName"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T Parse<T>(this global::ConfigNode node, string valueName, T defaultValue)
+        public static T Parse<T>(this ConfigNode node, string valueName, T defaultValue)
         {
             if (!node.HasValue(valueName))
                 return defaultValue;
@@ -49,13 +49,14 @@ namespace ReeperCommon.Extensions.ConfigNode
             });
 
             if (method.IsNull())
-                throw new Exception(string.Format("TryParse not found in {0}", typeof (T).Name));
+                throw new MissingMethodException(typeof (T).FullName, "TryParse");
                 
             var args = new object[] { value, default(T) };
 
             if ((bool)method.Invoke(null, args))
                 return (T)args[1];    
-            else throw new Exception(string.Format("Failed to invoke TryParse with {0}", value));
+
+            throw new Exception(string.Format("Failed to invoke TryParse with {0}", value));
         }
 
 

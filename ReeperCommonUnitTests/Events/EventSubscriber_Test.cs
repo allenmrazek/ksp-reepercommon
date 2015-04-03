@@ -1,4 +1,4 @@
-﻿using ReeperCommon.Events.Implementations;
+﻿using ReeperCommon.Events;
 
 namespace ReeperCommonUnitTests.Events
 {

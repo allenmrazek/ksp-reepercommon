@@ -2,7 +2,6 @@
 using NSubstitute;
 using ReeperCommon.Events;
 using Xunit;
-using ReeperCommon.Events.Implementations;
 
 namespace ReeperCommonUnitTests.Events
 {

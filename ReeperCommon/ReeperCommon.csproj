@@ -40,16 +40,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Containers\Maybe.cs" />
     <Compile Include="Events\IEventData.cs" />
     <Compile Include="Events\IEventSubscriber.cs" />
     <Compile Include="Events\IEventSubscription.cs" />
-    <Compile Include="Events\Implementations\EventSubscriber.cs" />
-    <Compile Include="Events\Implementations\EventSubscription.cs" />
+    <Compile Include="Events\EventSubscriber.cs" />
+    <Compile Include="Events\EventSubscription.cs" />
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\Texture2DExtensions.cs" />
     <Compile Include="FileSystem\IFileSystemFactory.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
     <Compile Include="FileSystem\IFile.cs" />
@@ -69,6 +69,11 @@
     <Compile Include="GameLoadState\LoadState_FileTreeReady.cs" />
     <Compile Include="GameLoadState\LoadState_Immediate.cs" />
     <Compile Include="GameLoadState\LoadState_TexturesLoaded.cs" />
+    <Compile Include="Gui\Controls\ExpandablePanel.cs" />
+    <Compile Include="Gui\Controls\ICustomControl.cs" />
+    <Compile Include="Gui\Controls\CustomControlDecorator.cs" />
+    <Compile Include="Gui\Controls\IExpandablePanel.cs" />
+    <Compile Include="Gui\Controls\HorizontalMarginDecorator.cs" />
     <Compile Include="Gui\Window\Decorators\ClampToScreen.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
     <Compile Include="Gui\Logic\DefaultWindowLogic.cs" />
@@ -99,11 +104,24 @@
     <Compile Include="GameLoadState\Attributes\LoadStateMarker.cs" />
     <Compile Include="Providers\Implementations\AssemblyLocation.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\Implementations\" />
-    <Folder Include="Events\Implementations\Override\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set unity=C:\Program Files (x86)\Unity455
+
+echo Generating $(TargetFileName).mdb...
+call "%25unity%25\Editor\Data\MonoBleedingEdge\bin\cli.bat" "%25unity%25\Editor\Data\MonoBleedingEdge\lib\mono\4.0\pdb2mdb.exe" "$(TargetFileName)"
+
+IF NOT EXIST "$(TargetPath).mdb" (
+echo ERROR: failed to generate $(TargetFileName).mdb
+exit -4
+)
+echo Done
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del "$(TargetDir)*.mdb"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

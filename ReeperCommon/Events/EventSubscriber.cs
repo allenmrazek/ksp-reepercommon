@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReeperCommon.Events.Implementations
+namespace ReeperCommon.Events
 {
     public class EventSubscriber<T> : IEventSubscriber<T>
     {

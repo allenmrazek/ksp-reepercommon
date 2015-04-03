@@ -1,7 +1,7 @@
 ﻿using System;
 using ReeperCommon.Extensions;
 
-namespace ReeperCommon.Events.Implementations
+namespace ReeperCommon.Events
 {
     public class EventSubscription<T> : IEventSubscription
     {

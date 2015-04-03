@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ReeperCommon.FileSystem.Implementations
 {
@@ -27,5 +24,10 @@ namespace ReeperCommon.FileSystem.Implementations
 
         public string Name { get { return _file.name; } }
         public string Url { get { return _file.url; }}
+
+        public IUrlDir Directory
+        {
+            get { return new KSPUrlDir(_file.parent); }
+        }
     }
 }

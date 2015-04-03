@@ -17,6 +17,12 @@ namespace ReeperCommon.FileSystem.Implementations
 
         public IFile GetFile(IDirectory directory, IUrlFile file)
         {
+            if (directory == null) throw new ArgumentNullException("directory");
+            if (file == null) throw new ArgumentNullException("file");
+
+            if (!directory.FileExists(new KSPUrlIdentifier(file.Name)))
+                throw new Exception("Directory " + directory.Url + "(" + directory.FullPath + ")" + " does not contain file " + file.Url);
+
             return new KSPFile(directory, file);
         }
 

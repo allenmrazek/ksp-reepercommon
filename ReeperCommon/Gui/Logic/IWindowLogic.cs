@@ -1,6 +1,4 @@
-﻿using ReeperCommon.Gui.Window;
-
-namespace ReeperCommon.Gui.Logic
+﻿namespace ReeperCommon.Gui.Logic
 {
     public interface IWindowLogic
     {

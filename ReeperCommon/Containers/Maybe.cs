@@ -1,6 +1,7 @@
 ﻿
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ReeperCommon.Extensions;
 
 namespace ReeperCommon.Containers
@@ -33,6 +34,11 @@ namespace ReeperCommon.Containers
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public T Or(T other)
+        {
+            return _values.Any() ? _values.Single() : other;
         }
     }
 }

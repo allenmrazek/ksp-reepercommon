@@ -4,7 +4,6 @@ using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 using ReeperCommon.FileSystem.Factories;
-using ReeperCommon.Logging;
 
 namespace ReeperCommon.FileSystem.Implementations
 {
@@ -115,7 +114,7 @@ namespace ReeperCommon.FileSystem.Implementations
         {
             return
                 _directory.AllFiles
-               .Select(url => _fsFactory.GetFile(this, url));
+               .Select(url => _fsFactory.GetFile(_fsFactory.GetDirectory(url.Directory), url));
         }
 
 

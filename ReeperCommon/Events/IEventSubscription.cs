@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace ReeperCommon.Events
+﻿namespace ReeperCommon.Events
 {
-    public interface IEventSubscription : IDisposable
+    public interface IEventSubscription
     {
-        
+        void Dispose();
     }
 }
