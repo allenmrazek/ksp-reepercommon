@@ -12,14 +12,12 @@ namespace ReeperCommon.Extensions
         /// <param name="valueName"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T ParseEnum<T>(this global::ConfigNode node, string valueName, T defaultValue)
+        public static T ParseEnum<T>(this ConfigNode node, string valueName, T defaultValue)
         {
             if (!node.HasValue(valueName))
                 return defaultValue;
 
             var value = node.GetValue(valueName);
-
-            var values = Enum.GetValues(typeof(T));
 
             return (T)Enum.Parse(typeof(T), value, true);
         }

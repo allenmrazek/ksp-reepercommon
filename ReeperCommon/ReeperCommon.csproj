@@ -41,14 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Containers\Maybe.cs" />
-    <Compile Include="Events\IEventData.cs" />
-    <Compile Include="Events\IEventSubscriber.cs" />
-    <Compile Include="Events\IEventSubscription.cs" />
-    <Compile Include="Events\EventSubscriber.cs" />
-    <Compile Include="Events\EventSubscription.cs" />
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Extensions\Texture2DExtensions.cs" />
     <Compile Include="FileSystem\IFileSystemFactory.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
@@ -103,6 +99,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameLoadState\Attributes\LoadStateMarker.cs" />
     <Compile Include="Providers\Implementations\AssemblyLocation.cs" />
+    <Compile Include="Serialization\ConfigNodeFormatter.cs" />
+    <Compile Include="Serialization\GameSerializedAttribute.cs" />
+    <Compile Include="Serialization\IConfigNodeFormatter.cs" />
+    <Compile Include="Serialization\IFieldInfoQuery.cs" />
+    <Compile Include="Serialization\ISerializationSurrogate.cs" />
+    <Compile Include="Serialization\ISurrogateSelector.cs" />
+    <Compile Include="Serialization\SerializableFieldQuery.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

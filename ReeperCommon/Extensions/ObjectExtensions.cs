@@ -1,4 +1,7 @@
-﻿
+﻿using System;
+using ReeperCommon.Containers;
+using UnityEngine;
+
 namespace ReeperCommon.Extensions
 {
     public static class ObjectExtensions
@@ -7,6 +10,7 @@ namespace ReeperCommon.Extensions
         {
             return ReferenceEquals(source, null);
         }
+
 
         public static bool IsSameAs(this object source, object other)
         {
