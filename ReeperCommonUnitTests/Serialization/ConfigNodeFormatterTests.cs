@@ -1,11 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
-using ReeperCommonUnitTests.Fixtures.AssemblyReloaderTests.FixtureCustomizations;
+using ReeperCommon.Containers;
+using ReeperCommonUnitTests.Fixtures;
 using ReeperCommonUnitTests.TestData;
-using UnityEngine;
 using Xunit;
 using Xunit.Extensions;
 
@@ -14,30 +15,106 @@ namespace ReeperCommon.Serialization.Tests
 {
     public class ConfigNodeFormatterTests
     {
-        [Fact()]
-        public void DeserializeTest()
+        [Theory, AutoDomainData]
+        public void Serialize_SimplePersistentObject([Frozen] SimplePersistentObject testObject, ConfigNode config, [Frozen] SerializableFieldQuery fieldQuery)
         {
-            Assert.True(false, "not implemented yet");
+            var selector = Substitute.For<ISurrogateSelector>();
+
+            selector.GetSurrogate(Arg.Any<Type>()).Returns(Maybe<ISerializationSurrogate>.With(Substitute.For<ISerializationSurrogate>()));
+
+            var sut = new ConfigNodeFormatter(selector, fieldQuery);
+
+            sut.Serialize(testObject, config);
+
+            Assert.NotEmpty(selector.ReceivedCalls());
         }
 
 
         [Theory, AutoDomainData]
-        public void SerializeTest_SimpleObject([Frozen] SimplePersistentObject testObject, ConfigNode config)
+        public void Serialize_SimplePersistentObject_Real([Frozen] ComplexPersistentObject testObject, ConfigNode config,
+            [Frozen] SerializableFieldQuery fieldQuery)
         {
+            var formatter = new ConfigNodeFormatter(new DefaultSurrogateSelector(new DefaultSurrogateProvider()), new SerializableFieldQuery());
+
+            formatter.Serialize(testObject, config);
+
+            Assert.True(config.HasValue("MyTestString"));
+            //Assert.True(config.HasNode("
+            config.Save("D:/testConfig.cfg");
+
+            Assert.True(config.HasData);
+        }
+
+
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_SimplePersistentObject([Frozen] SimplePersistentObject testObject, ConfigNode config)
+        {
+            var surrogate = Substitute.For<ISerializationSurrogate>();
             var selector = Substitute.For<ISurrogateSelector>();
+
+            selector.GetSurrogate(Arg.Any<Type>())
+                .Returns(Maybe<ISerializationSurrogate>.With(surrogate));
+
             var sut = new ConfigNodeFormatter(selector, new SerializableFieldQuery());
 
-            var result = sut.Serialize(testObject, config);
+            sut.Deserialize(testObject, config);
 
+            surrogate.Received(1)
+                .Deserialize(
+                    Arg.Any<object>(),
+                    Arg.Any<FieldInfo>(),
+                    Arg.Is<ConfigNode>(arg => ReferenceEquals(config, arg)),
+                    sut);
 
-            Assert.True(result, "Serialization failed");
-            Assert.Empty(selector.ReceivedCalls()); // selector shouldn't be used for this test because of basic KSP serializable types
-            Assert.True(config.HasData);
-            Assert.True(
-                new SerializableFieldQuery().Get(testObject)
-                    .All(fieldInfo =>
-                        config.HasValue(fieldInfo.Name)));
+            selector.Received(1).GetSurrogate(typeof(string));
         }
+
+
+        [Theory, AutoDomainData]
+        public void Serialize_ComplexPersistentObject_EnsureIReeperPersistent_Save_MethodUsed(
+            ComplexPersistentObject testObject, ConfigNode config, SerializableFieldQuery fieldQuery)
+        {
+            var mockedPersist = Substitute.For<IReeperPersistent>();
+            var surrogateSelector = Substitute.For<ISurrogateSelector>();
+
+            surrogateSelector.GetSurrogate(Arg.Any<Type>())
+                .Returns(Maybe<ISerializationSurrogate>.With(Substitute.For<ISerializationSurrogate>()));
+
+            testObject.MyTestObject = mockedPersist;
+
+            var sut = new ConfigNodeFormatter(surrogateSelector, fieldQuery);
+
+            sut.Serialize(testObject, config);
+
+            mockedPersist.Received(1).Save(sut, Arg.Is<ConfigNode>(node => config.nodes.GetNodes().Contains(node)));
+        }
+
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_ComplexPersistentObject_EnsureIReeperPersistent_Load_MethodUsed(
+            ComplexPersistentObject testObject, ConfigNode config, SerializableFieldQuery fieldQuery)
+        {
+            var mockedPersist = Substitute.For<IReeperPersistent>();
+            var surrogateSelector = Substitute.For<ISurrogateSelector>();
+
+            surrogateSelector.GetSurrogate(Arg.Any<Type>())
+                .Returns(Maybe<ISerializationSurrogate>.With(Substitute.For<ISerializationSurrogate>()));
+
+            testObject.MyTestObject = mockedPersist;
+
+            var sut = new ConfigNodeFormatter(surrogateSelector, fieldQuery);
+
+            config.AddNode("MyTestObject"); // contents irrelevant
+
+            sut.Deserialize(testObject, config);
+
+            mockedPersist.Received(1).Load(sut, Arg.Is<ConfigNode>(node => config.nodes.GetNodes().Contains(node)));
+        }
+
+
 
 
         [Fact]
@@ -56,6 +133,16 @@ namespace ReeperCommon.Serialization.Tests
 
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(testObject, null));
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(null, config));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_Throws_OnNull([Frozen] SimplePersistentObject targetObject, ConfigNode config)
+        {
+            var sut = new ConfigNodeFormatter(Substitute.For<ISurrogateSelector>(), Substitute.For<IFieldInfoQuery>());
+
+            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(null, config));
+            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(targetObject, null));
         }
     }
 }

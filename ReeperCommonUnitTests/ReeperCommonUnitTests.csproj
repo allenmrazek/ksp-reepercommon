@@ -106,7 +106,10 @@
     <Compile Include="Fixtures\DomainCustomization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\ConfigNodeFormatterTests.cs" />
+    <Compile Include="Serialization\DefaultSurrogateProviderTests.cs" />
+    <Compile Include="Serialization\DefaultSurrogateSelectorTests.cs" />
     <Compile Include="Serialization\SerializableFieldQueryTests.cs" />
+    <Compile Include="TestData\ComplexPersistentObject.cs" />
     <Compile Include="TestData\SimplePersistentObject.cs" />
   </ItemGroup>
   <ItemGroup>

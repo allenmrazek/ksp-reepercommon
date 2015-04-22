@@ -2,8 +2,8 @@
 {
     public interface IConfigNodeFormatter
     {
-        bool Deserialize(object target, ConfigNode config);
-        bool Serialize(object source, ConfigNode config);
+        void Deserialize(object target, ConfigNode config);
+        void Serialize(object source, ConfigNode config);
 
         ISurrogateSelector SurrogateSelector { get; set; }
     }

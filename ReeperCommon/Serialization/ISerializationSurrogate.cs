@@ -1,8 +1,15 @@
-﻿namespace ReeperCommon.Serialization
+﻿using System.Reflection;
+
+namespace ReeperCommon.Serialization
 {
     public interface ISerializationSurrogate
     {
-        bool Serialize(object target, ConfigNode config, string valueName);
-        bool Deserialize(object target, ConfigNode config, string valueName);
+        void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeFormatter formatter);
+        void Deserialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeFormatter formatter);
+    }
+
+    public interface ISerializationSurrogate<T> : ISerializationSurrogate
+    {
+        
     }
 }
