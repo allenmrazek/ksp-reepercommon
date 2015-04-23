@@ -5,7 +5,8 @@
         ISerializationSurrogate<string>, 
         ISerializationSurrogate<int>, 
         ISerializationSurrogate<float>, 
-        ISerializationSurrogate<double>
+        ISerializationSurrogate<double>,
+        ISerializationSurrogate<bool>
     {
     }
 }

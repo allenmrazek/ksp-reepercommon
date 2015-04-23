@@ -67,12 +67,6 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private void DrawButton(TitleBarButton button)
         {    
-            //if (GUILayout.Button(button.Texture, button.Style.IsNull() ? GUI.skin.button : button.Style, GUILayout.MaxWidth(button.Size.x),
-            //    GUILayout.MinWidth(button.Size.x),
-            //    GUILayout.MaxHeight(button.Size.y),
-            //    GUILayout.MinHeight(button.Size.y),
-            //    GUILayout.ExpandWidth(false),
-            //    GUILayout.ExpandHeight(false)))
             if (GUILayout.Button(button.Texture, button.Style.IsNull() ? GUI.skin.button : button.Style,
                 GUILayout.ExpandWidth(false),
                 GUILayout.ExpandHeight(false)))

@@ -30,13 +30,6 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-        ~BasicWindow()
-        {
-
-        }
-
-
-
         public virtual void OnWindowDraw(int winid)
         {
             if (!Skin.IsNull()) GUI.skin = Skin;
@@ -47,11 +40,11 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-
         public virtual void Update()
         {
             Logic.Update();
         }
+
 
         public Rect Dimensions
         {

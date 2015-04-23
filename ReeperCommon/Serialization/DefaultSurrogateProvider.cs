@@ -10,12 +10,6 @@ namespace ReeperCommon.Serialization
     {
         public virtual IEnumerable<KeyValuePair<Type, ISerializationSurrogate>> Get()
         {
-            var result = GetTargets()
-                .SelectMany(targetAssembly => targetAssembly.GetTypes())
-                .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract)
-                .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
-                .Where(ImplementsGenericSerializationSurrogateInterface);
-
             return GetTargets()
                 .SelectMany(targetAssembly => targetAssembly.GetTypes())
                 .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract)

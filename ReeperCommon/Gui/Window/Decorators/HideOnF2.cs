@@ -50,11 +50,12 @@
             }
             set
             {
+                _restoreVisibility = value;
+
                 base.Visible = _restoreVisibility && _interfaceVisible; // if UI not visible, 
                             // don't allow window to be explicitly made visible (although the change is 
                             // cached so it will appear when UI is shown again)
 
-                _restoreVisibility = value;
             }
         }
     }

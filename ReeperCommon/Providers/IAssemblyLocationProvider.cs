@@ -1,7 +1,11 @@
-﻿namespace ReeperCommon.Providers
+﻿using System.Reflection;
+using ReeperCommon.Containers;
+using ReeperCommon.FileSystem;
+
+namespace ReeperCommon.Providers
 {
     interface IAssemblyLocationProvider
     {
-        string Get();
+        Maybe<IDirectory> Get(Assembly target);
     }
 }
