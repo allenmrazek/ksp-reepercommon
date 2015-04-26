@@ -4,7 +4,6 @@ using System.Reflection;
 using ReeperCommon.Containers;
 using ReeperCommon.FileSystem;
 using ReeperCommon.FileSystem.Factories;
-using ReeperCommon.FileSystem.Implementations;
 
 namespace ReeperCommon.Providers
 {

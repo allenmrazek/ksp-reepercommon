@@ -1,5 +1,5 @@
 ﻿using System;
-using ReeperCommon.FileSystem.Implementations;
+using ReeperCommon.FileSystem;
 using Xunit;
 using Xunit.Extensions;
 

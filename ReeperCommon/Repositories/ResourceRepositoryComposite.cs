@@ -4,7 +4,7 @@ using System.Linq;
 using ReeperCommon.Containers;
 using UnityEngine;
 
-namespace ReeperCommon.Repositories.Resources.Implementations
+namespace ReeperCommon.Repositories
 {
 
     public class ResourceRepositoryComposite : IResourceRepository

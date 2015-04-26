@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ReeperCommon.Logging.Implementations
+namespace ReeperCommon.Logging
 {
     public abstract class BaseLog : ILog
     {

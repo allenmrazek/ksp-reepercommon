@@ -7,7 +7,8 @@ namespace ReeperCommon.Gui.Window
 {
     public class BasicWindow : IWindowComponent
     {
-        protected Rect WindowRect = new Rect(0f, 0f, 0f, 0f);
+        protected Rect WindowRect = new Rect(0f, 0f, 100f, 100f);
+        private readonly int _depth;
         protected IWindowLogic WindowLogic;
 
         public BasicWindow(
@@ -15,13 +16,15 @@ namespace ReeperCommon.Gui.Window
             Rect rect, 
             int winid, 
             GUISkin skin, 
-            bool draggable = true)
+            bool draggable = true,
+            int depth = 1)
         {
             if (windowLogic == null) throw new ArgumentNullException("windowLogic");
             if (skin == null) throw new ArgumentNullException("skin");
 
             Id = winid;
             WindowRect = rect;
+            _depth = depth;
             Skin = skin;
             Logic = windowLogic;
             Draggable = draggable;
@@ -30,14 +33,25 @@ namespace ReeperCommon.Gui.Window
         }
 
 
+
         public virtual void OnWindowDraw(int winid)
         {
             if (!Skin.IsNull()) GUI.skin = Skin;
 
+            //GUI.depth = _depth;
             Logic.Draw();
 
+            //if (Draggable) GUI.DragWindow();
+        }
+
+
+        public virtual void OnWindowFinalize(int winid)
+        {
             if (Draggable) GUI.DragWindow();
         }
+
+
+  
 
 
         public virtual void Update()

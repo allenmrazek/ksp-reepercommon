@@ -1,7 +1,7 @@
 ﻿using ReeperCommon.Containers;
 using UnityEngine;
 
-namespace ReeperCommon.Repositories.Resources
+namespace ReeperCommon.Repositories
 {
     public interface IResourceRepository
     {

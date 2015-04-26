@@ -1,7 +1,6 @@
 ﻿using System;
 using NSubstitute;
 using ReeperCommon.FileSystem;
-using ReeperCommon.FileSystem.Implementations;
 using Xunit;
 
 namespace ReeperCommonUnitTests.FileSystem

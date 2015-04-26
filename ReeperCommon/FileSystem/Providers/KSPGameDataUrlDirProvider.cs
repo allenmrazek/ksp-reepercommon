@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace ReeperCommon.FileSystem.Implementations.Providers
+namespace ReeperCommon.FileSystem.Providers
 {
     public class KSPGameDataUrlDirProvider : IUrlDirProvider
     {

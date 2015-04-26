@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReeperCommon.Logging.Implementations
+namespace ReeperCommon.Logging
 {
     // decorator to make logs from different sources more apparent
     public class TaggedLog : ILog

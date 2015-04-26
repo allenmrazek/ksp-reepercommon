@@ -3,7 +3,7 @@ using System.IO;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 
-namespace ReeperCommon.FileSystem.Implementations
+namespace ReeperCommon.FileSystem
 {
     public class KSPFile : IFile
     {

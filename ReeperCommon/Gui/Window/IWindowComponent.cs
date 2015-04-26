@@ -6,6 +6,8 @@ namespace ReeperCommon.Gui.Window
     public interface IWindowComponent
     {
         void OnWindowDraw(int winid);
+        void OnWindowFinalize(int winid);
+
         void Update();
 
         Rect Dimensions { get; set; }

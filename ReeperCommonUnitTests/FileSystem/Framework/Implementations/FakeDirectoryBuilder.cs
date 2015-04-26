@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ReeperCommon.Extensions;
 using ReeperCommon.FileSystem;
-using ReeperCommon.FileSystem.Implementations;
 
 namespace ReeperCommonUnitTests.FileSystem.Framework.Implementations
 {

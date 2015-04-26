@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NSubstitute;
-using ReeperCommon.FileSystem.Implementations;
+using ReeperCommon.FileSystem;
 using ReeperCommonUnitTests.FileSystem.Framework.Implementations;
 using Xunit;
 

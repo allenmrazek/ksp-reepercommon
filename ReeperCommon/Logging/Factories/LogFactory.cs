@@ -1,6 +1,5 @@
 ﻿using System;
 using ReeperCommon.Extensions;
-using ReeperCommon.Logging.Implementations;
 
 namespace ReeperCommon.Logging.Factories
 {

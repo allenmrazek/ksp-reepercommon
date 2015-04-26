@@ -23,11 +23,17 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
+        public virtual void OnWindowFinalize(int winid)
+        {
+            _base.OnWindowFinalize(winid);
+        }
+
 
         public virtual void Update()
         {
             _base.Update();
         }
+
 
         public Rect Dimensions
         {
@@ -48,11 +54,13 @@ namespace ReeperCommon.Gui.Window.Decorators
             set { _base.Title = value; }
         }
 
+
         public GUISkin Skin
         {
             get { return _base.Skin; }
             set { _base.Skin = value; }
         }
+
 
         public bool Draggable { 
             get { return _base.Draggable; }
@@ -60,13 +68,12 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-
-
         public virtual bool Visible
         {
             get { return _base.Visible; }
             set { _base.Visible = value; }
         }
+
 
         public IWindowLogic Logic
         {
@@ -79,6 +86,8 @@ namespace ReeperCommon.Gui.Window.Decorators
                 _base.Logic = value;
             }
         }
+
+
         public int Id { get { return _base.Id; } }
     }
 }

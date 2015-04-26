@@ -3,10 +3,9 @@ using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 using ReeperCommon.FileSystem;
-using ReeperCommon.FileSystem.Implementations;
 using UnityEngine;
 
-namespace ReeperCommon.Repositories.Resources.Implementations
+namespace ReeperCommon.Repositories
 {
     public class ResourceFromDirectory : IResourceRepository
     {

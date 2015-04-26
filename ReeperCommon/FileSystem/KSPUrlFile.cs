@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReeperCommon.FileSystem.Implementations
+namespace ReeperCommon.FileSystem
 {
     public class KSPUrlFile : IUrlFile
     {

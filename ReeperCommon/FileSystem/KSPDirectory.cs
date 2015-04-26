@@ -4,9 +4,8 @@ using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 using ReeperCommon.FileSystem.Factories;
-using ReeperCommon.Logging.Implementations;
 
-namespace ReeperCommon.FileSystem.Implementations
+namespace ReeperCommon.FileSystem
 {
 // ReSharper disable once InconsistentNaming
     public class KSPDirectory : IDirectory

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ReeperCommon.FileSystem.Implementations
+namespace ReeperCommon.FileSystem
 {
     public class KSPUrlDir : IUrlDir
     {

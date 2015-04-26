@@ -6,7 +6,7 @@ using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
 using UnityEngine;
 
-namespace ReeperCommon.Repositories.Resources.Implementations
+namespace ReeperCommon.Repositories
 {
     public class ResourceFromEmbeddedResource : IResourceRepository
     {

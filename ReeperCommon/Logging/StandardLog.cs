@@ -1,4 +1,4 @@
-﻿namespace ReeperCommon.Logging.Implementations
+﻿namespace ReeperCommon.Logging
 {
     public class StandardLog : BaseLog
     {

@@ -3,7 +3,6 @@ using System.Linq;
 using NSubstitute;
 using ReeperCommon.FileSystem;
 using ReeperCommon.FileSystem.Factories;
-using ReeperCommon.FileSystem.Implementations;
 using ReeperCommonUnitTests.FileSystem.Framework;
 using ReeperCommonUnitTests.FileSystem.Framework.Implementations;
 using Xunit;

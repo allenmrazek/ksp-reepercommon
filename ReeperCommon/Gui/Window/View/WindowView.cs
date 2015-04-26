@@ -29,10 +29,18 @@ namespace ReeperCommon.Gui.Window.View
             if (!Implementation.Skin.IsNull())
                 GUI.skin = Implementation.Skin;
 
-            Implementation.Dimensions = GUILayout.Window(Implementation.Id, Implementation.Dimensions, Implementation.OnWindowDraw,
+            
+            Implementation.Dimensions = GUILayout.Window(Implementation.Id, Implementation.Dimensions, DrawWindow,
                 Implementation.Title);
+            
         }
 
+
+        private void DrawWindow(int winid)
+        {
+            Implementation.OnWindowDraw(winid);
+            Implementation.OnWindowFinalize(winid);
+        }
 
 
 // ReSharper disable once UnusedMember.Global

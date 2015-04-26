@@ -2,7 +2,7 @@
 using ReeperCommon.Containers;
 using UnityEngine;
 
-namespace ReeperCommon.Repositories.Resources.Implementations.Decorators
+namespace ReeperCommon.Repositories
 {
     public class ResourceIdentifierAdapter : IResourceRepository
     {
