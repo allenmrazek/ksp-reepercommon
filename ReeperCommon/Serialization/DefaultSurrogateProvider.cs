@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ReeperCommon.Logging;
 
 namespace ReeperCommon.Serialization
 {
@@ -12,7 +13,7 @@ namespace ReeperCommon.Serialization
         {
             return GetTargets()
                 .SelectMany(targetAssembly => targetAssembly.GetTypes())
-                .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract)
+                .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract && !t.ContainsGenericParameters)
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
                 .Where(ImplementsGenericSerializationSurrogateInterface)
                 .SelectMany(

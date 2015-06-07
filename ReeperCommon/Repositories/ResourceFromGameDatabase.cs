@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
@@ -13,10 +14,12 @@ namespace ReeperCommon.Repositories
             return Maybe<byte[]>.None;
         }
 
+
         public Maybe<Material> GetMaterial(string identifier)
         {
             return Maybe<Material>.None;
         }
+
 
         public Maybe<Texture2D> GetTexture(string identifier)
         {
@@ -25,12 +28,20 @@ namespace ReeperCommon.Repositories
             return tex.IsNull() ? Maybe<Texture2D>.None : Maybe<Texture2D>.With(tex);
         }
 
+
         public Maybe<AudioClip> GetClip(string identifier)
         {
             var ac = GameDatabase.Instance.GetAudioClip(identifier);
 
             return ac.IsNull() ? Maybe<AudioClip>.None : Maybe<AudioClip>.With(ac);
         }
+
+
+        public Maybe<Stream> GetStream(string identifier)
+        {
+            return Maybe<Stream>.None;
+        }
+
 
         public override string ToString()
         {

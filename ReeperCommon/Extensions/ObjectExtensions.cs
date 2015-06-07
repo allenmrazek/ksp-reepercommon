@@ -1,8 +1,4 @@
-﻿using System;
-using ReeperCommon.Containers;
-using UnityEngine;
-
-namespace ReeperCommon.Extensions
+﻿namespace ReeperCommon.Extensions
 {
     public static class ObjectExtensions
     {

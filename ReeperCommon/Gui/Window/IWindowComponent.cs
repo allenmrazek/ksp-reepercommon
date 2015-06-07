@@ -10,6 +10,9 @@ namespace ReeperCommon.Gui.Window
 
         void Update();
 
+        void Save(ConfigNode node);
+        void Load(ConfigNode node);
+
         Rect Dimensions { get; set; }
         int Id { get; }
         string Title { get; set; }

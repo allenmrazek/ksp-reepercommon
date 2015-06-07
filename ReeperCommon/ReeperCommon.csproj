@@ -41,9 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Containers\Maybe.cs" />
+    <Compile Include="DataObjects\ColorHsl.cs" />
+    <Compile Include="Extensions\CameraExtensions.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\RenderTextureExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Extensions\Texture2DExtensions.cs" />
     <Compile Include="FileSystem\IFileSystemFactory.cs" />
@@ -60,23 +64,18 @@
     <Compile Include="FileSystem\Providers\KSPGameDataUrlDirProvider.cs" />
     <Compile Include="FileSystem\IUrlFile.cs" />
     <Compile Include="FileSystem\IUrlIdentifier.cs" />
-    <Compile Include="GameLoadState\LoadStateMarkedTypeCreator.cs" />
-    <Compile Include="GameLoadState\GameLoadStateObserver.cs" />
-    <Compile Include="GameLoadState\LoadState_FileTreeReady.cs" />
-    <Compile Include="GameLoadState\LoadState_Immediate.cs" />
-    <Compile Include="GameLoadState\LoadState_TexturesLoaded.cs" />
-    <Compile Include="Gui\Controls\ExpandablePanel.cs" />
-    <Compile Include="Gui\Controls\ICustomControl.cs" />
-    <Compile Include="Gui\Controls\CustomControlDecorator.cs" />
-    <Compile Include="Gui\Controls\IExpandablePanel.cs" />
-    <Compile Include="Gui\Controls\HorizontalMarginDecorator.cs" />
+    <Compile Include="Gui\Controls\ColorPickerControl.cs" />
+    <Compile Include="Gui\Controls\ColorPickerBox.cs" />
+    <Compile Include="Gui\Controls\ColorSaturationSlider.cs" />
+    <Compile Include="Gui\IWindowIdProvider.cs" />
     <Compile Include="Gui\Window\Decorators\ClampToScreen.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
     <Compile Include="Gui\Logic\DefaultWindowLogic.cs" />
     <Compile Include="Gui\Window\Buttons\TitleBarButton.cs" />
+    <Compile Include="Gui\Window\Decorators\Resizable.cs" />
     <Compile Include="Gui\Window\Decorators\TitleBarButtons.cs" />
     <Compile Include="Gui\Logic\IWindowLogic.cs" />
-    <Compile Include="Gui\Window\Providers\UniqueWindowIdProvider.cs" />
+    <Compile Include="Gui\UniqueWindowIdProvider.cs" />
     <Compile Include="Gui\Window\View\WindowView.cs" />
     <Compile Include="Gui\Window\BasicWindow.cs" />
     <Compile Include="Gui\Window\IWindowComponent.cs" />
@@ -96,9 +95,8 @@
     <Compile Include="Providers\IAssemblyLocationProvider.cs" />
     <Compile Include="Repositories\IResourceRepository.cs" />
     <Compile Include="Logging\ILog.cs" />
-    <Compile Include="Logging\Factories\LogFactory.cs" />
+    <Compile Include="Logging\LogFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GameLoadState\Attributes\LoadStateMarker.cs" />
     <Compile Include="Serialization\ConfigNodeFormatter.cs" />
     <Compile Include="Serialization\DefaultSurrogateProvider.cs" />
     <Compile Include="Serialization\DefaultSurrogateSelector.cs" />
@@ -110,18 +108,23 @@
     <Compile Include="Serialization\ISerializationSurrogate.cs" />
     <Compile Include="Serialization\ISurrogateSelector.cs" />
     <Compile Include="Serialization\SerializableFieldQuery.cs" />
+    <Compile Include="Serialization\Surrogates\BooleanSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ColorSurrogate.cs" />
-    <Compile Include="Serialization\Surrogates\PrimitiveSurrogates.cs" />
-    <Compile Include="Serialization\Surrogates\FieldSurrogateBase.cs" />
-    <Compile Include="Serialization\Surrogates\FieldSurrogateBaseToString.cs" />
+    <Compile Include="Serialization\Surrogates\DoubleSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\FloatSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\IntegerSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\PrimitiveSurrogateBase.cs" />
+    <Compile Include="Serialization\Surrogates\FieldSurrogateToSingleValueBase.cs" />
     <Compile Include="Serialization\Surrogates\QuaternionSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\StringSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector2Surrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector3Surrogate.cs" />
+    <Compile Include="Utility\PersistentRect.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>set unity=C:\Program Files (x86)\Unity455
+    <PostBuildEvent>set unity=C:\Program Files (x86)\Unity464
 
 echo Generating $(TargetFileName).mdb...
 call "%25unity%25\Editor\Data\MonoBleedingEdge\bin\cli.bat" "%25unity%25\Editor\Data\MonoBleedingEdge\lib\mono\4.0\pdb2mdb.exe" "$(TargetFileName)"

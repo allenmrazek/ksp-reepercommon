@@ -15,7 +15,8 @@ namespace ReeperCommon.Serialization.Tests
             var results = sut.Get().ToList();
 
             Assert.NotEmpty(results);
-            Assert.True(results.Any(r => r.Value is PrimitiveSurrogates));
+            //Assert.True(results.Any(r => r.Value is PrimitiveSurrogates));
+            Assert.True(false);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ReeperCommon.Containers;
 using UnityEngine;
@@ -11,12 +12,12 @@ namespace ReeperCommon.Repositories
     {
         private readonly IEnumerable<IResourceRepository> _providers;
 
+
         public ResourceRepositoryComposite(params IResourceRepository[] providers)
         {
             if (providers == null) throw new ArgumentNullException("providers");
             _providers = providers;
         }
-
 
 
         public Maybe<Texture2D> GetTexture(string identifier)
@@ -31,7 +32,6 @@ namespace ReeperCommon.Repositories
         }
 
 
-
         public Maybe<Material> GetMaterial(string identifier)
         {
             foreach (var p in _providers)
@@ -42,7 +42,6 @@ namespace ReeperCommon.Repositories
 
             return Maybe<Material>.None;
         }
-
 
 
         public Maybe<AudioClip> GetClip(string identifier)
@@ -57,6 +56,17 @@ namespace ReeperCommon.Repositories
         }
 
 
+        public Maybe<Stream> GetStream(string identifier)
+        {
+            foreach (var p in _providers)
+            {
+                var result = p.GetStream(identifier);
+                if (result.Any()) return result;
+            }
+
+            return Maybe<Stream>.None;
+        }
+
 
         public Maybe<byte[]> GetRaw(string identifier)
         {
@@ -68,6 +78,7 @@ namespace ReeperCommon.Repositories
 
             return Maybe<byte[]>.None;
         }
+
 
         public override string ToString()
         {

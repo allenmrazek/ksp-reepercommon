@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ReeperCommon.Extensions
 {
     public static class Texture2DExtensions
     {
+        public static Texture2D Clone(this UnityEngine.Texture2D original)
+        {
+            return Texture2D.Instantiate(original) as Texture2D;
+        }
+
+
         public static Texture2D CreateReadable(this UnityEngine.Texture2D original)
         {
             if (original.width == 0 || original.height == 0)
@@ -80,6 +87,57 @@ namespace ReeperCommon.Extensions
             }
         }
 
+
+        public static void SetLightness(this UnityEngine.Texture2D original, float lightness)
+        {
+            if (lightness < 0f || lightness > 1f)
+                throw new ArgumentOutOfRangeException("lightness");
+
+            TraversePixels(original, color =>
+            {
+                var hsl = color.GetHSL();
+
+                hsl.Lightness = lightness;
+
+                return new Color(hsl.Color.r, hsl.Color.g, hsl.Color.b, color.a);
+            });
+        }
+
+
+        public static void ChangeLightness(this UnityEngine.Texture2D original, float multiplier)
+        {
+            TraversePixels(original, color =>
+            {
+                var hsl = color.GetHSL();
+
+                hsl.Lightness *= multiplier;
+
+                return new Color(hsl.Color.r, hsl.Color.g, hsl.Color.b, color.a);
+            });
+        }
+
+
+
+        private static void TraversePixels(Texture2D texture, Func<Color, Color> action)
+        {
+            if (texture == null) throw new ArgumentNullException("texture");
+            if (action == null) throw new ArgumentNullException("action");
+            if (!new[] {TextureFormat.ARGB32, TextureFormat.RGB24, TextureFormat.Alpha8}.Contains(texture.format))
+                throw new Exception("Texture format must be ARGB32, RGB24 or Alpha8 for SetPixels to function");
+
+            for (int i = 0; i < texture.mipmapCount; ++i)
+            {
+                var pixels = texture.GetPixels(i);
+
+                for (int j = 0; j < pixels.Length; ++j)
+                    pixels[j] = action(pixels[j]);
+
+                texture.SetPixels(pixels, i);
+            }
+
+            
+            texture.Apply();
+        }
 
 
         /// <summary>

@@ -2,7 +2,8 @@
 
 namespace ReeperCommon.Serialization.Surrogates
 {
-    public class ColorSurrogate : FieldSurrogateBase<Color>
+// ReSharper disable once UnusedMember.Global
+    public class ColorSurrogate : FieldSurrogateToSingleValueBase<Color>
     {
         protected override string GetFieldContentsAsString(Color instance)
         {

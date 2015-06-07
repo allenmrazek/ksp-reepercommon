@@ -1,6 +1,6 @@
-﻿namespace ReeperCommon.Gui.Window.Providers
+﻿namespace ReeperCommon.Gui
 {
-    public class UniqueWindowIdProvider
+    public class UniqueWindowIdProvider : IWindowIdProvider
     {
         private static int _id = 15000;
 

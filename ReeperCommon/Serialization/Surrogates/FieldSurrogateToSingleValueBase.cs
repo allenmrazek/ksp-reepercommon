@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace ReeperCommon.Serialization.Surrogates
 {
-    public abstract class FieldSurrogateBase<T> : ISerializationSurrogate<T>
+    public abstract class FieldSurrogateToSingleValueBase<T> : ISerializationSurrogate<T>
     {
         public virtual void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeFormatter formatter)
         {
@@ -25,7 +25,7 @@ namespace ReeperCommon.Serialization.Surrogates
                 throw new SerializationException("Could not deserialize type " + field.FieldType.FullName +
                                                  " from config because no value named " + field.Name + " was found");
 
-            if (!(field.FieldType is T))
+            if (field.FieldType != typeof(T))
                 throw new InvalidOperationException("Incompatible types: field type " + field.FieldType.FullName +
                                                     " is not " + typeof(T).FullName);
 

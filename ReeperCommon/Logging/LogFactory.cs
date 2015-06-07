@@ -1,7 +1,7 @@
 ﻿using System;
 using ReeperCommon.Extensions;
 
-namespace ReeperCommon.Logging.Factories
+namespace ReeperCommon.Logging
 {
     public enum LogLevel
     {

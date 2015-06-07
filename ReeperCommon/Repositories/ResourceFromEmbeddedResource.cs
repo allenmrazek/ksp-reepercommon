@@ -71,6 +71,18 @@ namespace ReeperCommon.Repositories
             return Maybe<AudioClip>.None;
         }
 
+
+        public Maybe<Stream> GetStream(string identifier)
+        {
+            if (_assembly.GetManifestResourceNames().All(n => n != identifier))
+                return Maybe<Stream>.None;
+           
+            var stream = _assembly.GetManifestResourceStream(identifier);
+
+            return stream != null && stream.CanRead && stream.CanSeek ? Maybe<Stream>.With(stream) : Maybe<Stream>.None;
+        }
+
+
         public override string ToString()
         {
             return "ResourceFromEmbeddedResource:" + System.Environment.NewLine +

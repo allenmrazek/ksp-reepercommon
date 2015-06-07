@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using ReeperCommon.Containers;
 using UnityEngine;
 
@@ -36,6 +37,11 @@ namespace ReeperCommon.Repositories
         public Maybe<AudioClip> GetClip(string identifier)
         {
             return _repository.GetClip(_transformer(identifier));
+        }
+
+        public Maybe<Stream> GetStream(string identifier)
+        {
+            return _repository.GetStream(_transformer(identifier));
         }
 
         public override string ToString()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
@@ -99,6 +100,14 @@ namespace ReeperCommon.Repositories
             return (data.Any() && data.Single().isDone) ? Maybe<AudioClip>.With(data.Single().audioClip) : Maybe<AudioClip>.None;
         }
 
+        public Maybe<Stream> GetStream(string identifier)
+        {
+            if (!_directory.FileExists(new KSPUrlIdentifier(identifier))) return Maybe<Stream>.None;
+
+            var stream = new FileStream(_directory.File(new KSPUrlIdentifier(identifier)).Single().FullPath, FileMode.Open);
+
+            return stream.CanRead && stream.CanSeek ? Maybe<Stream>.With(stream) : Maybe<Stream>.None;
+        }
 
 
         public override string ToString()

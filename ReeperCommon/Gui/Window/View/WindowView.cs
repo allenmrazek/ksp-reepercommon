@@ -52,6 +52,15 @@ namespace ReeperCommon.Gui.Window.View
         }
 
 
+        private void OnMouseDrag()
+        {
+            print("WindowView: OnMouseDrag");
+        }
+
+        private void OnMouseDown()
+        {
+            print("WindowView: OnMouseDown");
+        }
 
         public static WindowView Create(IWindowComponent window, string goName = "WindowView")
         {

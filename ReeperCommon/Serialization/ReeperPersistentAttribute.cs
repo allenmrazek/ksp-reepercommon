@@ -3,7 +3,7 @@
 namespace ReeperCommon.Serialization
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class ReeperPersistentAttribute : Attribute
+    public sealed class ReeperPersistentAttribute : Attribute
     {
     }
 }

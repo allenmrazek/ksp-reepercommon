@@ -35,6 +35,18 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
+        public virtual void Save(ConfigNode node)
+        {
+            _base.Save(node);
+        }
+
+
+        public virtual void Load(ConfigNode node)
+        {
+            _base.Load(node);
+        }
+
+
         public Rect Dimensions
         {
             get
