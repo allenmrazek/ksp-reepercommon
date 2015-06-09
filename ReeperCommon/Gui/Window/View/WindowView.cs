@@ -15,7 +15,7 @@ namespace ReeperCommon.Gui.Window.View
 // ReSharper disable once UnusedMember.Global
         public void OnDestroy()
         {
-            print("WindowView is destructing...");
+
         }
 
 
@@ -51,16 +51,6 @@ namespace ReeperCommon.Gui.Window.View
             Implementation.Update();
         }
 
-
-        private void OnMouseDrag()
-        {
-            print("WindowView: OnMouseDrag");
-        }
-
-        private void OnMouseDown()
-        {
-            print("WindowView: OnMouseDown");
-        }
 
         public static WindowView Create(IWindowComponent window, string goName = "WindowView")
         {
