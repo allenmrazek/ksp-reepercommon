@@ -1,6 +1,4 @@
 ﻿using System;
-using ReeperCommon.Extensions;
-using ReeperCommon.Gui.Logic;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.Decorators
@@ -86,18 +84,6 @@ namespace ReeperCommon.Gui.Window.Decorators
             set { _base.Visible = value; }
         }
 
-
-        public IWindowLogic Logic
-        {
-            get { return _base.Logic; }
-            set
-            {
-                if (value.IsNull())
-                    throw new ArgumentNullException("value");
-
-                _base.Logic = value;
-            }
-        }
 
 
         public int Id { get { return _base.Id; } }

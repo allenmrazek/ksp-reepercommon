@@ -1,5 +1,4 @@
-﻿using ReeperCommon.Gui.Logic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
 {
@@ -19,6 +18,5 @@ namespace ReeperCommon.Gui.Window
         GUISkin Skin { get; set;}
         bool Draggable { get; set; }
         bool Visible { get; set; }
-        IWindowLogic Logic { get; set; }
     }
 }

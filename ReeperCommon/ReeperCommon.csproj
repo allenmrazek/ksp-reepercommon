@@ -70,7 +70,6 @@
     <Compile Include="Gui\IWindowIdProvider.cs" />
     <Compile Include="Gui\Window\Decorators\ClampToScreen.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
-    <Compile Include="Gui\Logic\DefaultWindowLogic.cs" />
     <Compile Include="Gui\Window\Buttons\TitleBarButton.cs" />
     <Compile Include="Gui\Window\Decorators\Resizable.cs" />
     <Compile Include="Gui\Window\Decorators\TitleBarButtons.cs" />

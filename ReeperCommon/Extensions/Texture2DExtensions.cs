@@ -2,23 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ReeperCommon.Extensions
 {
     public static class Texture2DExtensions
     {
-        public static Texture2D Clone(this UnityEngine.Texture2D original)
+        public static Texture2D Clone(this Texture2D original)
         {
-            return Texture2D.Instantiate(original) as Texture2D;
+            return Object.Instantiate(original) as Texture2D;
         }
 
 
-        public static Texture2D CreateReadable(this UnityEngine.Texture2D original)
+        public static Texture2D CreateReadable(this Texture2D original)
         {
+            if (original == null) throw new ArgumentNullException("original");
+
             if (original.width == 0 || original.height == 0)
                 throw new Exception("CreateReadable: Original has zero width or height or both");
 
-            Texture2D finalTexture = new Texture2D(original.width, original.height);
+            var finalTexture = new Texture2D(original.width, original.height);
 
             // nbTexture isn't read or writeable ... we'll have to get tricksy
             var rt = RenderTexture.GetTemporary(original.width, original.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB, 1);
@@ -35,7 +38,7 @@ namespace ReeperCommon.Extensions
         }
 
 
-        public static void GenerateRandom(this UnityEngine.Texture2D tex)
+        public static void GenerateRandom(this Texture2D tex)
         {
             var pixels = tex.GetPixels32();
 
@@ -59,7 +62,7 @@ namespace ReeperCommon.Extensions
         }
 
 
-        public static void SetOpacity(this UnityEngine.Texture2D original, int opacity, int mipLevel = 0)
+        public static void SetOpacity(this Texture2D original, int opacity, int mipLevel = 0)
         {
             opacity = Mathf.Clamp(opacity, 0, 255);
 
@@ -88,7 +91,7 @@ namespace ReeperCommon.Extensions
         }
 
 
-        public static void SetLightness(this UnityEngine.Texture2D original, float lightness)
+        public static void SetLightness(this Texture2D original, float lightness)
         {
             if (lightness < 0f || lightness > 1f)
                 throw new ArgumentOutOfRangeException("lightness");
@@ -104,7 +107,7 @@ namespace ReeperCommon.Extensions
         }
 
 
-        public static void ChangeLightness(this UnityEngine.Texture2D original, float multiplier)
+        public static void ChangeLightness(this Texture2D original, float multiplier)
         {
             TraversePixels(original, color =>
             {
@@ -144,9 +147,7 @@ namespace ReeperCommon.Extensions
         /// Saves texture into plugin dir with supplied name.
         /// Precondition: texture must be readable
         /// </summary>
-        /// <param name="texture"></param>
-        /// <param name="name"></param>
-        public static bool SaveToDisk(this UnityEngine.Texture2D texture, string pathInGameData)
+        public static bool SaveToDisk(this Texture2D texture, string pathInGameData)
         {
             // texture format - needs to be ARGB32, RGBA32, RGB24 or Alpha8
             var validFormats = new List<TextureFormat>{ TextureFormat.Alpha8, 
@@ -181,9 +182,48 @@ namespace ReeperCommon.Extensions
         }
 
 
-        public static Texture2D As2D(this UnityEngine.Texture tex)
+        public static Texture2D As2D(this Texture tex)
         {
             return tex as Texture2D;
+        }
+
+
+        public static Texture2D Rotate(this Texture2D texture, float angleDegrees)
+        {
+            if (texture == null) throw new ArgumentNullException("texture");
+
+            var rotated = texture.Clone();   
+            var angle = angleDegrees * Mathf.Deg2Rad;
+
+            for (int mipLevel = 0; mipLevel < texture.mipmapCount; ++mipLevel)
+            {
+                int width = Math.Max(1, texture.width >> mipLevel);
+                int height = Mathf.Max(1, texture.height >> mipLevel);
+                float centerX = width * 0.5f;
+                float centerY = height * 0.5f;
+                var originalPixels = texture.GetPixels32(mipLevel);
+                var pixels = Enumerable.Repeat((Color32)Color.clear, width * height).ToArray();
+
+                for (int y = 0; y < width; ++y)
+                    for (int x = 0; x < height; ++x)
+                    {
+                        var srcX = centerX + (x - centerX)*Mathf.Cos(angle) - (y - centerY)*Mathf.Sin(angle);
+                        var srcY = centerY + (x - centerX)*Mathf.Sin(angle) + (y - centerY)*Mathf.Cos(angle);
+
+                        if (srcX < 0f || srcX >= width) continue;
+                        if (srcY < 0f || srcY >= height) continue;
+
+                        pixels[y*width + x] = mipLevel == 0 ? (Color32)texture.GetPixelBilinear(srcX / width, srcY / height)
+                            : originalPixels[Mathf.RoundToInt(y * width) + Mathf.RoundToInt(x)];
+                    }
+
+                rotated.SetPixels32(pixels, mipLevel);
+            }
+
+        
+            rotated.Apply();
+
+            return rotated;
         }
     }
 }
