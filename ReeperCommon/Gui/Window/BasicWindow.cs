@@ -1,19 +1,22 @@
 ﻿using System;
 using ReeperCommon.Extensions;
-using ReeperCommon.Utility;
+using ReeperCommon.Serialization;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
 {
     public abstract class BasicWindow : IWindowComponent
     {
-        private Rect WindowRect = new Rect(0f, 0f, 100f, 100f);
-
-        [Persistent] private int _id = 15000;
-        [Persistent] private string _title = string.Empty;
-        [Persistent] private bool _draggable = false;
-        [Persistent] private bool _visible = true;
-        [Persistent] private PersistentRect _rect = default(PersistentRect); // to avoid performance penalties of constantly implicitly casting
+        [ReeperPersistent]
+        private Rect _windowRect = new Rect(0f, 0f, 100f, 100f);
+        [ReeperPersistent]
+        private int _id = 15000;
+        [ReeperPersistent]
+        private string _title = string.Empty;
+        [ReeperPersistent]
+        private bool _draggable = false;
+        [ReeperPersistent]
+        private bool _visible = true;
 
         protected BasicWindow(
             Rect rect, 
@@ -24,7 +27,7 @@ namespace ReeperCommon.Gui.Window
             if (skin == null) throw new ArgumentNullException("skin");
 
             Id = winid;
-            WindowRect = rect;
+            _windowRect = rect;
             Skin = skin;
             Draggable = draggable;
             Visible = true;
@@ -50,28 +53,29 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-        public virtual void Save(ConfigNode node)
+        public virtual void Save(IConfigNodeFormatter formatter, ConfigNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 
-            _rect = Dimensions;
-            ConfigNode.CreateConfigFromObject(this, node);
+            //ConfigNode.CreateConfigFromObject(this, node);
+            formatter.Serialize(this, node);
         }
 
 
-        public virtual void Load(ConfigNode node)
+        public virtual void Load(IConfigNodeFormatter formatter, ConfigNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 
-            ConfigNode.LoadObjectFromConfig(this, node);
-            Dimensions = _rect;
+            //ConfigNode.LoadObjectFromConfig(this, node);
+            //Dimensions = _rect;
+            formatter.Deserialize(this, node);
         }
 
 
         public Rect Dimensions
         {
-            get { return WindowRect; }
-            set { WindowRect = value; }
+            get { return _windowRect; }
+            set { _windowRect = value; }
         }
 
 

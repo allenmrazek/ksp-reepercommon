@@ -68,12 +68,12 @@
     <Compile Include="Gui\Controls\ColorPickerBox.cs" />
     <Compile Include="Gui\Controls\ColorSaturationSlider.cs" />
     <Compile Include="Gui\IWindowIdProvider.cs" />
+    <Compile Include="Gui\Window\Buttons\ITitleBarButton.cs" />
     <Compile Include="Gui\Window\Decorators\ClampToScreen.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
-    <Compile Include="Gui\Window\Buttons\TitleBarButton.cs" />
+    <Compile Include="Gui\Window\Buttons\BasicTitleBarButton.cs" />
     <Compile Include="Gui\Window\Decorators\Resizable.cs" />
     <Compile Include="Gui\Window\Decorators\TitleBarButtons.cs" />
-    <Compile Include="Gui\Logic\IWindowLogic.cs" />
     <Compile Include="Gui\UniqueWindowIdProvider.cs" />
     <Compile Include="Gui\Window\View\WindowView.cs" />
     <Compile Include="Gui\Window\BasicWindow.cs" />
@@ -115,6 +115,7 @@
     <Compile Include="Serialization\Surrogates\PrimitiveSurrogateBase.cs" />
     <Compile Include="Serialization\Surrogates\FieldSurrogateToSingleValueBase.cs" />
     <Compile Include="Serialization\Surrogates\QuaternionSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\RectSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\StringSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector2Surrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector3Surrogate.cs" />

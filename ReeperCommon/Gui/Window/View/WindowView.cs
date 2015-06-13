@@ -8,12 +8,12 @@ namespace ReeperCommon.Gui.Window.View
 // ReSharper disable once ClassNeverInstantiated.Global
     public class WindowView : MonoBehaviour
     {
-        private IWindowComponent Implementation { get; set; }
+        public IWindowComponent Implementation { get; private set; }
 
 
 
 // ReSharper disable once UnusedMember.Global
-        public void OnDestroy()
+        private void OnDestroy()
         {
 
         }
@@ -22,7 +22,7 @@ namespace ReeperCommon.Gui.Window.View
 
 // ReSharper disable once InconsistentNaming
 // ReSharper disable once UnusedMember.Global
-        public void OnGUI()
+        private void OnGUI()
         {
             if (Implementation.IsNull() || !Implementation.Visible) return;
 
@@ -44,7 +44,7 @@ namespace ReeperCommon.Gui.Window.View
 
 
 // ReSharper disable once UnusedMember.Global
-        public void Update()
+        private void Update()
         {
             if (Implementation.IsNull()) return;
 

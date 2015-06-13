@@ -1,16 +1,14 @@
-﻿using UnityEngine;
+﻿using ReeperCommon.Serialization;
+using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
 {
-    public interface IWindowComponent
+    public interface IWindowComponent : IReeperPersistent
     {
         void OnWindowDraw(int winid);
         void OnWindowFinalize(int winid);
 
         void Update();
-
-        void Save(ConfigNode node);
-        void Load(ConfigNode node);
 
         Rect Dimensions { get; set; }
         int Id { get; }

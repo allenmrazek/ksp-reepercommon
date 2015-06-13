@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ReeperCommon.Logging;
 
 namespace ReeperCommon.Serialization
 {

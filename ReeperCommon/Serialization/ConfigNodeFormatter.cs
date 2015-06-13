@@ -54,9 +54,6 @@ namespace ReeperCommon.Serialization
 
             var serializableFields = GetSerializableFields(source).ToList();
 
-            if (!serializableFields.Any())
-                throw new SerializationException("Did not find any serializable fields in " + source.GetType().FullName);
-
             serializableFields.ForEach(field =>
             {
                 if (config.HasValue(field.Name))
@@ -94,7 +91,7 @@ namespace ReeperCommon.Serialization
                 var surrogate = SurrogateSelector.GetSurrogate(field.FieldType);
 
                 if (!surrogate.Any())
-                    throw new SerializationException("Could not serialize a field of type " + field.FieldType.FullName);
+                    throw new SerializationException("Could not serialize a field of type " + field.FieldType.FullName + ", no surrogate found for this type");
 
                 surrogate.Single().Serialize(source, field, config, this);
             }

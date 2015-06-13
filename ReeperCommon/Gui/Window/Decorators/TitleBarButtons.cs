@@ -8,7 +8,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 {
     public class TitleBarButtons : WindowDecorator
     {
-        private readonly List<TitleBarButton> _buttons = new List<TitleBarButton>();
+        private readonly List<ITitleBarButton> _buttons = new List<ITitleBarButton>();
         private readonly ButtonAlignment _alignment;
         private readonly Vector2 _offset = Vector2.zero;
 
@@ -28,7 +28,7 @@ namespace ReeperCommon.Gui.Window.Decorators
             if (window == null) throw new ArgumentNullException("window");
 
             _alignment = alignment;
-            this._offset = offset;
+            _offset = offset;
         }
 
 
@@ -44,7 +44,6 @@ namespace ReeperCommon.Gui.Window.Decorators
             GUILayout.BeginArea(new Rect(_offset.x, _offset.y, Dimensions.width - _offset.x * 2f, Dimensions.height));
                 GUILayout.BeginHorizontal();
                 {
-
                     if (_alignment != ButtonAlignment.Left)
                         GUILayout.FlexibleSpace();
 
@@ -52,7 +51,6 @@ namespace ReeperCommon.Gui.Window.Decorators
 
                     if (_alignment != ButtonAlignment.Right)
                         GUILayout.FlexibleSpace();
-
                 }
                 GUILayout.EndHorizontal();
             GUILayout.EndArea();
@@ -60,23 +58,23 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        private void DrawButton(TitleBarButton button)
+        private void DrawButton(ITitleBarButton button)
         {
+            if (!button.Enabled) return;
+
             if (GUILayout.Button(button.Texture, button.Style.IsNull() ? GUI.skin.button : button.Style,
                 GUILayout.ExpandWidth(false),
                 GUILayout.ExpandHeight(false)))
-            {
-                button.Callback(button.Name);
-            }
+                button.Click();
         }
 
 
-        public void AddButton(TitleBarButton button)
+        public void AddButton(ITitleBarButton button)
         {
             if (button == null) throw new ArgumentNullException("button");
 
             if (_buttons.Contains(button))
-                throw new InvalidOperationException("TitleBar already contains " + button.Name);
+                throw new InvalidOperationException("TitleBar already contains button");
 
             _buttons.Add(button);
         }

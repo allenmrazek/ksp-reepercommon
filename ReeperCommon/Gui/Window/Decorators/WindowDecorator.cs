@@ -1,4 +1,6 @@
 ﻿using System;
+using ReeperCommon.Logging;
+using ReeperCommon.Serialization;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.Decorators
@@ -33,15 +35,15 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        public virtual void Save(ConfigNode node)
+        public virtual void Save(IConfigNodeFormatter formatter, ConfigNode node)
         {
-            _base.Save(node);
+            _base.Save(formatter, node);
         }
 
 
-        public virtual void Load(ConfigNode node)
+        public virtual void Load(IConfigNodeFormatter formatter, ConfigNode node)
         {
-            _base.Load(node);
+            _base.Load(formatter, node);
         }
 
 

@@ -5,6 +5,7 @@ using System.Reflection;
 
 namespace ReeperCommon.Serialization
 {
+    // note: private members inherited by target type will be ignored
     public class SerializableFieldQuery : IFieldInfoQuery
     {
         public IEnumerable<FieldInfo> Get(object target)
@@ -12,8 +13,7 @@ namespace ReeperCommon.Serialization
             if (target == null) throw new ArgumentNullException("target");
             
             return target.GetType()
-                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
-                           BindingFlags.FlattenHierarchy)
+                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(
                     fi =>
                         fi.GetCustomAttributes(true).Any(attr => attr is ReeperPersistentAttribute));
