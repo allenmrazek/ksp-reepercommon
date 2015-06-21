@@ -8,7 +8,7 @@ namespace ReeperCommon.Serialization.Surrogates
 // ReSharper disable once UnusedMember.Global
     public class RectSurrogate : ISerializationSurrogate<Rect>
     {
-        public void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeFormatter formatter)
+        public void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter)
         {
             if (config.HasNode(field.Name))
                 throw new SerializationException("A node named " + field.Name + " has already been defined");
@@ -23,7 +23,7 @@ namespace ReeperCommon.Serialization.Surrogates
         }
 
 
-        public void Deserialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeFormatter formatter)
+        public void Deserialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter)
         {
             if (!config.HasNode(field.Name))
                 return; // don't change existing value 

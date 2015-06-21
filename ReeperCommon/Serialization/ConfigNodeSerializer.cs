@@ -6,12 +6,12 @@ using System.Runtime.Serialization;
 
 namespace ReeperCommon.Serialization
 {
-    public class ConfigNodeFormatter : IConfigNodeFormatter
+    public class ConfigNodeSerializer : IConfigNodeSerializer
     {
         private readonly IFieldInfoQuery _serializableFieldQuery;
         private ISurrogateSelector _surrogateSelector;
 
-        public ConfigNodeFormatter(ISurrogateSelector selector, IFieldInfoQuery serializableFieldQuery)
+        public ConfigNodeSerializer(ISurrogateSelector selector, IFieldInfoQuery serializableFieldQuery)
         {
             if (selector == null) throw new ArgumentNullException("selector");
             if (serializableFieldQuery == null) throw new ArgumentNullException("serializableFieldQuery");
@@ -83,7 +83,7 @@ namespace ReeperCommon.Serialization
                 var subNode = config.AddNode(field.Name);
 
                 Serialize(fieldInstance, subNode);
-                (fieldInstance as IReeperPersistent).Save(this, subNode);
+                (fieldInstance as IReeperPersistent).Serialize(this, subNode);
             }
             else
             {
@@ -115,7 +115,7 @@ namespace ReeperCommon.Serialization
                     var subNode = config.GetNode(field.Name);
 
                     Deserialize(fieldInstance, subNode);
-                    (fieldInstance as IReeperPersistent).Load(this, subNode);
+                    (fieldInstance as IReeperPersistent).Deserialize(this, subNode);
                 }
             else
             {

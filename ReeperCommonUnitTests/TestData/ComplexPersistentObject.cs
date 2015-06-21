@@ -11,12 +11,12 @@ namespace ReeperCommonUnitTests.TestData
     {
         public class InternalPersistent : IReeperPersistent, IPersistenceLoad, IPersistenceSave
         {
-            public void Save(IConfigNodeFormatter formatter, ConfigNode node)
+            public void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
                 node.AddValue("InternalPersistent", "TestValue");
             }
 
-            public void Load(IConfigNodeFormatter formatter, ConfigNode node)
+            public void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
                 if (!node.HasValue("InternalPersistent")) throw new Exception("No value named InternalPersistent");
             }

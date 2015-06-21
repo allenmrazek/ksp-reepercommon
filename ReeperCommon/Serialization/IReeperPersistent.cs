@@ -2,7 +2,7 @@
 {
     public interface IReeperPersistent
     {
-        void Save(IConfigNodeFormatter formatter, ConfigNode node);
-        void Load(IConfigNodeFormatter formatter, ConfigNode node);
+        void Serialize(IConfigNodeSerializer formatter, ConfigNode node);
+        void Deserialize(IConfigNodeSerializer formatter, ConfigNode node);
     }
 }

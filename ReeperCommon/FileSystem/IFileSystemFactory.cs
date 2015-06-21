@@ -1,4 +1,4 @@
-﻿namespace ReeperCommon.FileSystem.Factories
+﻿namespace ReeperCommon.FileSystem
 {
     public interface IFileSystemFactory
     {

@@ -1,5 +1,4 @@
 ﻿using System;
-using ReeperCommon.FileSystem.Factories;
 
 namespace ReeperCommon.FileSystem
 {

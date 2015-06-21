@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using ReeperCommon.Containers;
 using ReeperCommon.FileSystem;
-using ReeperCommon.FileSystem.Factories;
 
 namespace ReeperCommon.Providers
 {

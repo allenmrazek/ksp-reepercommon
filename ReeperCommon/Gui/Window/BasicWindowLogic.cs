@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
 {
-    public abstract class BasicWindow : IWindowComponent
+    public abstract class BasicWindowLogic : IWindowComponent
     {
         [ReeperPersistent]
         private Rect _windowRect = new Rect(0f, 0f, 100f, 100f);
@@ -18,7 +18,7 @@ namespace ReeperCommon.Gui.Window
         [ReeperPersistent]
         private bool _visible = true;
 
-        protected BasicWindow(
+        protected BasicWindowLogic(
             Rect rect, 
             int winid, 
             GUISkin skin, 
@@ -53,21 +53,18 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-        public virtual void Save(IConfigNodeFormatter formatter, ConfigNode node)
+        public virtual void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 
-            //ConfigNode.CreateConfigFromObject(this, node);
             formatter.Serialize(this, node);
         }
 
 
-        public virtual void Load(IConfigNodeFormatter formatter, ConfigNode node)
+        public virtual void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 
-            //ConfigNode.LoadObjectFromConfig(this, node);
-            //Dimensions = _rect;
             formatter.Deserialize(this, node);
         }
 

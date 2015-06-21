@@ -6,7 +6,7 @@ namespace ReeperCommon.Serialization.Surrogates
 {
     public abstract class FieldSurrogateToSingleValueBase<T> : ISerializationSurrogate<T>
     {
-        public virtual void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeFormatter formatter)
+        public virtual void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter)
         {
             if (config.HasValue(field.Name))
                 throw new SerializationException("Could not deserialize type " + field.FieldType.FullName +
@@ -19,7 +19,7 @@ namespace ReeperCommon.Serialization.Surrogates
             config.AddValue(field.Name, GetFieldContentsAsString((T)field.GetValue(fieldOwner)));
         }
 
-        public virtual void Deserialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeFormatter formatter)
+        public virtual void Deserialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter)
         {
             if (!config.HasValue(field.Name))
                 throw new SerializationException("Could not deserialize type " + field.FieldType.FullName +
