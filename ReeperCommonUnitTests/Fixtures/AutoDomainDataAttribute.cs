@@ -13,7 +13,7 @@ namespace ReeperCommonUnitTests.Fixtures
             Fixture.Register(() => new ConfigNode("ROOT"));
             Fixture.Register(() => new SimplePersistentObject());
             Fixture.Register(() => new ComplexPersistentObject());
-            Fixture.Register(() => new SerializableFieldQuery());
+            Fixture.Register(() => new GetSerializableField());
             Fixture.Register(() => new DefaultSurrogateProvider());
         }
     }

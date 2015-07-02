@@ -88,6 +88,6 @@ namespace ReeperCommon.Gui.Window.Decorators
 
 
 
-        public int Id { get { return _base.Id; } }
+        public WindowID Id { get { return _base.Id; } }
     }
 }

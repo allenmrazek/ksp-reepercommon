@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
+using ReeperCommon.Logging;
 using UnityEngine;
 
 namespace ReeperCommon.Repositories
@@ -29,11 +30,13 @@ namespace ReeperCommon.Repositories
 
             var data = new byte[stream.Length];
 
-            int read = 0;
-            var ms = new MemoryStream();
+            using (var ms = new MemoryStream())
+            {
+                int read = 0;
 
-            while ((read = stream.Read(data, 0, data.Length)) > 0)
-                ms.Write(data, 0, read);
+                while ((read = stream.Read(data, 0, data.Length)) > 0)
+                    ms.Write(data, 0, read);
+            }
 
             return Maybe<byte[]>.With(data);
         }
@@ -85,8 +88,8 @@ namespace ReeperCommon.Repositories
 
         public override string ToString()
         {
-            return "ResourceFromEmbeddedResource:" + System.Environment.NewLine +
-                   string.Join(System.Environment.NewLine,
+            return "ResourceFromEmbeddedResource:" + Environment.NewLine +
+                   string.Join(Environment.NewLine,
                        _assembly.GetManifestResourceNames()
                            .Select(name => "Embedded: " + name)
                            .ToArray());

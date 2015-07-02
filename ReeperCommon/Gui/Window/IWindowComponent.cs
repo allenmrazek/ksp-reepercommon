@@ -11,7 +11,7 @@ namespace ReeperCommon.Gui.Window
         void Update();
 
         Rect Dimensions { get; set; }
-        int Id { get; }
+        WindowID Id { get; }
         string Title { get; set; }
         GUISkin Skin { get; set;}
         bool Draggable { get; set; }

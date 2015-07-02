@@ -16,13 +16,13 @@ namespace ReeperCommon.Serialization.Tests
     public class ConfigNodeFormatterTests
     {
         [Theory, AutoDomainData]
-        public void Serialize_SimplePersistentObject([Frozen] SimplePersistentObject testObject, ConfigNode config, [Frozen] SerializableFieldQuery fieldQuery)
+        public void Serialize_SimplePersistentObject([Frozen] SimplePersistentObject testObject, ConfigNode config, [Frozen] GetSerializableField field)
         {
             var selector = Substitute.For<ISurrogateSelector>();
 
             selector.GetSurrogate(Arg.Any<Type>()).Returns(Maybe<ISerializationSurrogate>.With(Substitute.For<ISerializationSurrogate>()));
 
-            var sut = new ConfigNodeSerializer(selector, fieldQuery);
+            var sut = new ConfigNodeSerializer(selector, field);
 
             sut.Serialize(testObject, config);
 
@@ -32,9 +32,9 @@ namespace ReeperCommon.Serialization.Tests
 
         [Theory, AutoDomainData]
         public void Serialize_SimplePersistentObject_Real([Frozen] ComplexPersistentObject testObject, ConfigNode config,
-            [Frozen] SerializableFieldQuery fieldQuery)
+            [Frozen] GetSerializableField field)
         {
-            var formatter = new ConfigNodeSerializer(new DefaultSurrogateSelector(new DefaultSurrogateProvider()), new SerializableFieldQuery());
+            var formatter = new ConfigNodeSerializer(new DefaultSurrogateSelector(new DefaultSurrogateProvider()), new GetSerializableField());
 
             formatter.Serialize(testObject, config);
 
@@ -57,7 +57,7 @@ namespace ReeperCommon.Serialization.Tests
             selector.GetSurrogate(Arg.Any<Type>())
                 .Returns(Maybe<ISerializationSurrogate>.With(surrogate));
 
-            var sut = new ConfigNodeSerializer(selector, new SerializableFieldQuery());
+            var sut = new ConfigNodeSerializer(selector, new GetSerializableField());
 
             sut.Deserialize(testObject, config);
 
@@ -74,7 +74,7 @@ namespace ReeperCommon.Serialization.Tests
 
         [Theory, AutoDomainData]
         public void Serialize_ComplexPersistentObject_EnsureIReeperPersistent_Save_MethodUsed(
-            ComplexPersistentObject testObject, ConfigNode config, SerializableFieldQuery fieldQuery)
+            ComplexPersistentObject testObject, ConfigNode config, GetSerializableField field)
         {
             var mockedPersist = Substitute.For<IReeperPersistent>();
             var surrogateSelector = Substitute.For<ISurrogateSelector>();
@@ -84,7 +84,7 @@ namespace ReeperCommon.Serialization.Tests
 
             testObject.MyTestObject = mockedPersist;
 
-            var sut = new ConfigNodeSerializer(surrogateSelector, fieldQuery);
+            var sut = new ConfigNodeSerializer(surrogateSelector, field);
 
             sut.Serialize(testObject, config);
 
@@ -95,7 +95,7 @@ namespace ReeperCommon.Serialization.Tests
 
         [Theory, AutoDomainData]
         public void Deserialize_ComplexPersistentObject_EnsureIReeperPersistent_Load_MethodUsed(
-            ComplexPersistentObject testObject, ConfigNode config, SerializableFieldQuery fieldQuery)
+            ComplexPersistentObject testObject, ConfigNode config, GetSerializableField field)
         {
             var mockedPersist = Substitute.For<IReeperPersistent>();
             var surrogateSelector = Substitute.For<ISurrogateSelector>();
@@ -105,7 +105,7 @@ namespace ReeperCommon.Serialization.Tests
 
             testObject.MyTestObject = mockedPersist;
 
-            var sut = new ConfigNodeSerializer(surrogateSelector, fieldQuery);
+            var sut = new ConfigNodeSerializer(surrogateSelector, field);
 
             config.AddNode("MyTestObject"); // contents irrelevant
 
@@ -120,7 +120,7 @@ namespace ReeperCommon.Serialization.Tests
         [Fact]
         public void ConstructorThrows_OnNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new ConfigNodeSerializer(null, Substitute.For<IFieldInfoQuery>()));
+            Assert.Throws<ArgumentNullException>(() => new ConfigNodeSerializer(null, Substitute.For<IGetFieldInfo>()));
             Assert.Throws<ArgumentNullException>(
                 () => new ConfigNodeSerializer(Substitute.For<ISurrogateSelector>(), null));
         }
@@ -129,7 +129,7 @@ namespace ReeperCommon.Serialization.Tests
         [Theory, AutoDomainData]
         public void Serialize_Throws_OnNull([Frozen] SimplePersistentObject testObject, ConfigNode config)
         {
-            var sut = new ConfigNodeSerializer(Substitute.For<ISurrogateSelector>(), Substitute.For<IFieldInfoQuery>());
+            var sut = new ConfigNodeSerializer(Substitute.For<ISurrogateSelector>(), Substitute.For<IGetFieldInfo>());
 
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(testObject, null));
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(null, config));
@@ -139,7 +139,7 @@ namespace ReeperCommon.Serialization.Tests
         [Theory, AutoDomainData]
         public void Deserialize_Throws_OnNull([Frozen] SimplePersistentObject targetObject, ConfigNode config)
         {
-            var sut = new ConfigNodeSerializer(Substitute.For<ISurrogateSelector>(), Substitute.For<IFieldInfoQuery>());
+            var sut = new ConfigNodeSerializer(Substitute.For<ISurrogateSelector>(), Substitute.For<IGetFieldInfo>());
 
             Assert.Throws<ArgumentNullException>(() => sut.Deserialize(null, config));
             Assert.Throws<ArgumentNullException>(() => sut.Deserialize(targetObject, null));

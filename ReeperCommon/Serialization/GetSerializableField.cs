@@ -6,7 +6,7 @@ using System.Reflection;
 namespace ReeperCommon.Serialization
 {
     // note: private members inherited by target type will be ignored
-    public class SerializableFieldQuery : IFieldInfoQuery
+    public class GetSerializableField : IGetFieldInfo
     {
         public IEnumerable<FieldInfo> Get(object target)
         {

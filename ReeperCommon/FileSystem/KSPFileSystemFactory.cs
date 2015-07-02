@@ -2,6 +2,7 @@
 
 namespace ReeperCommon.FileSystem
 {
+// ReSharper disable once InconsistentNaming
     public class KSPFileSystemFactory : IFileSystemFactory
     {
         private readonly IDirectory _gameData;

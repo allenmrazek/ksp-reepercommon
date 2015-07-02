@@ -67,7 +67,7 @@
     <Compile Include="Gui\Controls\ColorPickerControl.cs" />
     <Compile Include="Gui\Controls\ColorPickerBox.cs" />
     <Compile Include="Gui\Controls\ColorSaturationSlider.cs" />
-    <Compile Include="Gui\IWindowIdProvider.cs" />
+    <Compile Include="Gui\WindowId.cs" />
     <Compile Include="Gui\Window\Buttons\ITitleBarButton.cs" />
     <Compile Include="Gui\Window\Decorators\ClampToScreen.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
@@ -103,10 +103,10 @@
     <Compile Include="Serialization\ISurrogateProvider.cs" />
     <Compile Include="Serialization\ReeperPersistentAttribute.cs" />
     <Compile Include="Serialization\IConfigNodeSerializer.cs" />
-    <Compile Include="Serialization\IFieldInfoQuery.cs" />
+    <Compile Include="Serialization\IGetFieldInfo.cs" />
     <Compile Include="Serialization\ISerializationSurrogate.cs" />
     <Compile Include="Serialization\ISurrogateSelector.cs" />
-    <Compile Include="Serialization\SerializableFieldQuery.cs" />
+    <Compile Include="Serialization\GetSerializableField.cs" />
     <Compile Include="Serialization\Surrogates\BooleanSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ColorSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ConfigNodeSurrogate.cs" />

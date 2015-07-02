@@ -8,7 +8,7 @@ namespace ReeperCommon.Gui.Window.View
 // ReSharper disable once ClassNeverInstantiated.Global
     public class WindowView : MonoBehaviour
     {
-        public IWindowComponent Implementation { get; private set; }
+        public IWindowComponent Logic { get; private set; }
 
 
 
@@ -24,31 +24,31 @@ namespace ReeperCommon.Gui.Window.View
 // ReSharper disable once UnusedMember.Global
         private void OnGUI()
         {
-            if (Implementation.IsNull() || !Implementation.Visible) return;
+            if (Logic.IsNull() || !Logic.Visible) return;
 
-            if (!Implementation.Skin.IsNull())
-                GUI.skin = Implementation.Skin;
+            if (!Logic.Skin.IsNull())
+                GUI.skin = Logic.Skin;
 
             
-            Implementation.Dimensions = GUILayout.Window(Implementation.Id, Implementation.Dimensions, DrawWindow,
-                Implementation.Title);
+            Logic.Dimensions = GUILayout.Window(Logic.Id.Value, Logic.Dimensions, DrawWindow,
+                Logic.Title);
             
         }
 
 
         private void DrawWindow(int winid)
         {
-            Implementation.OnWindowDraw(winid);
-            Implementation.OnWindowFinalize(winid);
+            Logic.OnWindowDraw(winid);
+            Logic.OnWindowFinalize(winid);
         }
 
 
 // ReSharper disable once UnusedMember.Global
         private void Update()
         {
-            if (Implementation.IsNull()) return;
+            if (Logic.IsNull()) return;
 
-            Implementation.Update();
+            Logic.Update();
         }
 
 
@@ -57,7 +57,7 @@ namespace ReeperCommon.Gui.Window.View
             if (window == null) throw new ArgumentNullException("window");
 
             var view = new GameObject(goName).AddComponent<WindowView>();
-            view.Implementation = window;
+            view.Logic = window;
 
             return view;
         }

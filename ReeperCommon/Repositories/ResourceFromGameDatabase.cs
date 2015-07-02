@@ -45,7 +45,7 @@ namespace ReeperCommon.Repositories
 
         public override string ToString()
         {
-            return "ResourceFromGameDatabase:" + System.Environment.NewLine + String.Join(System.Environment.NewLine,
+            return "ResourceFromGameDatabase:" + System.Environment.NewLine + String.Join(Environment.NewLine,
                 GameDatabase.Instance.databaseTexture
                     .Select(ti => "Texture: " + ti.name)
                     .Union(

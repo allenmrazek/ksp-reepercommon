@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ReeperCommon.Serialization
 {
-    public interface IFieldInfoQuery
+    public interface IGetFieldInfo
     {
         IEnumerable<FieldInfo> Get(object target);
     }

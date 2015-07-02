@@ -221,7 +221,7 @@ namespace ReeperCommon.Extensions
             }
 
         
-            rotated.Apply();
+            rotated.Apply(texture.mipmapCount > 0);
 
             return rotated;
         }

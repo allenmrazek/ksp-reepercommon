@@ -11,7 +11,7 @@ namespace ReeperCommon.Serialization.Tests
     public class SerializableFieldQueryTests
     {
         [Theory, AutoDomainData]
-        public void GetTest_SimpleObject_WithOneSerializedField([Frozen] SimplePersistentObject targetObject, SerializableFieldQuery sut)
+        public void GetTest_SimpleObject_WithOneSerializedField([Frozen] SimplePersistentObject targetObject, GetSerializableField sut)
         {
             var results = sut.Get(targetObject).ToList();
 
@@ -22,7 +22,7 @@ namespace ReeperCommon.Serialization.Tests
 
         [Theory, AutoDomainData]
         public void GetTest_ComplexObject_WithTwoSerializableFields([Frozen] ComplexPersistentObject targetObject,
-            SerializableFieldQuery sut)
+            GetSerializableField sut)
         {
             var results = sut.Get(targetObject).ToList();
 

@@ -7,20 +7,15 @@ namespace ReeperCommon.Gui.Window
 {
     public abstract class BasicWindowLogic : IWindowComponent
     {
-        [ReeperPersistent]
-        private Rect _windowRect = new Rect(0f, 0f, 100f, 100f);
-        [ReeperPersistent]
-        private int _id = 15000;
-        [ReeperPersistent]
-        private string _title = string.Empty;
-        [ReeperPersistent]
-        private bool _draggable = false;
-        [ReeperPersistent]
-        private bool _visible = true;
+        [ReeperPersistent] private Rect _windowRect = new Rect(0f, 0f, 100f, 100f);
+        [ReeperPersistent] private WindowID _id = new WindowID();
+        [ReeperPersistent] private string _title = string.Empty;
+        [ReeperPersistent] private bool _draggable = false;
+        [ReeperPersistent] private bool _visible = true;
 
         protected BasicWindowLogic(
             Rect rect, 
-            int winid, 
+            WindowID winid, 
             GUISkin skin, 
             bool draggable = true)
         {
@@ -97,7 +92,7 @@ namespace ReeperCommon.Gui.Window
         }
 
         
-        public int Id {
+        public WindowID Id {
             get { return _id; }
             set { _id = value; }
         }

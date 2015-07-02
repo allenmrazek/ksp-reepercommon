@@ -8,16 +8,16 @@ namespace ReeperCommon.Serialization
 {
     public class ConfigNodeSerializer : IConfigNodeSerializer
     {
-        private readonly IFieldInfoQuery _serializableFieldQuery;
+        private readonly IGetFieldInfo _serializableGetField;
         private ISurrogateSelector _surrogateSelector;
 
-        public ConfigNodeSerializer(ISurrogateSelector selector, IFieldInfoQuery serializableFieldQuery)
+        public ConfigNodeSerializer(ISurrogateSelector selector, IGetFieldInfo serializableGetField)
         {
             if (selector == null) throw new ArgumentNullException("selector");
-            if (serializableFieldQuery == null) throw new ArgumentNullException("serializableFieldQuery");
+            if (serializableGetField == null) throw new ArgumentNullException("serializableGetField");
 
             SurrogateSelector = selector;
-            _serializableFieldQuery = serializableFieldQuery;
+            _serializableGetField = serializableGetField;
         }
 
 
@@ -132,7 +132,7 @@ namespace ReeperCommon.Serialization
 
         private IEnumerable<FieldInfo> GetSerializableFields(object target)
         {
-            return _serializableFieldQuery.Get(target);
+            return _serializableGetField.Get(target);
         }
     }
 }
