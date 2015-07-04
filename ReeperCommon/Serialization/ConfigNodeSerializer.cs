@@ -126,8 +126,7 @@ namespace ReeperCommon.Serialization
 
                 surrogate.Single().Deserialize(target, field, config, this);
             }
-        
-    }
+        }
 
 
         private IEnumerable<FieldInfo> GetSerializableFields(object target)

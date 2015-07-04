@@ -99,7 +99,12 @@
     <Compile Include="Serialization\ConfigNodeSerializer.cs" />
     <Compile Include="Serialization\DefaultSurrogateProvider.cs" />
     <Compile Include="Serialization\DefaultSurrogateSelector.cs" />
+    <Compile Include="Serialization\GetSerializationSurrogates.cs" />
+    <Compile Include="Serialization\GetSurrogateSupportedTypes.cs" />
+    <Compile Include="Serialization\IGetSerializationSurrogates.cs" />
+    <Compile Include="Serialization\IGetSurrogateSupportedTypes.cs" />
     <Compile Include="Serialization\IReeperPersistent.cs" />
+    <Compile Include="Serialization\ISerializationNative.cs" />
     <Compile Include="Serialization\ISurrogateProvider.cs" />
     <Compile Include="Serialization\ReeperPersistentAttribute.cs" />
     <Compile Include="Serialization\IConfigNodeSerializer.cs" />
@@ -107,6 +112,7 @@
     <Compile Include="Serialization\ISerializationSurrogate.cs" />
     <Compile Include="Serialization\ISurrogateSelector.cs" />
     <Compile Include="Serialization\GetSerializableField.cs" />
+    <Compile Include="Serialization\SurrogateProvider.cs" />
     <Compile Include="Serialization\Surrogates\BooleanSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ColorSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ConfigNodeSurrogate.cs" />
@@ -120,7 +126,6 @@
     <Compile Include="Serialization\Surrogates\StringSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector2Surrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector3Surrogate.cs" />
-    <Compile Include="Utility\PersistentRect.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

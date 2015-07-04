@@ -8,16 +8,37 @@ namespace ReeperCommon.Serialization
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class DefaultSurrogateProvider : ISurrogateProvider
     {
+        private readonly IGetSerializationSurrogates _getSerializationSurrogates;
+        private readonly IGetSurrogateSupportedTypes _getSurrogateSupportedTypes;
+
+
+        public DefaultSurrogateProvider() : this(new GetSerializationSurrogates(
+            new GetSurrogateSupportedTypes()), 
+            new GetSurrogateSupportedTypes())
+        {
+        }
+
+
+        public DefaultSurrogateProvider(IGetSerializationSurrogates getSerializationSurrogates, IGetSurrogateSupportedTypes getSurrogateSupportedTypes)
+        {
+            if (getSerializationSurrogates == null) throw new ArgumentNullException("getSerializationSurrogates");
+            if (getSurrogateSupportedTypes == null) throw new ArgumentNullException("getSurrogateSupportedTypes");
+
+            _getSerializationSurrogates = getSerializationSurrogates;
+            _getSurrogateSupportedTypes = getSurrogateSupportedTypes;
+        }
+
+
         public virtual IEnumerable<KeyValuePair<Type, ISerializationSurrogate>> Get()
         {
             return GetTargets()
-                .SelectMany(targetAssembly => targetAssembly.GetTypes())
-                .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract && !t.ContainsGenericParameters)
+                .SelectMany(targetAssembly => _getSerializationSurrogates.Get(targetAssembly))
+                .Where(t => !t.IsAbstract && !t.ContainsGenericParameters)
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
-                .Where(ImplementsGenericSerializationSurrogateInterface)
+                .Where(t => _getSurrogateSupportedTypes.Get(t).Any())
                 .SelectMany(
                     t =>
-                        GetSerializationTargetType(t)
+                        _getSurrogateSupportedTypes.Get(t)
                             .Select(
                                 surrogateIdentifier =>
                                     new KeyValuePair<Type, ISerializationSurrogate>(surrogateIdentifier,
@@ -25,24 +46,9 @@ namespace ReeperCommon.Serialization
         }
 
 
-        protected virtual IEnumerable<Assembly> GetTargets()
+        public virtual IEnumerable<Assembly> GetTargets()
         {
             return new [] {Assembly.GetExecutingAssembly()};
-        }
-
-
-        private static bool ImplementsGenericSerializationSurrogateInterface(Type typeCheck)
-        {
-            return GetSerializationTargetType(typeCheck).Any();
-        }
-
-
-        private static IEnumerable<Type> GetSerializationTargetType(Type typeCheck)
-        {
-            return typeCheck.GetInterfaces()
-                .Where(interfaceType => interfaceType.IsGenericType &&
-                                        typeof (ISerializationSurrogate).IsAssignableFrom(interfaceType))
-                .Select(interfaceType => interfaceType.GetGenericArguments().First());
         }
     }
 }
