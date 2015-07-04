@@ -1,11 +1,9 @@
-﻿using System.Reflection;
-
-namespace ReeperCommon.Serialization
+﻿namespace ReeperCommon.Serialization
 {
-    public interface ISerializationSurrogate
+    // This serializer is for type that don't know how they're serialized and instead a 
+    // second type (the surrogate) should do it for them
+    public interface ISerializationSurrogate : ISerializer
     {
-        void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter);
-        void Deserialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter);
     }
 
     public interface ISerializationSurrogate<T> : ISerializationSurrogate

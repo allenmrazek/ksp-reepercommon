@@ -1,12 +1,9 @@
-﻿using System.Reflection;
-
-namespace ReeperCommon.Serialization
+﻿namespace ReeperCommon.Serialization
 {
     // This serializer is used for types that supply their own internal serialization routines
     // (implement IReeperPersistent, in other words)
-    public interface ISerializationNative
+    public interface ISerializationNative : ISerializer
     {
-        void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter);
-        void Deserialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter);
+
     }
 }
