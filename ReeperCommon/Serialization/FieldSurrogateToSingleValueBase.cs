@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Reflection;
-using System.Runtime.Serialization;
+using ReeperCommon.Serialization.Exceptions;
 
-namespace ReeperCommon.Serialization.Surrogates
+namespace ReeperCommon.Serialization
 {
     public abstract class FieldSurrogateToSingleValueBase<T> : ISerializationSurrogate<T>
     {
@@ -33,17 +32,26 @@ namespace ReeperCommon.Serialization.Surrogates
         //}
 
 
-        //protected virtual string GetFieldContentsAsString(T instance)
-        //{
-        //    return instance.ToString();
-        //}
+        protected virtual string GetFieldContentsAsString(T instance)
+        {
+            return instance.ToString();
+        }
 
-        //protected abstract T GetFieldContentsFromString(string value);
+
+        protected abstract T GetFieldContentsFromString(string value);
+
 
         public void Serialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
-            throw new NotImplementedException();
+            if (config.HasValue(uniqueKey))
+                throw new ConfigNodeDuplicateKeyException(uniqueKey);
+
+            if (target.GetType() != typeof (T))
+                throw new WrongSerializerException(target.GetType(), typeof (T));
+
+            config.AddValue(uniqueKey, GetFieldContentsAsString((T)target));
         }
+
 
         public object Deserialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {

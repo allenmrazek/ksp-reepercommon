@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization
 {
@@ -54,14 +55,6 @@ namespace ReeperCommon.Serialization
             if (source == null) throw new ArgumentNullException("source");
             if (config == null) throw new ArgumentNullException("config");
 
-            //if (source is IPersistenceSave)
-            //    (source as IPersistenceSave).PersistenceSave();
-
-            // do we have a specialty serializer for this type? if so, we should use it
-            var objectSerializer = SerializerSelector.GetSerializer(source.GetType());
-
-            if (objectSerializer.Any())
-                objectSerializer.Single().Serialize(source, source.GetType().Name, config, this);
 
             // we'll also serialize its fields anyway. Presumably the coder has explicitly
             // marked them to be serialized so it'll be expected anyway
@@ -75,6 +68,13 @@ namespace ReeperCommon.Serialization
 
                 SerializeField(source, config, field);
             });
+
+
+            // do we have a specialty serializer for this type? if so, we should use it
+            var objectSerializer = SerializerSelector.GetSerializer(source.GetType());
+
+            if (objectSerializer.Any())
+                objectSerializer.Single().Serialize(source, source.GetType().Name, config, this);
         }
     
 

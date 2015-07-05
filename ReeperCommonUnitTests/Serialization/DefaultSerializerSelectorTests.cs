@@ -19,7 +19,7 @@ namespace ReeperCommonUnitTests.Serialization
         }
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Returns_None_IfNoSerializersExist_Test(DefaultSerializerSelector sut, string data)
+        public void GetSerializer_Returns_None_IfNoSerializersExist(DefaultSerializerSelector sut, string data)
         {
             var result = sut.GetSerializer(typeof (DataAdapterDataAttribute));
 
@@ -28,7 +28,7 @@ namespace ReeperCommonUnitTests.Serialization
 
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Returns_NativeSerializer_Test(DefaultSerializerSelector sut)
+        public void GetSerializer_Returns_NativeSerializer(DefaultSerializerSelector sut)
         {
             var nativeType = Substitute.For<IReeperPersistent>();
 
@@ -39,7 +39,7 @@ namespace ReeperCommonUnitTests.Serialization
 
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Prefers_NativeSerializer_Over_Surrogate_Test(DefaultSerializerSelector sut)
+        public void GetSerializer_Prefers_NativeSerializer_Over_Surrogate(DefaultSerializerSelector sut)
         {
             var nativeType = Substitute.For<IReeperPersistent>();
             sut.AddSurrogate(nativeType.GetType(), Substitute.For<ISerializationSurrogate>());
@@ -52,7 +52,7 @@ namespace ReeperCommonUnitTests.Serialization
 
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Uses_Surrogate_IfTypeDoesntHaveNativeSerializer_Test(DefaultSerializerSelector sut, ISerializationSurrogate<string> surrogate, string data)
+        public void GetSerializer_Uses_Surrogate_IfTypeDoesntHaveNativeSerializer(DefaultSerializerSelector sut, ISerializationSurrogate<string> surrogate, string data)
         {
             sut.AddSurrogate(surrogate);
 

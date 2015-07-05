@@ -7,7 +7,7 @@ using ReeperCommon.Extensions;
 
 namespace ReeperCommon.Containers
 {
-    public class Maybe<T> : IEnumerable<T>
+    public struct Maybe<T> : IEnumerable<T>
     {
         public readonly static Maybe<T> Nothing = new Maybe<T>();
 

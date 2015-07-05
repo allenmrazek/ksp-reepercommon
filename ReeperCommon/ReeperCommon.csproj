@@ -96,9 +96,11 @@
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\Exceptions\ConfigNodeDuplicateKeyException.cs" />
     <Compile Include="Serialization\ConfigNodeSerializer.cs" />
     <Compile Include="Serialization\DefaultSurrogateProvider.cs" />
     <Compile Include="Serialization\DefaultSerializerSelector.cs" />
+    <Compile Include="Serialization\Exceptions\NoConversionException.cs" />
     <Compile Include="Serialization\GetSerializationSurrogates.cs" />
     <Compile Include="Serialization\GetSurrogateSupportedTypes.cs" />
     <Compile Include="Serialization\IGetSerializationSurrogates.cs" />
@@ -108,7 +110,7 @@
     <Compile Include="Serialization\ISerializer.cs" />
     <Compile Include="Serialization\ISurrogateProvider.cs" />
     <Compile Include="Serialization\ITarget.cs" />
-    <Compile Include="Serialization\NoSerializerFoundException.cs" />
+    <Compile Include="Serialization\Exceptions\NoSerializerFoundException.cs" />
     <Compile Include="Serialization\ReeperPersistentAttribute.cs" />
     <Compile Include="Serialization\IConfigNodeSerializer.cs" />
     <Compile Include="Serialization\IGetFieldInfo.cs" />
@@ -117,21 +119,21 @@
     <Compile Include="Serialization\GetSerializableField.cs" />
     <Compile Include="Serialization\NativeSerializer.cs" />
     <Compile Include="Serialization\SurrogateProvider.cs" />
-    <Compile Include="Serialization\Surrogates\BooleanSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\old\BooleanSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ColorSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ConfigNodeSurrogate.cs" />
-    <Compile Include="Serialization\Surrogates\DoubleSurrogate.cs" />
-    <Compile Include="Serialization\Surrogates\FloatSurrogate.cs" />
-    <Compile Include="Serialization\Surrogates\IntegerSurrogate.cs" />
-    <Compile Include="Serialization\Surrogates\PrimitiveSurrogateBase.cs" />
-    <Compile Include="Serialization\Surrogates\FieldSurrogateToSingleValueBase.cs" />
+    <Compile Include="Serialization\Surrogates\old\DoubleSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\old\FloatSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\old\IntegerSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\PrimitiveSurrogate.cs" />
+    <Compile Include="Serialization\FieldSurrogateToSingleValueBase.cs" />
     <Compile Include="Serialization\Surrogates\QuaternionSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\RectSurrogate.cs" />
-    <Compile Include="Serialization\Surrogates\StringSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\old\StringSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector2Surrogate.cs" />
     <Compile Include="Serialization\Surrogates\Vector3Surrogate.cs" />
-    <Compile Include="Serialization\WrongNativeSerializerException.cs" />
-    <Compile Include="Serialization\WrongSerializerException.cs" />
+    <Compile Include="Serialization\Exceptions\WrongNativeSerializerException.cs" />
+    <Compile Include="Serialization\Exceptions\WrongSerializerException.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReeperCommon.Serialization
+namespace ReeperCommon.Serialization.Exceptions
 {
     public class NoSerializerFoundException : Exception
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReeperCommon.Serialization
+namespace ReeperCommon.Serialization.Exceptions
 {
     // don't expect to see this unless I've screwed up somewhere with the serializer selector
     public class WrongSerializerException : Exception

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization
 {

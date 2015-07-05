@@ -11,12 +11,12 @@ namespace ReeperCommon.Serialization
     /// </summary>
     public class GetSerializationSurrogates : IGetSerializationSurrogates
     {
-        private readonly IGetSurrogateSupportedTypes _surrogateSupportedTypesQuery;
+        public readonly IGetSurrogateSupportedTypes SurrogateSupportedTypesQuery;
 
         public GetSerializationSurrogates(IGetSurrogateSupportedTypes surrogateSupportedTypesQuery)
         {
             if (surrogateSupportedTypesQuery == null) throw new ArgumentNullException("surrogateSupportedTypesQuery");
-            _surrogateSupportedTypesQuery = surrogateSupportedTypesQuery;
+            SurrogateSupportedTypesQuery = surrogateSupportedTypesQuery;
         }
 
 
@@ -27,12 +27,24 @@ namespace ReeperCommon.Serialization
                 .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract && !t.ContainsGenericParameters)
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
                 .Where(ImplementsGenericSerializationSurrogateInterface);
+
+            //var potentials = fromAssembly
+            //    .GetTypes()
+            //    .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract && !t.ContainsGenericParameters).ToList();
+
+            //var withValidConstructors = potentials
+            //    .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic).ToList();
+
+            //var thatImplementInterface = withValidConstructors
+            //    .Where(ImplementsGenericSerializationSurrogateInterface).ToList();
+
+            //return thatImplementInterface;
         }
 
 
         private bool ImplementsGenericSerializationSurrogateInterface(Type typeCheck)
         {
-            return _surrogateSupportedTypesQuery.Get(typeCheck).Any();
+            return SurrogateSupportedTypesQuery.Get(typeCheck).Any();
         }
     }
 }
