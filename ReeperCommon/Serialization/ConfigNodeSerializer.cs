@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -11,6 +12,13 @@ namespace ReeperCommon.Serialization
     {
         private readonly IGetFieldInfo _serializableGetField;
         private ISerializerSelector _serializerSelector;
+
+
+        private delegate void FieldAction(object target, ConfigNode config, FieldInfo fieldInfo);
+
+        private delegate void ObjectAction(
+            ISerializer objectSerializer, object target, string key, ConfigNode config, IConfigNodeSerializer serializer
+            );
 
 
 
@@ -38,15 +46,12 @@ namespace ReeperCommon.Serialization
 
         public void Deserialize(object target, ConfigNode config)
         {
-            //if (target == null) throw new ArgumentNullException("target");
-            //if (config == null) throw new ArgumentNullException("config");
+            if (target == null) throw new ArgumentNullException("target");
+            if (config == null) throw new ArgumentNullException("config");
 
-            //GetSerializableFields(target).ToList().ForEach(field => DeserializeField(target, config, field));
-
-            //if (target is IPersistenceLoad)
-            //    (target as IPersistenceLoad).PersistenceLoad();
-
-            throw new NotImplementedException();
+            DoOperation(target, config, DeserializeField,
+                (serializer, o, key, node, nodeSerializer) =>
+                    serializer.Deserialize(target.GetType(), target, target.GetType().Name, config, nodeSerializer));
         }
 
 
@@ -55,28 +60,30 @@ namespace ReeperCommon.Serialization
             if (source == null) throw new ArgumentNullException("source");
             if (config == null) throw new ArgumentNullException("config");
 
+            DoOperation(source, config, SerializeField,
+                (serializer, target, key, node, nodeSerializer) =>
+                    serializer.Serialize(target.GetType(), target, target.GetType().Name, config, nodeSerializer));
+        }
 
-            // we'll also serialize its fields anyway. Presumably the coder has explicitly
-            // marked them to be serialized so it'll be expected anyway
-            var serializableFields = GetSerializableFields(source).ToList();
 
-            serializableFields.ForEach(field =>
-            {
-                if (config.HasValue(field.Name))
-                    throw new SerializationException("ConfigNode already has a value for field \"" + field.Name +
-                                                     "\" assigned");
+        private void DoOperation(object target, ConfigNode config, FieldAction fieldAction, ObjectAction objectAction)
+        {
+            if (target == null) throw new ArgumentNullException("target");
+            if (config == null) throw new ArgumentNullException("config");
+            if (fieldAction == null) throw new ArgumentNullException("fieldAction");
+            if (objectAction == null) throw new ArgumentNullException("objectAction");
 
-                SerializeField(source, config, field);
-            });
+            var serializableFields = GetSerializableFields(target).ToList();
+
+            serializableFields.ForEach(field => fieldAction(target, config, field));
 
 
             // do we have a specialty serializer for this type? if so, we should use it
-            var objectSerializer = SerializerSelector.GetSerializer(source.GetType());
+            var objectSerializer = SerializerSelector.GetSerializer(target.GetType());
 
             if (objectSerializer.Any())
-                objectSerializer.Single().Serialize(source, source.GetType().Name, config, this);
+                objectAction(objectSerializer.Single(), target, target.GetType().Name, config, this);
         }
-    
 
 
         private void SerializeField(object sourceField, ConfigNode config, FieldInfo field)
@@ -86,38 +93,31 @@ namespace ReeperCommon.Serialization
             if (field == null) throw new ArgumentNullException("field");
 
             var fieldInstance = field.GetValue(sourceField);
-
-            // we might not need a surrogate to serialize this field if it contains appropriate
-            // methods
-            //if (fieldInstance is IReeperPersistent)
-            //{
-            //    if (config.HasNode(field.Name))
-            //        throw new SerializationException("Config already has a node named \"" + field.Name + "\"");
-
-            //    var subNode = config.AddNode(field.Name);
-
-            //    Serialize(fieldInstance, subNode);
-            //    (fieldInstance as IReeperPersistent).Serialize(this, subNode);
-            //}
-            //else
-            //{
-
             var serializer = SerializerSelector.GetSerializer(field.FieldType);
 
             if (!serializer.Any())
                 throw new NoSerializerFoundException(field.FieldType);
 
-            serializer.Single().Serialize(fieldInstance, field.Name, config, this);
-
-            //}
+            serializer.Single().Serialize(field.FieldType, fieldInstance, field.Name, config, this);
         }
 
 
 
         private void DeserializeField(object targetField, ConfigNode config, FieldInfo field)
         {
+            if (targetField == null) throw new ArgumentNullException("targetField");
+            if (config == null) throw new ArgumentNullException("config");
+            if (field == null) throw new ArgumentNullException("field");
 
-            throw new NotImplementedException();
+            var fieldInstance = field.GetValue(targetField);
+            var serializer = SerializerSelector.GetSerializer(field.FieldType);
+
+            if (!serializer.Any())
+                throw new NoSerializerFoundException(field.FieldType);
+
+            var result = serializer.Single().Deserialize(field.FieldType, fieldInstance, field.Name, config, this);
+
+            field.SetValue(targetField, result);
 
             //if (targetField == null) throw new ArgumentNullException("targetField");
             //if (config == null) throw new ArgumentNullException("config");

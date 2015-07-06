@@ -41,19 +41,20 @@ namespace ReeperCommon.Serialization
         protected abstract T GetFieldContentsFromString(string value);
 
 
-        public void Serialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+
+        public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (config.HasValue(uniqueKey))
                 throw new ConfigNodeDuplicateKeyException(uniqueKey);
 
-            if (target.GetType() != typeof (T))
-                throw new WrongSerializerException(target.GetType(), typeof (T));
+            if ((target != null ? target.GetType() : type) != typeof(T))
+                throw new WrongSerializerException(type, typeof(T));
 
             config.AddValue(uniqueKey, GetFieldContentsAsString((T)target));
         }
 
 
-        public object Deserialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public object Deserialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
             throw new NotImplementedException();
         }

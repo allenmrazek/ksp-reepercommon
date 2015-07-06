@@ -46,12 +46,12 @@ namespace ReeperCommon.Serialization.Surrogates
 
 
 
-        public void Serialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
             throw new NotImplementedException();
         }
 
-        public object Deserialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public object Deserialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
             throw new NotImplementedException();
         }

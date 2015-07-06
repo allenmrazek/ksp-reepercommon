@@ -18,7 +18,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public void Serialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (config == null) throw new ArgumentNullException("config");
             if (serializer == null) throw new ArgumentNullException("serializer");
@@ -40,7 +40,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public object Deserialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public object Deserialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
 
             throw new NotImplementedException();

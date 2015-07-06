@@ -15,21 +15,26 @@ namespace ReeperCommon.Serialization.Surrogates
         ISerializationSurrogate<float>,
         ISerializationSurrogate<double>
     {
-        public void Serialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
+            if (target == null)
+                return; // don't serialize nulls
+            if (string.IsNullOrEmpty(uniqueKey)) throw new ArgumentNullException("uniqueKey");
+            if (config == null) throw new ArgumentNullException("config");
+            if (serializer == null) throw new ArgumentNullException("serializer");
+
+            CheckSupportedTypes(type);
+
             if (config.HasValue(uniqueKey))
                 throw new ConfigNodeDuplicateKeyException(uniqueKey);
 
-            if (GetSupportedTypes().All(t => t != target.GetType()))
-                throw new NotSupportedException(target.GetType().FullName + " is not supported by this surrogate. It handles " + string.Join(",", GetSupportedTypes().Select(t => t.FullName).ToArray()));
-
-            var tc = TypeDescriptor.GetConverter(target.GetType());
+            var tc = TypeDescriptor.GetConverter(type);
 
             if (!tc.CanConvertTo(typeof(string)))
-                throw new NoConversionException(target.GetType(), typeof (string));
+                throw new NoConversionException(type, typeof (string));
 
             if (!tc.IsValid(target))
-                throw new InvalidDataException("target data is invalid for " + target.GetType().FullName + " TypeConverter");
+                throw new InvalidDataException("target data is invalid for " + type.FullName + " TypeConverter");
 
             var strValue = tc.ConvertToInvariantString(target);
 
@@ -37,9 +42,30 @@ namespace ReeperCommon.Serialization.Surrogates
         }
 
 
-        public object Deserialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public object Deserialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
-            throw new NotImplementedException();
+            if (config == null) throw new ArgumentNullException("config");
+            if (serializer == null) throw new ArgumentNullException("serializer");
+
+            if (string.IsNullOrEmpty(uniqueKey))
+                throw new ArgumentNullException("uniqueKey");
+
+            CheckSupportedTypes(type);
+
+            if (!config.HasValue(uniqueKey))
+                return target; // no changes
+
+            var tc = TypeDescriptor.GetConverter(type);
+
+            if (!tc.CanConvertFrom(typeof(string)))
+                throw new NoConversionException(typeof(string), type);
+
+            var strValue = config.GetValue(uniqueKey);
+
+            if (!tc.IsValid(strValue))
+                throw new InvalidDataException("target data \"" + strValue + "\" is invalid for " + target.GetType().FullName + " TypeConverter");
+
+            return tc.ConvertFromInvariantString(strValue);
         }
 
 
@@ -48,6 +74,13 @@ namespace ReeperCommon.Serialization.Surrogates
             return GetType()
                 .GetInterfaces()
                 .SelectMany(i => i.GetGenericArguments());
+        }
+
+
+        private void CheckSupportedTypes(Type targetType)
+        {
+            if (GetSupportedTypes().All(t => t != targetType))
+                throw new NotSupportedException(targetType.FullName + " is not supported by this surrogate. It handles " + string.Join(",", GetSupportedTypes().Select(t => t.FullName).ToArray()));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using ReeperCommon.Extensions;
 using UnityEngine;
@@ -39,14 +40,15 @@ namespace ReeperCommon.Serialization.Surrogates
         //    field.SetValue(fieldOwner, r);
         //}
 
-        public void Serialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+
+        public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public object Deserialize(object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public object Deserialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
