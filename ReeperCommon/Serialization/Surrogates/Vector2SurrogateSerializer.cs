@@ -3,7 +3,7 @@
 namespace ReeperCommon.Serialization.Surrogates
 {
 // ReSharper disable once UnusedMember.Global
-    public class Vector2Surrogate : FieldSurrogateToSingleValueBase<Vector2>
+    public class Vector2SurrogateSerializer : FieldSurrogateSerializerToSingleValueBase<Vector2>
     {
         protected override string GetFieldContentsAsString(Vector2 instance)
         {

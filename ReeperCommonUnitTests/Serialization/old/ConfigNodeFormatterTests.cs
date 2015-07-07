@@ -16,11 +16,11 @@
 //    public class ConfigNodeFormatterTests
 //    {
 //        [Theory, AutoDomainData]
-//        public void Serialize_SimplePersistentObject([Frozen] SimplePersistentObject testObject, ConfigNode config, [Frozen] GetSerializableField field)
+//        public void Serialize_SimplePersistentObject([Frozen] SimplePersistentObject testObject, ConfigNode config, [Frozen] GetSerializableFields field)
 //        {
-//            //var selector = Substitute.For<ISerializerSelector>();
+//            //var selector = Substitute.For<IConfigNodeItemSerializerSelector>();
 
-//            //selector.GetSurrogate(Arg.Any<Type>()).Returns(Maybe<ISerializationSurrogate>.With(Substitute.For<ISerializationSurrogate>()));
+//            //selector.GetSurrogate(Arg.Any<Type>()).Returns(Maybe<ISurrogateSerializer>.With(Substitute.For<ISurrogateSerializer>()));
 
 //            //var sut = new ConfigNodeSerializer(selector, field);
 
@@ -32,9 +32,9 @@
 
 //        [Theory, AutoDomainData]
 //        public void Serialize_SimplePersistentObject_Real([Frozen] ComplexPersistentObject testObject, ConfigNode config,
-//            [Frozen] GetSerializableField field)
+//            [Frozen] GetSerializableFields field)
 //        {
-//            var formatter = new ConfigNodeSerializer(new DefaultSerializerSelector(new DefaultSurrogateProvider()), new GetSerializableField());
+//            var formatter = new ConfigNodeSerializer(new DefaultConfigNodeItemSerializerSelector(new DefaultSurrogateProvider()), new GetSerializableFields());
 
 //            formatter.Serialize(testObject, config);
 
@@ -51,17 +51,17 @@
 //        [Theory, AutoDomainData]
 //        public void Deserialize_SimplePersistentObject([Frozen] SimplePersistentObject testObject, ConfigNode config)
 //        {
-//            //var surrogate = Substitute.For<ISerializationSurrogate>();
-//            //var selector = Substitute.For<ISerializerSelector>();
+//            //var surrogateSerializer = Substitute.For<ISurrogateSerializer>();
+//            //var selector = Substitute.For<IConfigNodeItemSerializerSelector>();
 
 //            //selector.GetSurrogate(Arg.Any<Type>())
-//            //    .Returns(Maybe<ISerializationSurrogate>.With(surrogate));
+//            //    .Returns(Maybe<ISurrogateSerializer>.With(surrogateSerializer));
 
-//            //var sut = new ConfigNodeSerializer(selector, new GetSerializableField());
+//            //var sut = new ConfigNodeSerializer(selector, new GetSerializableFields());
 
 //            //sut.Deserialize(testObject, config);
 
-//            //surrogate.Received(1)
+//            //surrogateSerializer.Received(1)
 //            //    .Deserialize(
 //            //        Arg.Any<object>(),
 //            //        Arg.Any<FieldInfo>(),
@@ -74,13 +74,13 @@
 
 //        [Theory, AutoDomainData]
 //        public void Serialize_ComplexPersistentObject_EnsureIReeperPersistent_Save_MethodUsed(
-//            ComplexPersistentObject testObject, ConfigNode config, GetSerializableField field)
+//            ComplexPersistentObject testObject, ConfigNode config, GetSerializableFields field)
 //        {
 //            //var mockedPersist = Substitute.For<IReeperPersistent>();
-//            //var surrogateSelector = Substitute.For<ISerializerSelector>();
+//            //var surrogateSelector = Substitute.For<IConfigNodeItemSerializerSelector>();
 
 //            //surrogateSelector.GetSurrogate(Arg.Any<Type>())
-//            //    .Returns(Maybe<ISerializationSurrogate>.With(Substitute.For<ISerializationSurrogate>()));
+//            //    .Returns(Maybe<ISurrogateSerializer>.With(Substitute.For<ISurrogateSerializer>()));
 
 //            //testObject.MyTestObject = mockedPersist;
 
@@ -95,13 +95,13 @@
 
 //        [Theory, AutoDomainData]
 //        public void Deserialize_ComplexPersistentObject_EnsureIReeperPersistent_Load_MethodUsed(
-//            ComplexPersistentObject testObject, ConfigNode config, GetSerializableField field)
+//            ComplexPersistentObject testObject, ConfigNode config, GetSerializableFields field)
 //        {
 //            //var mockedPersist = Substitute.For<IReeperPersistent>();
-//            //var surrogateSelector = Substitute.For<ISerializerSelector>();
+//            //var surrogateSelector = Substitute.For<IConfigNodeItemSerializerSelector>();
 
 //            //surrogateSelector.GetSurrogate(Arg.Any<Type>())
-//            //    .Returns(Maybe<ISerializationSurrogate>.With(Substitute.For<ISerializationSurrogate>()));
+//            //    .Returns(Maybe<ISurrogateSerializer>.With(Substitute.For<ISurrogateSerializer>()));
 
 //            //testObject.MyTestObject = mockedPersist;
 
@@ -120,16 +120,16 @@
 //        [Fact]
 //        public void ConstructorThrows_OnNull()
 //        {
-//            Assert.Throws<ArgumentNullException>(() => new ConfigNodeSerializer(null, Substitute.For<IGetFieldInfo>()));
+//            Assert.Throws<ArgumentNullException>(() => new ConfigNodeSerializer(null, Substitute.For<IGetObjectFields>()));
 //            Assert.Throws<ArgumentNullException>(
-//                () => new ConfigNodeSerializer(Substitute.For<ISerializerSelector>(), null));
+//                () => new ConfigNodeSerializer(Substitute.For<IConfigNodeItemSerializerSelector>(), null));
 //        }
 
 
 //        [Theory, AutoDomainData]
 //        public void Serialize_Throws_OnNull([Frozen] SimplePersistentObject testObject, ConfigNode config)
 //        {
-//            var sut = new ConfigNodeSerializer(Substitute.For<ISerializerSelector>(), Substitute.For<IGetFieldInfo>());
+//            var sut = new ConfigNodeSerializer(Substitute.For<IConfigNodeItemSerializerSelector>(), Substitute.For<IGetObjectFields>());
 
 //            Assert.Throws<ArgumentNullException>(() => sut.Serialize(testObject, null));
 //            Assert.Throws<ArgumentNullException>(() => sut.Serialize(null, config));
@@ -139,7 +139,7 @@
 //        [Theory, AutoDomainData]
 //        public void Deserialize_Throws_OnNull([Frozen] SimplePersistentObject targetObject, ConfigNode config)
 //        {
-//            var sut = new ConfigNodeSerializer(Substitute.For<ISerializerSelector>(), Substitute.For<IGetFieldInfo>());
+//            var sut = new ConfigNodeSerializer(Substitute.For<IConfigNodeItemSerializerSelector>(), Substitute.For<IGetObjectFields>());
 
 //            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(null, config));
 //            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(targetObject, null));

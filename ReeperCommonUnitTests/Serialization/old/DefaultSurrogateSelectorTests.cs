@@ -10,10 +10,10 @@
 //        [Fact]
 //        public void AddSurrogate_GenericTest()
 //        {
-//            //var sut = new DefaultSerializerSelector();
-//            //var surrogate = Substitute.For<ISerializationSurrogate<string>>();
+//            //var sut = new DefaultConfigNodeItemSerializerSelector();
+//            //var surrogateSerializer = Substitute.For<ISurrogateSerializer<string>>();
 
-//            //sut.AddSurrogate(surrogate);
+//            //sut.AddSurrogate(surrogateSerializer);
 
 //            //var result = sut.GetSurrogate(typeof (string));
 
@@ -24,10 +24,10 @@
 //        [Fact]
 //        public void AddSurrogate_WithTypeSpecified_Test()
 //        {
-//            //var sut = new DefaultSerializerSelector();
-//            //var surrogate = Substitute.For<ISerializationSurrogate>();
+//            //var sut = new DefaultConfigNodeItemSerializerSelector();
+//            //var surrogateSerializer = Substitute.For<ISurrogateSerializer>();
 
-//            //sut.AddSurrogate(typeof(string), surrogate);
+//            //sut.AddSurrogate(typeof(string), surrogateSerializer);
 
 //            //var result = sut.GetSurrogate(typeof(string));
 

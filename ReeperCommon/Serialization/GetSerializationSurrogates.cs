@@ -27,18 +27,6 @@ namespace ReeperCommon.Serialization
                 .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract && !t.ContainsGenericParameters)
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
                 .Where(ImplementsGenericSerializationSurrogateInterface);
-
-            //var potentials = fromAssembly
-            //    .GetTypes()
-            //    .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract && !t.ContainsGenericParameters).ToList();
-
-            //var withValidConstructors = potentials
-            //    .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic).ToList();
-
-            //var thatImplementInterface = withValidConstructors
-            //    .Where(ImplementsGenericSerializationSurrogateInterface).ToList();
-
-            //return thatImplementInterface;
         }
 
 

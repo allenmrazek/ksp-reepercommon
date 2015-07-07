@@ -29,7 +29,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public virtual IEnumerable<KeyValuePair<Type, ISerializationSurrogate>> Get()
+        public virtual IEnumerable<KeyValuePair<Type, ISurrogateSerializer>> Get()
         {
             return GetTargets()
                 .SelectMany(targetAssembly => _getSerializationSurrogates.Get(targetAssembly))
@@ -41,8 +41,8 @@ namespace ReeperCommon.Serialization
                         _getSurrogateSupportedTypes.Get(t)
                             .Select(
                                 surrogateIdentifier =>
-                                    new KeyValuePair<Type, ISerializationSurrogate>(surrogateIdentifier,
-                                        Activator.CreateInstance(t) as ISerializationSurrogate)));
+                                    new KeyValuePair<Type, ISurrogateSerializer>(surrogateIdentifier,
+                                        Activator.CreateInstance(t) as ISurrogateSerializer)));
         }
 
 

@@ -3,6 +3,7 @@ using NSubstitute;
 using Ploeh.AutoFixture;
 using ReeperCommon.Containers;
 using ReeperCommon.Serialization;
+using ReeperCommon.Serialization.Exceptions;
 using ReeperCommonUnitTests.Fixtures;
 using ReeperCommonUnitTests.TestData;
 using Xunit;
@@ -12,8 +13,18 @@ namespace ReeperCommonUnitTests.Serialization
 {
     public class ConfigNodeSerializerTests
     {
+        private class NonserializableObject
+        {
+            private class NonserializableField
+            {
+            }
+
+            [ReeperPersistent] private NonserializableField _field = new NonserializableField();
+        }
+
+
         [Theory, AutoDomainData]
-        public void ConfigNodeSerializer_WithNullParameters_Throws(ISerializerSelector selector, IGetFieldInfo fieldQuery)
+        public void ConfigNodeSerializer_WithNullParameters_Throws(IConfigNodeItemSerializerSelector selector, IGetObjectFields fieldQuery)
         {
             Assert.Throws<ArgumentNullException>(() => new ConfigNodeSerializer(null, fieldQuery));
             Assert.Throws<ArgumentNullException>(() => new ConfigNodeSerializer(selector, null));
@@ -21,24 +32,17 @@ namespace ReeperCommonUnitTests.Serialization
         }
 
 
-        [Fact()]
-        public void DeserializeTest()
-        {
-            Assert.True(false, "not implemented yet");
-        }
-
-
         [Theory, AutoDomainData] 
         public void Serialize_UsesSelector_ToSerialize_SimpleType(ConfigNode config, string data)
         {
-            var surrogate = Substitute.For<ISerializationSurrogate<string>>();
-            var selector = Substitute.For<ISerializerSelector>();
+            var surrogate = Substitute.For<ISurrogateSerializer<string>>();
+            var selector = Substitute.For<IConfigNodeItemSerializerSelector>();
 
             selector
                 .GetSerializer(Arg.Is<Type>(t => t == data.GetType()))
-                .Returns(Maybe<ISerializer>.With(surrogate));
+                .Returns(Maybe<IConfigNodeItemSerializer>.With(surrogate));
 
-            var fieldQuery = Substitute.For<IGetFieldInfo>();
+            var fieldQuery = Substitute.For<IGetObjectFields>();
             var sut = new ConfigNodeSerializer(selector, fieldQuery);
 
 
@@ -95,20 +99,17 @@ namespace ReeperCommonUnitTests.Serialization
         }
 
 
-
-
-
         [Theory, AutoDomainData]
         public void Deserialize_UsesSelector_ToSerialize_SimpleType(ConfigNode config, string data)
         {
-            var surrogate = Substitute.For<ISerializationSurrogate<string>>();
-            var selector = Substitute.For<ISerializerSelector>();
+            var surrogate = Substitute.For<ISurrogateSerializer<string>>();
+            var selector = Substitute.For<IConfigNodeItemSerializerSelector>();
 
             selector
                 .GetSerializer(Arg.Is<Type>(t => t == data.GetType()))
-                .Returns(Maybe<ISerializer>.With(surrogate));
+                .Returns(Maybe<IConfigNodeItemSerializer>.With(surrogate));
 
-            var fieldQuery = Substitute.For<IGetFieldInfo>();
+            var fieldQuery = Substitute.For<IGetObjectFields>();
             var sut = new ConfigNodeSerializer(selector, fieldQuery);
 
 
@@ -147,27 +148,38 @@ namespace ReeperCommonUnitTests.Serialization
         }
 
 
-        //[Theory, AutoDomainData]
-        //public void Serialize_WithComplextestObject_ProducesCorrectResults(ConfigNodeSerializer sut, ConfigNode config,
-        //    ComplexPersistentObject complex)
-        //{
-        //    sut.Serialize(complex, config);
+        [Theory, AutoDomainData]
+        public void Deserialize_WithComplextestObject_ProducesCorrectResults(ConfigNodeSerializer sut, ConfigNode config,
+            ComplexPersistentObject complex)
+        {
+            var fixture = new Fixture();
+            fixture.Register(() => (IReeperPersistent)new ComplexPersistentObject.InternalPersistent());
 
-        //    Assert.True(config.HasData);
-        //    Assert.True(config.nodes.Count > 0);
-        //    Assert.True(config.values.Count == 5);
-        //}
+            sut.Serialize(complex, config);
+ 
+            var actual = fixture.CreateAnonymous<ComplexPersistentObject>();
+
+            sut.Deserialize(actual, config);
+
+            Assert.True(config.HasData);
+            Assert.True(config.nodes.Count > 0);
+            Assert.True(config.values.Count == 5);
+            Assert.Equal(actual, complex);
+        }
 
 
-        //[Theory, AutoDomainData]
-        //public void Serialize_UsingNativeSerializer_Calls_IReeperPersistentOnSave_SuppliesSeparateConfigNode(ConfigNodeSerializer sut, ConfigNode config)
-        //{
-        //    var target = Substitute.For<IReeperPersistent>();
+        [Theory, AutoDomainData]
+        public void SerializeAndDeserialize_UsingType_ThatHasField_WithNoSerializer_Throws(ConfigNodeSerializer sut, ConfigNode config)
+        {
+            var notSerializable = new NonserializableObject();
+            var selector = Substitute.For<IConfigNodeItemSerializerSelector>();
+            selector.GetSerializer(Arg.Any<Type>()).Returns(ci => Maybe<IConfigNodeItemSerializer>.None);
 
-        //    sut.Serialize(target, config);
+            sut.ConfigNodeItemSerializerSelector = selector;
 
-        //    target.Received(1).Serialize(Arg.Is(sut), Arg.Is<ConfigNode>(param => !ReferenceEquals(param, config))); // IReeperPersistent should have its OWN node
-        //    target.DidNotReceive().Deserialize(Arg.Any<IConfigNodeSerializer>(), Arg.Any<ConfigNode>());
-        //}
+            Assert.Throws<NoSerializerFoundException>(() => sut.Serialize(notSerializable, config));
+            Assert.Throws<NoSerializerFoundException>(() => sut.Deserialize(notSerializable, config));
+        }
     }
+
 }

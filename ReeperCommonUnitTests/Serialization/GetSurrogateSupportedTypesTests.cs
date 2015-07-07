@@ -12,7 +12,7 @@ namespace ReeperCommonUnitTests.Serialization
         [Theory, AutoDomainData]
         public void Get_WithSurrogateThatSupportsSingleType_ReturnsCorrectType(GetSurrogateSupportedTypes sut)
         {
-            var surrogate = Substitute.For<ISerializationSurrogate<T>>();
+            var surrogate = Substitute.For<ISurrogateSerializer<T>>();
 
             var actual = sut.Get(surrogate.GetType()).ToList();
 
@@ -25,7 +25,7 @@ namespace ReeperCommonUnitTests.Serialization
         [Theory, AutoDomainData]
         public void Get_WithSurrogateThatSupportsMultipleTypes_ReturnsAllSupportedTypes(GetSurrogateSupportedTypes sut)
         {
-            var surrogate = Substitute.For<ISerializationSurrogate<T>, ISerializationSurrogate<int>, ISerializationSurrogate<ConfigNode>>();
+            var surrogate = Substitute.For<ISurrogateSerializer<T>, ISurrogateSerializer<int>, ISurrogateSerializer<ConfigNode>>();
 
             var actual = sut.Get(surrogate.GetType()).ToList();
 

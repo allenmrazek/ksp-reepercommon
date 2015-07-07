@@ -3,7 +3,7 @@
 namespace ReeperCommon.Serialization.Surrogates
 {
 // ReSharper disable once UnusedMember.Global
-    public class QuaternionSurrogate : FieldSurrogateToSingleValueBase<Quaternion>
+    public class QuaternionSurrogateSerializer : FieldSurrogateSerializerToSingleValueBase<Quaternion>
     {
         protected override string GetFieldContentsAsString(Quaternion instance)
         {

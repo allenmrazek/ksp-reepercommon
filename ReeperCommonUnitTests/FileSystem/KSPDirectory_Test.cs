@@ -82,7 +82,7 @@ namespace ReeperCommonUnitTests.FileSystem
                                 .WithFile("first_second_third.txt")
                         .Build();
             
-            var allDirs = sut.RecursiveDirectories();
+            var allDirs = sut.RecursiveDirectories().ToList();
 
             Assert.NotEmpty(allDirs);
             Assert.Equal(new[] {"first", "second", "third"}, allDirs.Select(d => d.Name));

@@ -13,7 +13,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
     public class PrimitiveSurrogateTests
     {
         [Theory, AutoDomainData]
-        public void Serialize_With_NullData_ReturnsWithoutThrowing_And_DoesNotMakeAnyChanges(PrimitiveSurrogate sut, ConfigNode config, string key)
+        public void Serialize_With_NullData_ReturnsWithoutThrowing_And_DoesNotMakeAnyChanges(PrimitiveSurrogateSerializer sut, ConfigNode config, string key)
         {
             Assert.DoesNotThrow(
                 () => sut.Serialize(typeof(string), null, key, config, Substitute.For<IConfigNodeSerializer>()));
@@ -23,7 +23,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
 
 
         [Theory, AutoDomainData]
-        public void Serialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogate sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogateSerializer sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, null, config, serializer));
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, key, null, serializer));
@@ -32,7 +32,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
 
 
         [Theory, AutoDomainData]
-        public void Deserialize_With_NullData_DoesNotThrow(PrimitiveSurrogate sut, ConfigNode config, string key)
+        public void Deserialize_With_NullData_DoesNotThrow(PrimitiveSurrogateSerializer sut, ConfigNode config, string key)
         {
             Assert.DoesNotThrow(
                 () => sut.Deserialize(typeof(string), null, key, config, Substitute.For<IConfigNodeSerializer>()));
@@ -40,7 +40,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
 
 
         [Theory, AutoDomainData]
-        public void Deserialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogate sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Deserialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogateSerializer sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), data, null, config, serializer));
             Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), data, key, null, serializer));
@@ -52,7 +52,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
     public abstract class PrimitiveSurrogateTests<T>
     {
         [Theory, AutoDomainData]
-        public void Serialize_With_SupportedTypes_AddsSingleKeyToConfigNode(PrimitiveSurrogate sut, T data, ConfigNode config, string key)
+        public void Serialize_With_SupportedTypes_AddsSingleKeyToConfigNode(PrimitiveSurrogateSerializer sut, T data, ConfigNode config, string key)
         {
             sut.Serialize(typeof(T), data, key, config, Substitute.For<IConfigNodeSerializer>());
 
@@ -62,7 +62,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
 
 
         [Theory, AutoDomainData]
-        public void Deserialize_With_SupportedTypes_ResultsInExpectedValue(PrimitiveSurrogate sut, T data, ConfigNode config)
+        public void Deserialize_With_SupportedTypes_ResultsInExpectedValue(PrimitiveSurrogateSerializer sut, T data, ConfigNode config)
         {
             var serializer = Substitute.For<IConfigNodeSerializer>();
             var tc = TypeDescriptor.GetConverter(typeof (T));
@@ -80,7 +80,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
 
 
         [Theory, AutoDomainData]
-        public void Serializer_With_SupportedTypes_ThenDeserialize_ReturnsEquivalentValues(PrimitiveSurrogate sut,
+        public void Serializer_With_SupportedTypes_ThenDeserialize_ReturnsEquivalentValues(PrimitiveSurrogateSerializer sut,
             T data, ConfigNode config)
         {
             var serializer = Substitute.For<IConfigNodeSerializer>();
@@ -93,7 +93,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
 
             serializer.DidNotReceive().Serialize(Arg.Any<object>(), Arg.Any<ConfigNode>());
             serializer.DidNotReceive().Deserialize(Arg.Any<object>(), Arg.Any<ConfigNode>());
-            var tmp = serializer.DidNotReceive().SerializerSelector;
+            var tmp = serializer.DidNotReceive().ConfigNodeItemSerializerSelector;
 
             Assert.Equal(actual, expected);
             Assert.True(config.HasData);
@@ -102,7 +102,7 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
 
 
         [Theory, AutoDomainData]
-        public void GetSupportedTypes_ReturnsCorrectResults(PrimitiveSurrogate sut)
+        public void GetSupportedTypes_ReturnsCorrectResults(PrimitiveSurrogateSerializer sut)
         {
             var result = sut.GetSupportedTypes().ToList();
 

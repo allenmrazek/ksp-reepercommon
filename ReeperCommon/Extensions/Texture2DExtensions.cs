@@ -19,11 +19,11 @@ namespace ReeperCommon.Extensions
             if (original == null) throw new ArgumentNullException("original");
 
             if (original.width == 0 || original.height == 0)
-                throw new Exception("CreateReadable: Original has zero width or height or both");
+                throw new Exception("Invalid image dimensions");
 
             var finalTexture = new Texture2D(original.width, original.height);
 
-            // nbTexture isn't read or writeable ... we'll have to get tricksy
+            // isn't read or writeable ... we'll have to get tricksy
             var rt = RenderTexture.GetTemporary(original.width, original.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB, 1);
             Graphics.Blit(original, rt);
 

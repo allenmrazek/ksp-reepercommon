@@ -109,9 +109,11 @@
     <Compile Include="Serialization\DefaultSerializerSelectorTests.cs" />
     <Compile Include="Serialization\GetSerializationSurrogatesTests.cs" />
     <Compile Include="Serialization\GetSurrogateSupportedTypesTests.cs" />
+    <Compile Include="Serialization\NativeSerializerTests.cs" />
     <Compile Include="Serialization\old\ConfigNodeFormatterTests.cs" />
     <Compile Include="Serialization\old\DefaultSurrogateProviderTests.cs" />
     <Compile Include="Serialization\old\DefaultSurrogateSelectorTests.cs" />
+    <Compile Include="Serialization\ReeperPersistentMethodCallerTests.cs" />
     <Compile Include="Serialization\SerializableFieldQueryTests.cs" />
     <Compile Include="Serialization\Surrogates\PrimitiveSurrogateTests.cs" />
     <Compile Include="TestData\ComplexPersistentObject.cs" />

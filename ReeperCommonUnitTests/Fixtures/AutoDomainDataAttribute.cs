@@ -16,18 +16,19 @@ namespace ReeperCommonUnitTests.Fixtures
             Fixture.Register(() => new ConfigNode("ROOT"));
             Fixture.Register(() => new SimplePersistentObject());
             Fixture.Register(() => new ComplexPersistentObject());
-            Fixture.Register(() => new GetSerializableField());
+            Fixture.Register(() => new GetSerializableFields());
             Fixture.Register(() => new DefaultSurrogateProvider());
             Fixture.Register(() => new Rect(0f, 0f, 100f, 100f));
             Fixture.Register(
                 () =>
                     new ConfigNodeSerializer(
-                        new DefaultSerializerSelector(new SurrogateProvider(new[] {Assembly.GetExecutingAssembly(), typeof(ConfigNodeSerializer).Assembly})),
-                        new GetSerializableField()));
+                        new DefaultConfigNodeItemSerializerSelector(new SurrogateProvider(new[] {Assembly.GetExecutingAssembly(), typeof(ConfigNodeSerializer).Assembly})),
+                        new GetSerializableFields()));
 
-            Fixture.Register(() => new DefaultSerializerSelector());
+            Fixture.Register(() => new DefaultConfigNodeItemSerializerSelector());
             Fixture.Register(() => new GetSurrogateSupportedTypes());
-            Fixture.Register(() => new PrimitiveSurrogate());
+            Fixture.Register(() => new PrimitiveSurrogateSerializer());
+            Fixture.Register(() => new NativeSerializer());
         }
     }
     

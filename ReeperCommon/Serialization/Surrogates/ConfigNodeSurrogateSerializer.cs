@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace ReeperCommon.Serialization.Surrogates
 {
 // ReSharper disable once UnusedMember.Global
-    public class ConfigNodeSurrogate : ISerializationSurrogate<ConfigNode>
+    public class ConfigNodeSurrogateSerializer : ISurrogateSerializer<ConfigNode>
     {
         //public void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter)
         //{

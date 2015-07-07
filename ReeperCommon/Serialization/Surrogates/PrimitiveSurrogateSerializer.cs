@@ -8,12 +8,12 @@ using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization.Surrogates
 {
-    public class PrimitiveSurrogate : 
-        ISerializationSurrogate<string>,
-        ISerializationSurrogate<bool>,
-        ISerializationSurrogate<int>,
-        ISerializationSurrogate<float>,
-        ISerializationSurrogate<double>
+    public class PrimitiveSurrogateSerializer : 
+        ISurrogateSerializer<string>,
+        ISurrogateSerializer<bool>,
+        ISurrogateSerializer<int>,
+        ISurrogateSerializer<float>,
+        ISurrogateSerializer<double>
     {
         public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
@@ -80,7 +80,7 @@ namespace ReeperCommon.Serialization.Surrogates
         private void CheckSupportedTypes(Type targetType)
         {
             if (GetSupportedTypes().All(t => t != targetType))
-                throw new NotSupportedException(targetType.FullName + " is not supported by this surrogate. It handles " + string.Join(",", GetSupportedTypes().Select(t => t.FullName).ToArray()));
+                throw new NotSupportedException(targetType.FullName + " is not supported by this surrogateSerializer. It handles " + string.Join(",", GetSupportedTypes().Select(t => t.FullName).ToArray()));
         }
     }
 }

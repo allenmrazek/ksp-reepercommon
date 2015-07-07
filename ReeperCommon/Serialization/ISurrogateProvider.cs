@@ -5,6 +5,6 @@ namespace ReeperCommon.Serialization
 {
     public interface ISurrogateProvider
     {
-        IEnumerable<KeyValuePair<Type, ISerializationSurrogate>> Get();
+        IEnumerable<KeyValuePair<Type, ISurrogateSerializer>> Get();
     }
 }

@@ -13,13 +13,13 @@ namespace ReeperCommonUnitTests.Serialization
         [Fact()]
         public void DefaultSerializerSelectorTest()
         {
-            Assert.DoesNotThrow(() => new DefaultSerializerSelector());
-            Assert.DoesNotThrow(() => new DefaultSerializerSelector(null));
-            Assert.DoesNotThrow(() => new DefaultSerializerSelector(Substitute.For<ISurrogateProvider>()));
+            Assert.DoesNotThrow(() => new DefaultConfigNodeItemSerializerSelector());
+            Assert.DoesNotThrow(() => new DefaultConfigNodeItemSerializerSelector(null));
+            Assert.DoesNotThrow(() => new DefaultConfigNodeItemSerializerSelector(Substitute.For<ISurrogateProvider>()));
         }
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Returns_None_IfNoSerializersExist(DefaultSerializerSelector sut, string data)
+        public void GetSerializer_Returns_None_IfNoSerializersExist(DefaultConfigNodeItemSerializerSelector sut, string data)
         {
             var result = sut.GetSerializer(typeof (DataAdapterDataAttribute));
 
@@ -28,7 +28,7 @@ namespace ReeperCommonUnitTests.Serialization
 
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Returns_NativeSerializer(DefaultSerializerSelector sut)
+        public void GetSerializer_Returns_NativeSerializer(DefaultConfigNodeItemSerializerSelector sut)
         {
             var nativeType = Substitute.For<IReeperPersistent>();
 
@@ -39,28 +39,33 @@ namespace ReeperCommonUnitTests.Serialization
 
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Prefers_NativeSerializer_Over_Surrogate(DefaultSerializerSelector sut)
+        public void GetSerializer_Prefers_NativeSerializer_Over_Surrogate(DefaultConfigNodeItemSerializerSelector sut, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             var nativeType = Substitute.For<IReeperPersistent>();
-            sut.AddSurrogate(nativeType.GetType(), Substitute.For<ISerializationSurrogate>());
+            var surrogate = Substitute.For<ISurrogateSerializer>();
+
+            sut.AddSurrogate(nativeType.GetType(), surrogate);
 
             var result = sut.GetSerializer(nativeType.GetType());
 
             Assert.NotEmpty(result);
-            Assert.IsAssignableFrom<ISerializationNative>(result.Single());
+            Assert.IsAssignableFrom<ReeperPersistentMethodCaller>(result.Single());
+            Assert.IsAssignableFrom<INativeSerializer>(
+                ((ReeperPersistentMethodCaller)result.Single()).DecoratedSerializer);
         }
 
 
         [Theory, AutoDomainData]
-        public void GetSerializer_Uses_Surrogate_IfTypeDoesntHaveNativeSerializer(DefaultSerializerSelector sut, ISerializationSurrogate<string> surrogate, string data)
+        public void GetSerializer_Uses_Surrogate_IfTypeDoesntHaveNativeSerializer(DefaultConfigNodeItemSerializerSelector sut, ISurrogateSerializer<string> surrogateSerializer, string data)
         {
-            sut.AddSurrogate(surrogate);
+            sut.AddSurrogate(surrogateSerializer);
 
             var result = sut.GetSerializer(typeof (string));
 
             Assert.NotEmpty(result);
-            Assert.IsAssignableFrom<ISerializationSurrogate>(result.Single());
-            Assert.Same(surrogate, result.Single());
+            Assert.IsAssignableFrom<ReeperPersistentMethodCaller>(result.Single());
+            Assert.IsAssignableFrom<ISurrogateSerializer>(
+                ((ReeperPersistentMethodCaller) result.Single()).DecoratedSerializer);
         }
     }
 }

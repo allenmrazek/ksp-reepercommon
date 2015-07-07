@@ -5,6 +5,6 @@
         void Deserialize(object target, ConfigNode config);
         void Serialize(object source, ConfigNode config);
 
-        ISerializerSelector SerializerSelector { get; set; }
+        IConfigNodeItemSerializerSelector ConfigNodeItemSerializerSelector { get; set; }
     }
 }
