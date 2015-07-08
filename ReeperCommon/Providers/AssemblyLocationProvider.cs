@@ -21,7 +21,7 @@ namespace ReeperCommon.Providers
         {
             var laLocation = AssemblyLoader.loadedAssemblies.FirstOrDefault(la => ReferenceEquals(la.assembly, target));
 
-            return laLocation == null ? Maybe<IDirectory>.None : _fsFactory.GetGameDataDirectory().Directory(new KSPUrlIdentifier(laLocation.url));
+            return laLocation == null ? Maybe<IDirectory>.None : _fsFactory.GameData.Directory(new KSPUrlIdentifier(laLocation.url));
         }
     }
 }

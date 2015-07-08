@@ -12,6 +12,25 @@ namespace ReeperCommonUnitTests.Serialization
 {
     public class NativeSerializerTests
     {
+        private class DefaultConstructableType : IReeperPersistent
+        {
+            public DefaultConstructableType()
+            {
+                
+            }
+
+            public void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
+            {
+                
+            }
+
+            public void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
+            {
+
+            }
+        }
+
+
         [Theory, AutoDomainData]
         public void Serialize_WithNullParameters_Throws(string key, ConfigNode config)
         {
@@ -55,6 +74,15 @@ namespace ReeperCommonUnitTests.Serialization
 
 
         [Theory, AutoDomainData]
+        public void Serialize_WithTypeThatIsNotIReeperPersistent_Throws(NativeSerializer sut, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var testObject = Substitute.For<IPersistenceSave>();
+
+            Assert.Throws<ArgumentException>(() => sut.Serialize(testObject.GetType(), testObject, key, config, serializer));
+        }
+
+
+        [Theory, AutoDomainData]
         public void Deserialize_CallsIReeperPersistent_Deserialize_WithNewNode(NativeSerializer sut, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             var testObject = Substitute.For<IReeperPersistent>();
@@ -65,6 +93,69 @@ namespace ReeperCommonUnitTests.Serialization
             testObject.Received(1).Deserialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && config.GetNodes().Any(n => ReferenceEquals(n, cfg))));
         }
 
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithNoConfigValue_ReturnsUnchangedTarget(NativeSerializer sut, string key,
+            ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var expected = Substitute.For<IReeperPersistent>();
+
+            var actual = sut.Deserialize(expected.GetType(), expected, key, config, serializer);
+
+            Assert.Same(expected, actual);
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithNullTarget_WithReferenceType_ThrowsWhenNoDefaultConstructor(NativeSerializer sut,
+            string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var expectedType = Substitute.For<IReeperPersistent>();
+            config.AddNode(key);
+
+            Assert.Throws<NoDefaultValueException>(() => sut.Deserialize(expectedType.GetType(), null, key, config, serializer));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithNullTarget_WithDifferentType_Throws(NativeSerializer sut,
+            string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var expectedType = Substitute.For<IReeperPersistent>();
+            var badType = Substitute.For<IPersistenceLoad>();
+
+            config.AddNode(key);
+
+
+            Assert.Throws<WrongNativeSerializerException>(
+// ReSharper disable once ExpressionIsAlwaysNull
+                () => sut.Deserialize(expectedType.GetType(), badType, key, config, serializer));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithTypeThatIsNotIReeperPersistent_Throws(NativeSerializer sut, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var testObject = Substitute.For<IConfigNode>();
+
+            config.AddNode(key);
+
+            Assert.Throws<ArgumentException>(() => sut.Deserialize(testObject.GetType(), testObject, key, config, serializer));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithNullReferenceType_CreatesNewInstance(NativeSerializer sut, string key,
+            ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            config.AddNode(key);
+
+            var actual = sut.Deserialize(typeof (DefaultConstructableType), null, key, config, serializer);
+
+            Assert.NotNull(actual);
+            Assert.Same(actual.GetType(), typeof (DefaultConstructableType));
+            Assert.True(actual is IReeperPersistent);
+        }
 
         // todo: make sure all types in this assembly which implement native serializers pass
     }

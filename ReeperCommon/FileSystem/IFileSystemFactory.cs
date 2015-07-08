@@ -6,6 +6,6 @@
         IDirectory GetDirectory(IUrlDir dir);
 
 
-        IDirectory GetGameDataDirectory();
+        IDirectory GameData { get; }
     }
 }

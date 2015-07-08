@@ -100,6 +100,7 @@
     <Compile Include="FileSystem\Framework\Tests\FakeDirectoryBuilder_Test.cs" />
     <Compile Include="FileSystem\Framework\Tests\UrlFileMocker_Test.cs" />
     <Compile Include="FileSystem\KSPDirectory_Test.cs" />
+    <Compile Include="FileSystem\KSPFileSystemFactoryTests.cs" />
     <Compile Include="FileSystem\KSPFile_Test.cs" />
     <Compile Include="FileSystem\KSPUrlIdentifier_Test.cs" />
     <Compile Include="Fixtures\AutoDomainDataAttribute.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Serialization\old\DefaultSurrogateSelectorTests.cs" />
     <Compile Include="Serialization\ReeperPersistentMethodCallerTests.cs" />
     <Compile Include="Serialization\SerializableFieldQueryTests.cs" />
+    <Compile Include="Serialization\Surrogates\ConfigNodeSurrogateSerializerTests.cs" />
     <Compile Include="Serialization\Surrogates\PrimitiveSurrogateTests.cs" />
     <Compile Include="TestData\ComplexPersistentObject.cs" />
     <Compile Include="TestData\SimplePersistentObject.cs" />

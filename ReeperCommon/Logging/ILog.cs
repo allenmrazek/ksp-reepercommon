@@ -10,5 +10,6 @@
         void Verbose(string format, params string[] args);
 
         ILog CreateTag(string tag);
+        
     }
 }

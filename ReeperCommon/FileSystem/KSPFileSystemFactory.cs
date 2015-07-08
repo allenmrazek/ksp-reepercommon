@@ -5,12 +5,10 @@ namespace ReeperCommon.FileSystem
 // ReSharper disable once InconsistentNaming
     public class KSPFileSystemFactory : IFileSystemFactory
     {
-        private readonly IDirectory _gameData;
-
         public KSPFileSystemFactory(IUrlDir gameData)
         {
             if (gameData == null) throw new ArgumentNullException("gameData");
-            _gameData = GetDirectory(gameData);
+            GameData = GetDirectory(gameData);
         }
 
 
@@ -28,9 +26,7 @@ namespace ReeperCommon.FileSystem
             return new KSPDirectory(this, dir);
         }
 
-        public IDirectory GetGameDataDirectory()
-        {
-            return _gameData;
-        }
+        public IDirectory GameData { get; private set; }
+
     }
 }

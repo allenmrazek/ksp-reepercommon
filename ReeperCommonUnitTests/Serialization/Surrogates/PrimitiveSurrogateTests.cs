@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using NSubstitute;
 using ReeperCommon.Serialization;
+using ReeperCommon.Serialization.Exceptions;
 using ReeperCommon.Serialization.Surrogates;
 using ReeperCommonUnitTests.Fixtures;
 using Xunit;
@@ -28,6 +30,28 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, null, config, serializer));
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, key, null, serializer));
             Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, key, config, null));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Serialize_With_ExistingKey_Throws(PrimitiveSurrogateSerializer sut, float data, string key,
+            ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            config.AddValue(key, data);
+
+            Assert.Throws<ConfigNodeDuplicateKeyException>(
+                () => sut.Serialize(data.GetType(), data, key, config, serializer));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithInvalidData_Throws(PrimitiveSurrogateSerializer sut, float data, string key,
+            ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            config.AddValue(key, "cantconverttofloat");
+
+            // throw by ConvertFromInvariantString
+            Assert.Throws<Exception>(() => sut.Deserialize(data.GetType(), data, key, config, serializer));
         }
 
 

@@ -9,8 +9,8 @@ namespace ReeperCommon.FileSystem
 // ReSharper disable once InconsistentNaming
     public class KSPDirectory : IDirectory
     {
-        private readonly IFileSystemFactory _fsFactory;
-        private readonly IUrlDir _directory;
+        public readonly IFileSystemFactory FileSystemFactory;
+        public readonly IUrlDir RootDirectory;
 
 
 
@@ -23,9 +23,9 @@ namespace ReeperCommon.FileSystem
             if (root.IsNull())
                 throw new ArgumentNullException("root");
 
-  
-            _fsFactory = fsFactory;
-            _directory = root;
+
+            FileSystemFactory = fsFactory;
+            RootDirectory = root;
         }
 
 
@@ -35,10 +35,10 @@ namespace ReeperCommon.FileSystem
         {
             if (url.Depth < 1) return Maybe<IDirectory>.None;
 
-            var dir = _directory.Children.FirstOrDefault(d => d.Name == url[0]);
+            var dir = RootDirectory.Children.FirstOrDefault(d => d.Name == url[0]);
             if (dir.IsNull()) return Maybe<IDirectory>.None;
 
-            var found = _fsFactory.GetDirectory(dir);
+            var found = FileSystemFactory.GetDirectory(dir);
 
             return url.Depth <= 1 ? 
                 Maybe<IDirectory>.With(found) : 
@@ -49,26 +49,26 @@ namespace ReeperCommon.FileSystem
 
         public IEnumerable<IDirectory> Directories()
         {
-            return _directory.Children
-                .Select(url => _fsFactory.GetDirectory(url));
+            return RootDirectory.Children
+                .Select(url => FileSystemFactory.GetDirectory(url));
         }
 
 
 
         public IEnumerable<IDirectory> RecursiveDirectories()
         {
-            return _directory.Children
-                .Select(child => _fsFactory.GetDirectory(child))
+            return RootDirectory.Children
+                .Select(child => FileSystemFactory.GetDirectory(child))
                 .Union(
-                    _directory.Children
-                        .SelectMany(child => _fsFactory.GetDirectory(child).RecursiveDirectories()));
+                    RootDirectory.Children
+                        .SelectMany(child => FileSystemFactory.GetDirectory(child).RecursiveDirectories()));
         }
 
 
 
         public Maybe<IDirectory> Parent
         {
-            get { return _directory.Parent.IsNull() ? Maybe<IDirectory>.None : Maybe <IDirectory>.With(_fsFactory.GetDirectory(_directory.Parent)); }
+            get { return RootDirectory.Parent.IsNull() ? Maybe<IDirectory>.None : Maybe<IDirectory>.With(FileSystemFactory.GetDirectory(RootDirectory.Parent)); }
         }
 
 
@@ -90,8 +90,8 @@ namespace ReeperCommon.FileSystem
         public IEnumerable<IFile> Files()
         {
             return
-                _directory.Files
-                .Select(url => _fsFactory.GetFile(this, url));
+                RootDirectory.Files
+                .Select(url => FileSystemFactory.GetFile(this, url));
         }
 
 
@@ -112,8 +112,8 @@ namespace ReeperCommon.FileSystem
         public IEnumerable<IFile> RecursiveFiles()
         {
             return
-                _directory.AllFiles
-               .Select(url => _fsFactory.GetFile(_fsFactory.GetDirectory(url.Directory), url));
+                RootDirectory.AllFiles
+               .Select(url => FileSystemFactory.GetFile(FileSystemFactory.GetDirectory(url.Directory), url));
         }
 
 
@@ -143,7 +143,7 @@ namespace ReeperCommon.FileSystem
             }
 
    
-            var file = _directory.Files
+            var file = RootDirectory.Files
                 .FirstOrDefault(f => f.Name == System.IO.Path.GetFileNameWithoutExtension(filename) &&
                                      (((System.IO.Path.HasExtension(filename) && System.IO.Path.GetExtension(filename) == ("." + f.Extension)))
                                       ||
@@ -152,26 +152,26 @@ namespace ReeperCommon.FileSystem
 
             return file.IsNull()
                 ? Maybe<IFile>.None
-                : Maybe<IFile>.With(_fsFactory.GetFile(this, file));
+                : Maybe<IFile>.With(FileSystemFactory.GetFile(this, file));
         }
 
 
 
         public string FullPath
         {
-            get { return _directory.FullPath; } // fully qualified path
+            get { return RootDirectory.FullPath; } // fully qualified path
         }
 
 
 
-        public string Url { get { return _directory.Url; } }
+        public string Url { get { return RootDirectory.Url; } }
 
 
-        public IUrlDir UrlDir { get { return _directory; }}
+        public IUrlDir UrlDir { get { return RootDirectory; }}
 
         public string Name
         {
-            get { return _directory.Name; }
+            get { return RootDirectory.Name; }
         }
     }
 }

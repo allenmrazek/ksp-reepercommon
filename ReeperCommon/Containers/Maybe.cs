@@ -42,7 +42,12 @@ namespace ReeperCommon.Containers
 
         public T Or(T other)
         {
-            return _values.Any() ? _values.Single() : other;
+            return this.Any() ? this.Single() : other;
+        }
+
+        public Maybe<T> Or(Maybe<T> other)
+        {
+            return this.Any() ? this : other;
         }
     }
 
@@ -51,6 +56,10 @@ namespace ReeperCommon.Containers
     {
         public static Maybe<T> ToMaybe<T>(this T value)
         {
+            if (!typeof (T).IsValueType)
+// ReSharper disable once CompareNonConstrainedGenericWithNull
+                return value != null ? Maybe<T>.With(value) : Maybe<T>.None;
+
             return Maybe<T>.With(value);
         }
     }

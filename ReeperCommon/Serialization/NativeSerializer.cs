@@ -48,13 +48,12 @@ namespace ReeperCommon.Serialization
 
             var canCreateDefault = type.GetConstructors().Any(ci => ci.GetParameters().Length == 0 && ci.IsPublic);
 
-            var reeperPersistent = (target ?? (canCreateDefault ? Activator.CreateInstance(type) : null)) as IReeperPersistent;
-            if (reeperPersistent == null)
-                throw canCreateDefault ? 
-                    new Exception("Target is null and failed to create a default instance")
-                    :
-                    new Exception("Failed to cast target " + type.FullName + " to " +
-                                    typeof(IReeperPersistent).FullName + " and could not create a default instance");
+            if (!canCreateDefault && target == null)
+                throw new NoDefaultValueException(type);
+
+            var reeperPersistent = (target ?? Activator.CreateInstance(type)) as IReeperPersistent;
+            if (reeperPersistent == null) // uh ... how??
+                throw new Exception("Failed to create instance of type " + type.FullName + " for unknown reasons");
 
             // we'll add a brand new node so any keys the target's serialization methods use won't
             // clash with existing keys

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using NSubstitute;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 using ReeperCommon.Serialization;
@@ -29,6 +30,7 @@ namespace ReeperCommonUnitTests.Fixtures
             Fixture.Register(() => new GetSurrogateSupportedTypes());
             Fixture.Register(() => new PrimitiveSurrogateSerializer());
             Fixture.Register(() => new NativeSerializer());
+            Fixture.Register(() => new ReeperPersistentMethodCaller(Substitute.For<IConfigNodeItemSerializer>()));
         }
     }
     

@@ -62,9 +62,6 @@ namespace ReeperCommon.Serialization.Surrogates
 
             var strValue = config.GetValue(uniqueKey);
 
-            if (!tc.IsValid(strValue))
-                throw new InvalidDataException("target data \"" + strValue + "\" is invalid for " + target.GetType().FullName + " TypeConverter");
-
             return tc.ConvertFromInvariantString(strValue);
         }
 
