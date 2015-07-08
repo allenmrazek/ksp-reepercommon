@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using NSubstitute;
+using ReeperCommon.Containers;
 using ReeperCommon.Serialization;
 using ReeperCommonUnitTests.Fixtures;
 using Xunit;
@@ -10,6 +12,11 @@ namespace ReeperCommonUnitTests.Serialization
 {
     public class DefaultSerializerSelectorTests
     {
+        private interface GenericInterface<T>
+        {
+            T SomeProperty { get; }
+        }
+
         [Fact()]
         public void DefaultSerializerSelectorTest()
         {
@@ -66,6 +73,21 @@ namespace ReeperCommonUnitTests.Serialization
             Assert.IsAssignableFrom<ReeperPersistentMethodCaller>(result.Single());
             Assert.IsAssignableFrom<ISurrogateSerializer>(
                 ((ReeperPersistentMethodCaller) result.Single()).DecoratedSerializer);
+        }
+
+
+        [Theory, AutoDomainData]
+        public void GetSerializer_Uses_GenericSurrogate_IfOneSetAndNoOtherSurrogateMatches(
+            DefaultConfigNodeItemSerializerSelector sut, string data)
+        {
+            var genericSurrogateInstance = Substitute.For<ISurrogateSerializer>();
+            sut.AddSurrogate(typeof (GenericInterface<>), genericSurrogateInstance);
+
+            var actual = sut.GetSerializer(typeof (GenericInterface<float>));
+
+            Assert.NotEmpty(actual);
+            Assert.True(actual.Single() is ReeperPersistentMethodCaller);
+            Assert.Same(genericSurrogateInstance, ((ReeperPersistentMethodCaller)actual.Single()).DecoratedSerializer);
         }
     }
 }

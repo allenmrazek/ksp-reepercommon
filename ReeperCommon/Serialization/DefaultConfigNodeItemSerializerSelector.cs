@@ -59,7 +59,22 @@ namespace ReeperCommon.Serialization
             return _surrogates.TryGetValue(target, out surrogateSerializer) ?
                 Maybe<ISurrogateSerializer>.With(surrogateSerializer)
                     :
-                Maybe<ISurrogateSerializer>.None;
+                    target.IsGenericType ? GetGenericSurrogate(target) : Maybe<ISurrogateSerializer>.None;
+        }
+
+
+        private Maybe<ISurrogateSerializer> GetGenericSurrogate(Type target)
+        {
+            if (target == null) throw new ArgumentNullException("target");
+
+            ISurrogateSerializer surrogateSerializer;
+
+            var genericDefinition = target.GetGenericTypeDefinition();
+            if (genericDefinition == null) throw new Exception("Couldn't get generic definition of " + target.FullName);
+
+            return _surrogates.TryGetValue(genericDefinition, out surrogateSerializer)
+                ? Maybe<ISurrogateSerializer>.With(surrogateSerializer)
+                : Maybe<ISurrogateSerializer>.None;
         }
 
 
