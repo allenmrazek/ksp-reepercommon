@@ -3,7 +3,7 @@ using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization.Surrogates
 {
-    public abstract class SurrogateToSingleValueBase<T> : ISurrogateSerializer<T>
+    public abstract class SurrogateToSingleValueBase<T> : IConfigNodeItemSerializer<T>
     {
         protected virtual string GetFieldContentsAsString(T instance)
         {

@@ -4,7 +4,7 @@ using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization
 {
-    public class NativeSerializer : INativeSerializer
+    public class NativeSerializer : IConfigNodeItemSerializer
     {
         public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {

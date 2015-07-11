@@ -156,8 +156,6 @@ namespace ReeperCommonUnitTests.Serialization
             Assert.Same(actual.GetType(), typeof (DefaultConstructableType));
             Assert.True(actual is IReeperPersistent);
         }
-
-        // todo: make sure all types in this assembly which implement native serializers pass
     }
 
 

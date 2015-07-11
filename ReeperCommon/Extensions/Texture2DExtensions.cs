@@ -14,7 +14,7 @@ namespace ReeperCommon.Extensions
         }
 
 
-        public static Texture2D CreateReadable(this Texture2D original)
+        public static Texture2D CreateReadable(this Texture2D original, Material blitMaterial = null)
         {
             if (original == null) throw new ArgumentNullException("original");
 
@@ -25,7 +25,10 @@ namespace ReeperCommon.Extensions
 
             // isn't read or writeable ... we'll have to get tricksy
             var rt = RenderTexture.GetTemporary(original.width, original.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB, 1);
-            Graphics.Blit(original, rt);
+
+            if (blitMaterial == null)
+                Graphics.Blit(original, rt);
+            else Graphics.Blit(original, rt, blitMaterial);
 
             RenderTexture.active = rt;
 
@@ -33,6 +36,8 @@ namespace ReeperCommon.Extensions
 
             RenderTexture.active = null;
             RenderTexture.ReleaseTemporary(rt);
+
+            finalTexture.Apply(true);
 
             return finalTexture;
         }

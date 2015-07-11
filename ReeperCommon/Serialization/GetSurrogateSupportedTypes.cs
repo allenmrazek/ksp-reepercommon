@@ -8,20 +8,12 @@ namespace ReeperCommon.Serialization
     {
         // the serialization surrogateSerializer could have multiple supported types
         // Consider:
-        //   MySurrogate : ISurrogateSerializer<bool>, ISurrogateSerializer<string> etc
+        //   MySurrogate : IConfigNodeItemSerializer<bool>, IConfigNodeItemSerializer<string> etc
         public IEnumerable<Type> Get(Type surrogateType)
         {
-            //var interfaces = surrogateType.GetInterfaces();
-
-            //var genericInterfaces = interfaces.Where(interfaceType => interfaceType.IsGenericType);
-
-            //var whichImplementSurrogate = genericInterfaces.Where(typeof (ISurrogateSerializer).IsAssignableFrom);
-
-            //return whichImplementSurrogate.Select(it => it.GetGenericArguments().First());
-
             return surrogateType.GetInterfaces()
               .Where(interfaceType => interfaceType.IsGenericType &&
-                                      typeof(ISurrogateSerializer).IsAssignableFrom(interfaceType))
+                                      typeof(IConfigNodeItemSerializer).IsAssignableFrom(interfaceType))
               .Select(interfaceType => interfaceType.GetGenericArguments().First());
         }
     }

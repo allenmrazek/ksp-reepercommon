@@ -36,18 +36,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -120,14 +111,12 @@
     <Compile Include="Serialization\IGetSerializationSurrogates.cs" />
     <Compile Include="Serialization\IGetSurrogateSupportedTypes.cs" />
     <Compile Include="Serialization\IReeperPersistent.cs" />
-    <Compile Include="Serialization\INativeSerializer.cs" />
     <Compile Include="Serialization\IConfigNodeItemSerializer.cs" />
     <Compile Include="Serialization\ISurrogateProvider.cs" />
     <Compile Include="Serialization\Exceptions\NoSerializerFoundException.cs" />
     <Compile Include="Serialization\ReeperPersistentAttribute.cs" />
     <Compile Include="Serialization\IConfigNodeSerializer.cs" />
     <Compile Include="Serialization\IGetObjectFields.cs" />
-    <Compile Include="Serialization\ISurrogateSerializer.cs" />
     <Compile Include="Serialization\IConfigNodeItemSerializerSelector.cs" />
     <Compile Include="Serialization\GetSerializableFields.cs" />
     <Compile Include="Serialization\NativeSerializer.cs" />

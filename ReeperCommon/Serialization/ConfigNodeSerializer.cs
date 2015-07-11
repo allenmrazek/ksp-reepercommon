@@ -123,5 +123,11 @@ namespace ReeperCommon.Serialization
         {
             return _serializableGetField.Get(target);
         }
+
+
+        public override string ToString()
+        {
+            return "ConfigNodeSerializer: " + ConfigNodeItemSerializerSelector;
+        }
     }
 }

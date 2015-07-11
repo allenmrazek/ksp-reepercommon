@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NSubstitute;
 using ReeperCommon.Serialization;
 using ReeperCommonUnitTests.Fixtures;
@@ -12,27 +13,27 @@ namespace ReeperCommonUnitTests.Serialization
         [Theory, AutoDomainData]
         public void Get_WithSurrogateThatSupportsSingleType_ReturnsCorrectType(GetSurrogateSupportedTypes sut)
         {
-            var surrogate = Substitute.For<ISurrogateSerializer<T>>();
+            var surrogate = Substitute.For<IConfigNodeItemSerializer<T>>();
 
             var actual = sut.Get(surrogate.GetType()).ToList();
 
 
             Assert.NotEmpty(actual);
-            Assert.True(actual.Single() == typeof (T));
+            Assert.True(actual.Single() == typeof(T));
         }
 
 
         [Theory, AutoDomainData]
         public void Get_WithSurrogateThatSupportsMultipleTypes_ReturnsAllSupportedTypes(GetSurrogateSupportedTypes sut)
         {
-            var surrogate = Substitute.For<ISurrogateSerializer<T>, ISurrogateSerializer<int>, ISurrogateSerializer<ConfigNode>>();
+            var surrogate = Substitute.For<IConfigNodeItemSerializer<T>, IConfigNodeItemSerializer<int>, IConfigNodeItemSerializer<ConfigNode>>();
 
             var actual = sut.Get(surrogate.GetType()).ToList();
 
             Assert.NotEmpty(actual);
-            Assert.Contains(typeof (int), actual);
-            Assert.Contains(typeof (ConfigNode), actual);
-            Assert.Contains(typeof (T), actual);
+            Assert.Contains(typeof(int), actual);
+            Assert.Contains(typeof(ConfigNode), actual);
+            Assert.Contains(typeof(T), actual);
         }
     }
 

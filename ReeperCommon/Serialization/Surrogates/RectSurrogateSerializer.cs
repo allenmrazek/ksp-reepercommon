@@ -8,7 +8,7 @@ using UnityEngine;
 namespace ReeperCommon.Serialization.Surrogates
 {
 // ReSharper disable once UnusedMember.Global
-    public class RectSurrogateSerializer : ISurrogateSerializer<Rect>
+    public class RectSurrogateSerializer : IConfigNodeItemSerializer<Rect>
     {
         //public void Serialize(object fieldOwner, FieldInfo field, ConfigNode config, IConfigNodeSerializer formatter)
         //{

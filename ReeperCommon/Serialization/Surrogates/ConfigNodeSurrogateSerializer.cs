@@ -5,7 +5,7 @@ using ReeperCommon.Serialization.Exceptions;
 namespace ReeperCommon.Serialization.Surrogates
 {
 // ReSharper disable once UnusedMember.Global
-    public class ConfigNodeSurrogateSerializer : ISurrogateSerializer<ConfigNode>
+    public class ConfigNodeSurrogateSerializer : IConfigNodeItemSerializer<ConfigNode>
     {
         public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {

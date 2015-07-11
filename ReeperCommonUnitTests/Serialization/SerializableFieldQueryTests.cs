@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 using Ploeh.AutoFixture.Xunit;
+using ReeperCommon.Serialization;
 using ReeperCommonUnitTests.Fixtures;
 using ReeperCommonUnitTests.TestData;
 using Xunit;
 using Xunit.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace ReeperCommon.Serialization.Tests
+namespace ReeperCommonUnitTests.Serialization
 {
     public class SerializableFieldQueryTests
     {

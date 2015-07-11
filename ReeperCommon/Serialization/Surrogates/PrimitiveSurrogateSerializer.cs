@@ -8,12 +8,12 @@ using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization.Surrogates
 {
-    public class PrimitiveSurrogateSerializer : 
-        ISurrogateSerializer<string>,
-        ISurrogateSerializer<bool>,
-        ISurrogateSerializer<int>,
-        ISurrogateSerializer<float>,
-        ISurrogateSerializer<double>
+    public class PrimitiveSurrogateSerializer :
+        IConfigNodeItemSerializer<string>,
+        IConfigNodeItemSerializer<bool>,
+        IConfigNodeItemSerializer<int>,
+        IConfigNodeItemSerializer<float>,
+        IConfigNodeItemSerializer<double>
     {
         public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
         {
@@ -34,7 +34,7 @@ namespace ReeperCommon.Serialization.Surrogates
                 throw new NoConversionException(type, typeof (string));
 
             if (!tc.IsValid(target))
-                throw new InvalidDataException("target data is invalid for " + type.FullName + " TypeConverter");
+                throw new Exception("target data of \"" + target +"\" is invalid for " + type.FullName + " TypeConverter");
 
             var strValue = tc.ConvertToInvariantString(target);
 
