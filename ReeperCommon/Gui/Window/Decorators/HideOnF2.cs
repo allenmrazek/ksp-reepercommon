@@ -1,5 +1,9 @@
-﻿namespace ReeperCommon.Gui.Window.Decorators
+﻿using System;
+
+namespace ReeperCommon.Gui.Window.Decorators
 {
+// ReSharper disable once UnusedMember.Global
+    // note: something doesn't quite work right with this
     public class HideOnF2 : WindowDecorator
     {
         private bool _interfaceVisible = false;
@@ -11,6 +15,7 @@
 
         public HideOnF2(IWindowComponent baseComponent) : base(baseComponent)
         {
+            throw new NotImplementedException("this class buggy; don't use");
             GameEvents.onShowUI.Add(Show);
             GameEvents.onHideUI.Add(Hide);
         }

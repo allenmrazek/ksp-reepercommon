@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ReeperCommon.Gui.Window
 {
-    public abstract class BasicWindowLogic : IWindowComponent
+    public class BasicWindowLogic : IWindowComponent
     {
         [ReeperPersistent] private Rect _windowRect = new Rect(0f, 0f, 100f, 100f);
         [ReeperPersistent] private WindowID _id = new WindowID();
@@ -13,7 +13,7 @@ namespace ReeperCommon.Gui.Window
         [ReeperPersistent] private bool _draggable = false;
         [ReeperPersistent] private bool _visible = true;
 
-        protected BasicWindowLogic(
+        public BasicWindowLogic(
             Rect rect, 
             WindowID winid, 
             GUISkin skin, 
@@ -26,6 +26,12 @@ namespace ReeperCommon.Gui.Window
             Skin = skin;
             Draggable = draggable;
             Visible = true;
+        }
+
+
+        public virtual void OnWindowPreDraw()
+        {
+            
         }
 
 
@@ -42,7 +48,7 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-        public virtual void Update()
+        public virtual void OnUpdate()
         {
 
         }

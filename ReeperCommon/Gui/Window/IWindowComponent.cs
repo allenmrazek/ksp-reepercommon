@@ -5,10 +5,11 @@ namespace ReeperCommon.Gui.Window
 {
     public interface IWindowComponent : IReeperPersistent
     {
+        void OnWindowPreDraw();
         void OnWindowDraw(int winid);
         void OnWindowFinalize(int winid);
 
-        void Update();
+        void OnUpdate();
 
         Rect Dimensions { get; set; }
         WindowID Id { get; }

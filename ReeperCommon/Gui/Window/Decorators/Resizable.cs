@@ -15,27 +15,49 @@ namespace ReeperCommon.Gui.Window.Decorators
             Both = Right | Bottom
         }
 
-        private readonly Vector2 _hotzoneSize = default(Vector2);
-        private readonly Vector2 _minSize;
-        private readonly Texture2D _hint;
-        private readonly float _hintPopupDelay;
+
+        public Vector2 HotzoneSize { get; set; }
+        public Vector2 MinSize { get; set; }
+
+        public Texture2D Hint { get; set; }
+        public float HintPopupDelay { get; set; }
+        public Vector2 Scale { get; set; }
+
+
         private ActiveMode _mode = ActiveMode.None;
 
         private Rect _rightRect = default(Rect);        // hotzone for changing width
         private Rect _bottomRect = default(Rect);       // hotzone for changing height
         private IEnumerator _dragging;
         private float _delayAccumulator = 0f;
+        
 
-
-        public Resizable(IWindowComponent baseComponent, Vector2 hotzoneSize, Vector2 minSize, Texture2D hint, float hintPopupDelay = 0.25f) : base(baseComponent)
+        public Resizable(
+            IWindowComponent baseComponent, 
+            Vector2 hotzoneSize, 
+            Vector2 minSize, 
+            Texture2D hint, 
+            float hintPopupDelay,
+            Vector2 scale) : base(baseComponent)
         {
             if (baseComponent == null) throw new ArgumentNullException("baseComponent");
             if (hint == null) throw new ArgumentNullException("hint");
 
-            _hotzoneSize = hotzoneSize;
-            _minSize = minSize;
-            _hint = hint;
-            _hintPopupDelay = hintPopupDelay;
+            HotzoneSize = hotzoneSize;
+            MinSize = minSize;
+            Hint = hint;
+            HintPopupDelay = hintPopupDelay;
+            Scale = scale;
+        }
+
+
+        public Resizable(
+            IWindowComponent baseComponent,
+            Vector2 hotzoneSize,
+            Vector2 minSize,
+            Texture2D hint,
+            float hintPopupDelay = 0.25f) : this(baseComponent, hotzoneSize, minSize, hint, hintPopupDelay, Vector2.one)
+        {
         }
 
 
@@ -63,15 +85,15 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private void UpdateHotzoneRects()
         {
-            _rightRect = new Rect(Dimensions.width - _hotzoneSize.x, 
+            _rightRect = new Rect(Dimensions.width - HotzoneSize.x, 
                 0f,
-                _hotzoneSize.x, 
+                HotzoneSize.x, 
                 Dimensions.height);
 
             _bottomRect = new Rect(0f, 
-                Dimensions.height - _hotzoneSize.y, 
+                Dimensions.height - HotzoneSize.y, 
                 Dimensions.width,
-                _hotzoneSize.y);
+                HotzoneSize.y);
 
         }
 
@@ -103,6 +125,8 @@ namespace ReeperCommon.Gui.Window.Decorators
         {
             if (_mode == ActiveMode.None) return;
 
+            UpdateHotzoneRects();
+
             _dragging = UpdateMouseDrag();
             Event.current.Use();
         }
@@ -119,19 +143,39 @@ namespace ReeperCommon.Gui.Window.Decorators
             }
 
             _delayAccumulator += Time.deltaTime;
-            if (_delayAccumulator < _hintPopupDelay)
+            if (_delayAccumulator < HintPopupDelay)
                 return;
 
             var mouseLocal =
                 GUIUtility.ScreenToGUIPoint(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y));
 
             var pos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-            var rect = GUIUtility.ScreenToGUIRect(new Rect(pos.x - _hint.width * 0.5f, pos.y - _hint.height * 0.5f, _hint.width, _hint.height));
-            var savedMatrix = GUI.matrix;
+            var rect = GUIUtility.ScreenToGUIRect(new Rect(pos.x - Hint.width * 0.5f, pos.y - Hint.height * 0.5f, Hint.width, Hint.height));
+            var originalMatrix = GUI.matrix;
+            var cursorAngle = GetCursorAngle(mouseLocal);
+            var pivot = new Vector2(rect.x + Hint.width*0.5f, rect.y + Hint.height*0.5f);
 
-            GUIUtility.RotateAroundPivot(GetCursorAngle(mouseLocal), new Vector2(rect.x + _hint.width * 0.5f, rect.y + _hint.height * 0.5f));
-            Graphics.DrawTexture(rect, _hint);
-            GUI.matrix = savedMatrix;
+            // note: this is a fix for blur caused by rotation > 0
+            if (!Mathf.Approximately(0f, cursorAngle))
+            {
+                var mat = originalMatrix;
+
+                var m = mat.GetRow(0);
+                m.w += 0.5f;
+                mat.SetRow(0, m);
+
+                m = mat.GetRow(1);
+                m.w += 0.5f;
+                mat.SetRow(1, m);
+
+                GUI.matrix = mat;
+            }
+
+            GUIUtility.RotateAroundPivot(cursorAngle, pivot);
+            GUIUtility.ScaleAroundPivot(Scale, pivot);
+
+            Graphics.DrawTexture(rect, Hint);
+            GUI.matrix = originalMatrix;
         }
 
 
@@ -162,9 +206,9 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        public override void Update()
+        public override void OnUpdate()
         {
-            base.Update();
+            base.OnUpdate();
             if (_dragging != null)
                 _dragging.MoveNext();
         }
@@ -180,8 +224,8 @@ namespace ReeperCommon.Gui.Window.Decorators
                 Dimensions = new Rect(
                     Dimensions.x, 
                     Dimensions.y, 
-                    Mathf.Max(_minSize.x, newWidth),
-                    Mathf.Max(_minSize.y, newHeight));
+                    Mathf.Max(MinSize.x, newWidth),
+                    Mathf.Max(MinSize.y, newHeight));
 
                 yield return 0;
             } while (Input.GetMouseButton(0) && !Input.GetKeyDown(KeyCode.Escape));

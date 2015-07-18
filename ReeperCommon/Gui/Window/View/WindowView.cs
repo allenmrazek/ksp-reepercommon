@@ -26,6 +26,8 @@ namespace ReeperCommon.Gui.Window.View
         {
             if (Logic.IsNull() || !Logic.Visible) return;
 
+            Logic.OnWindowPreDraw();
+
             if (!Logic.Skin.IsNull())
                 GUI.skin = Logic.Skin;
 
@@ -48,7 +50,7 @@ namespace ReeperCommon.Gui.Window.View
         {
             if (Logic.IsNull()) return;
 
-            Logic.Update();
+            Logic.OnUpdate();
         }
 
 

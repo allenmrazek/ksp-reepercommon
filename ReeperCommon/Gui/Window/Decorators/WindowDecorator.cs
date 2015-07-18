@@ -9,11 +9,17 @@ namespace ReeperCommon.Gui.Window.Decorators
     {
         private readonly IWindowComponent _base;
 
-        protected WindowDecorator(IWindowComponent baseComponent)
+        public WindowDecorator(IWindowComponent baseComponent)
         {
             if (baseComponent == null) throw new ArgumentNullException("baseComponent");
 
             _base = baseComponent;
+        }
+
+
+        public virtual void OnWindowPreDraw()
+        {
+            _base.OnWindowPreDraw();
         }
 
 
@@ -29,9 +35,9 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        public virtual void Update()
+        public virtual void OnUpdate()
         {
-            _base.Update();
+            _base.OnUpdate();
         }
 
 
