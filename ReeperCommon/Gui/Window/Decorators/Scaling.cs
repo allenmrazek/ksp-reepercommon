@@ -17,7 +17,6 @@ namespace ReeperCommon.Gui.Window.Decorators
         public override void OnWindowPreDraw()
         {
             base.OnWindowPreDraw();
-
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, _scale);
         }
 

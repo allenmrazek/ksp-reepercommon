@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ReeperCommon.Extensions;
+using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.Decorators
 {
@@ -9,12 +10,13 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        public override void OnWindowDraw(int winid)
+        public override void OnWindowPreDraw()
         {
-            base.OnWindowDraw(winid);
+            base.OnWindowPreDraw();
 
-            if (Event.current.type != EventType.Repaint)
-                Dimensions = KSPUtil.ClampRectToScreen(Dimensions);
+            if (Event.current.type != EventType.Repaint) return;
+
+            Dimensions = KSPUtil.ClampRectToScreen(Dimensions.Multiply(GUI.matrix)).Multiply(GUI.matrix.inverse);
         }
     }
 }
