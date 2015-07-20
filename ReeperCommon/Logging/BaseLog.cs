@@ -1,15 +1,15 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 
 namespace ReeperCommon.Logging
 {
     public abstract class BaseLog : ILog
     {
-        protected readonly string _LogName;
+        protected readonly string LogName;
 
         protected BaseLog(string name = "")
         {
-            _LogName = string.IsNullOrEmpty(name) ? System.Reflection.Assembly.GetExecutingAssembly().GetName().Name : name;
-            //_ClassName = this.GetType().Name;
+            LogName = string.IsNullOrEmpty(name) ? System.Reflection.Assembly.GetExecutingAssembly().GetName().Name : name;
         }
 
         public abstract void Debug(string format, params string[] args);
@@ -26,8 +26,9 @@ namespace ReeperCommon.Logging
 
         protected virtual string DoFormat(string format, params string[] args)
         {
-            var builder = new StringBuilder(_LogName, format.Length + args.Length * 7);
+            var builder = new StringBuilder(LogName, format.Length + args.Length * 7);
             builder.Append(": ");
+
             builder.AppendFormat(format, args);
 
             return builder.ToString();

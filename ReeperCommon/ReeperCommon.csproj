@@ -48,6 +48,7 @@
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
+    <Compile Include="Extensions\Matrix.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="Extensions\RenderTextureExtensions.cs" />
@@ -138,20 +139,87 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>set unity=C:\Program Files (x86)\Unity464
+    <PostBuildEvent>set ksp=D:\For New Computer\Kerbal Space Program
+set unity=C:\Program Files (x86)\Unity464
 
-echo Generating $(TargetFileName).mdb...
-call "%25unity%25\Editor\Data\MonoBleedingEdge\bin\cli.bat" "%25unity%25\Editor\Data\MonoBleedingEdge\lib\mono\4.0\pdb2mdb.exe" "$(TargetFileName)"
 
-IF NOT EXIST "$(TargetPath).mdb" (
-echo ERROR: failed to generate $(TargetFileName).mdb
+if NOT $(Configuration) == Debug GOTO CopyFiles
+
+call:CheckUnity
+call:CreateMdb "$(ProjectDir)bin\$(Configuration)\$(TargetFileName)"
+
+:CopyFiles
+
+
+REM Project dir straight into KSP/GameData
+echo copying files to KSP GameData...
+robocopy "$(ProjectDir)bin\$(Configuration)" "%25ksp%25\GameData" /E /xo /LEV:1 $(TargetFileName)*
+Call:CheckRoboCopyCode "Copied files into into KSP GameData"
+exit 0
+
+
+REM
+REM CreateMdb - Given a fully qualified path to an assembly, generate MDB with same name + appended with .mdb
+REM
+:CreateMdb
+echo CreateMdb: received "%25~1"
+
+if exist %25~1 (
+call "%25unity%25\Editor\Data\MonoBleedingEdge\bin\cli.bat" "%25unity%25\Editor\Data\MonoBleedingEdge\lib\mono\4.0\pdb2mdb.exe" "%25~1"
+
+IF NOT EXIST "%25~1".mdb (
+echo ERROR: failed to generate %25~1.mdb
 exit -4
 )
-echo Done
-</PostBuildEvent>
+goto:eof
+) else (
+echo CreateMdb: Error - %25~1 not found!
+exit -5
+)
+
+
+
+
+:CheckRoboCopyCode
+    if %25ERRORLEVEL%25 EQU 16 echo ***FATAL ERROR*** &amp; exit 16
+    if %25ERRORLEVEL%25 EQU 15 echo OKCOPY + FAIL + MISMATCHES + XTRA &amp; exit 15
+    if %25ERRORLEVEL%25 EQU 14 echo FAIL + MISMATCHES + XTRA &amp; exit 14
+    if %25ERRORLEVEL%25 EQU 13 echo OKCOPY + FAIL + MISMATCHES &amp; exit 13
+    if %25ERRORLEVEL%25 EQU 12 echo FAIL + MISMATCHES&amp; exit 12
+    if %25ERRORLEVEL%25 EQU 11 echo OKCOPY + FAIL + XTRA &amp; exit 11
+    if %25ERRORLEVEL%25 EQU 10 echo FAIL + XTRA &amp; exit 10
+    if %25ERRORLEVEL%25 EQU 9 echo OKCOPY + FAIL &amp; exit 9
+    if %25ERRORLEVEL%25 EQU 8 echo FAIL &amp; exit 8
+    if %25ERRORLEVEL%25 EQU 7 echo OKCOPY + MISMATCHES + XTRA &amp; goto end
+    if %25ERRORLEVEL%25 EQU 6 echo MISMATCHES + XTRA &amp; goto end
+    if %25ERRORLEVEL%25 EQU 5 echo OKCOPY + MISMATCHES &amp; goto end
+    if %25ERRORLEVEL%25 EQU 4 echo MISMATCHES &amp; goto end
+    if %25ERRORLEVEL%25 EQU 3 echo OKCOPY + XTRA &amp; goto end
+    if %25ERRORLEVEL%25 EQU 2 echo XTRA &amp; goto end
+    if %25ERRORLEVEL%25 EQU 1 echo OKCOPY &amp; goto end
+    if %25ERRORLEVEL%25 EQU 0 echo No Change &amp; goto end
+    :end  
+goto:eof
+
+
+:CheckUnity
+IF NOT EXIST "%25unity%25\Editor\Data\MonoBleedingEdge\lib\mono\4.0\pdb2mdb.exe" (
+echo ERROR: Failed to find pdb2mdb.exe; check Unity path
+exit -1
+)
+
+IF NOT EXIST "$(ProjectDir)bin\$(Configuration)\$(TargetName).pdb" (
+echo ERROR: Failed to find $(TargetName).pdb in $(ProjectDir)bin\$(Configuration)
+exit -2
+)
+goto:eof</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>del "$(TargetDir)*.mdb"</PreBuildEvent>
+    <PreBuildEvent>if exist "$(TargetFileName).mdb" (
+echo Deleting $(TargetFileName).mdb...
+del "$(TargetFileName).mdb"
+echo Done
+)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

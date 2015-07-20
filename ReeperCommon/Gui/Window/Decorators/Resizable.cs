@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using ReeperCommon.Extensions;
+using ReeperCommon.Logging;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.Decorators
@@ -18,10 +20,9 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         public Vector2 HotzoneSize { get; set; }
         public Vector2 MinSize { get; set; }
-
-        public Texture2D Hint { get; set; }
+        public Texture2D HintTexture { get; set; }
         public float HintPopupDelay { get; set; }
-        public Vector2 Scale { get; set; }
+        public Vector2 HintScale { get; set; }
 
 
         private ActiveMode _mode = ActiveMode.None;
@@ -36,18 +37,18 @@ namespace ReeperCommon.Gui.Window.Decorators
             IWindowComponent baseComponent, 
             Vector2 hotzoneSize, 
             Vector2 minSize, 
-            Texture2D hint, 
+            Texture2D hintTexture, 
             float hintPopupDelay,
-            Vector2 scale) : base(baseComponent)
+            Vector2 hintScale) : base(baseComponent)
         {
             if (baseComponent == null) throw new ArgumentNullException("baseComponent");
-            if (hint == null) throw new ArgumentNullException("hint");
+            if (hintTexture == null) throw new ArgumentNullException("hintTexture");
 
             HotzoneSize = hotzoneSize;
             MinSize = minSize;
-            Hint = hint;
+            HintTexture = hintTexture;
             HintPopupDelay = hintPopupDelay;
-            Scale = scale;
+            HintScale = hintScale;
         }
 
 
@@ -55,8 +56,8 @@ namespace ReeperCommon.Gui.Window.Decorators
             IWindowComponent baseComponent,
             Vector2 hotzoneSize,
             Vector2 minSize,
-            Texture2D hint,
-            float hintPopupDelay = 0.25f) : this(baseComponent, hotzoneSize, minSize, hint, hintPopupDelay, Vector2.one)
+            Texture2D hintTexture,
+            float hintPopupDelay = 0.25f) : this(baseComponent, hotzoneSize, minSize, hintTexture, hintPopupDelay, Vector2.one)
         {
         }
 
@@ -85,16 +86,18 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private void UpdateHotzoneRects()
         {
-            _rightRect = new Rect(Dimensions.width - HotzoneSize.x, 
+            var hzScaledWidth = HotzoneSize.x * GUI.matrix.m00;
+            var hzScaledHeight = HotzoneSize.y * GUI.matrix.m11;
+
+            _rightRect = new Rect(Dimensions.width - hzScaledWidth,
                 0f,
-                HotzoneSize.x, 
+                hzScaledWidth,
                 Dimensions.height);
 
-            _bottomRect = new Rect(0f, 
-                Dimensions.height - HotzoneSize.y, 
+            _bottomRect = new Rect(0f,
+                Dimensions.height - hzScaledHeight,
                 Dimensions.width,
-                HotzoneSize.y);
-
+                hzScaledHeight);
         }
 
 
@@ -102,20 +105,27 @@ namespace ReeperCommon.Gui.Window.Decorators
         {
             UpdateHotzoneRects();
 
-            if ((_mode = GetMouseMode(Event.current.mousePosition)) != ActiveMode.None)
+            if ((_mode = GetMouseMode()) != ActiveMode.None)
                 Event.current.Use();
         }
 
 
-        private ActiveMode GetMouseMode(Vector2 guiPos)
+        private ActiveMode GetMouseMode()
         {
             var m = ActiveMode.None;
+            var log = new DebugLog("ActiveMode");
 
-            if (_bottomRect.Contains(guiPos))
+            if (_bottomRect.Contains(Event.current.mousePosition))
+            {
                 m = ActiveMode.Bottom;
+                log.Normal("bottom rect contains");
+            }
 
-            if (_rightRect.Contains(guiPos))
+            if (_rightRect.Contains(Event.current.mousePosition))
+            {
                 m |= ActiveMode.Right;
+                log.Normal("right rect contains");
+            }
 
             return m;
         }
@@ -127,7 +137,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 
             UpdateHotzoneRects();
 
-            _dragging = UpdateMouseDrag();
+            _dragging = UpdateMouseDrag(GUI.matrix);
             Event.current.Use();
         }
 
@@ -146,42 +156,72 @@ namespace ReeperCommon.Gui.Window.Decorators
             if (_delayAccumulator < HintPopupDelay)
                 return;
 
-            var mouseLocal =
-                GUIUtility.ScreenToGUIPoint(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y));
+            var pos = GetScreenPositionOfMouse();
 
-            var pos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-            var rect = GUIUtility.ScreenToGUIRect(new Rect(pos.x - Hint.width * 0.5f, pos.y - Hint.height * 0.5f, Hint.width, Hint.height));
-            var originalMatrix = GUI.matrix;
-            var cursorAngle = GetCursorAngle(mouseLocal);
-            var pivot = new Vector2(rect.x + Hint.width*0.5f, rect.y + Hint.height*0.5f);
+            var texRect = new Rect(0f, 0f, HintTexture.width, HintTexture.height);
+            texRect.center = GUIUtility.ScreenToGUIPoint(pos);
+            Graphics.DrawTexture(texRect, HintTexture);
+
+            //var guiMousePos = GUIUtility.ScreenToGUIPoint(pos); // note: this does take scale into effect...
+            //var scaledHintDimensions = new Vector2(HintTexture.width * GUI.matrix.m00 * HintScale.x, HintTexture.height * GUI.matrix.m11 * HintScale.y);
+
+            //var cursorAngle = GetCursorAngle();
+            //cursorAngle = 45f;
+            //var originalMatrix = GUI.matrix;
+
+            //var hintTextureRect = new Rect(guiMousePos.x - HintTexture.width * 0.5f, guiMousePos.y - HintTexture.height * 0.5f,
+            //    HintTexture.width, HintTexture.height);
+
+            //var pivot =
+            //    GUIUtility.GUIToScreenPoint(new Vector2(hintTextureRect.x + HintTexture.width * 0.5f,
+            //        hintTextureRect.y + HintTexture.height * 0.5f));
 
             // note: this is a fix for blur caused by rotation > 0
-            if (!Mathf.Approximately(0f, cursorAngle))
-            {
-                var mat = originalMatrix;
+            //if (!Mathf.Approximately(0f, cursorAngle))
+            //{
+            //    var mat = originalMatrix;
 
-                var m = mat.GetRow(0);
-                m.w += 0.5f;
-                mat.SetRow(0, m);
+            //    var m = mat.GetRow(0);
+            //    m.w += 0.5f;
+            //    mat.SetRow(0, m);
 
-                m = mat.GetRow(1);
-                m.w += 0.5f;
-                mat.SetRow(1, m);
+            //    m = mat.GetRow(1);
+            //    m.w += 0.5f;
+            //    mat.SetRow(1, m);
 
-                GUI.matrix = mat;
-            }
+            //    GUI.matrix = mat;
+            //}
 
-            GUIUtility.RotateAroundPivot(cursorAngle, pivot);
-            GUIUtility.ScaleAroundPivot(Scale, pivot);
 
-            Graphics.DrawTexture(rect, Hint);
-            GUI.matrix = originalMatrix;
+            //var log = new DebugLog("Resizable");
+
+            //log.Normal("Correct: " +
+            //           GUIUtility.GUIToScreenPoint(new Vector2(hintTextureRect.x + scaledHintDimensions.x*0.5f,
+            //               hintTextureRect.y + scaledHintDimensions.y*0.5f)));
+
+            //log.Normal("pos: " + pos);
+            //log.Normal("input: " + Input.mousePosition);
+            //log.Normal("guiMouse: " + guiMousePos);
+
+            ////GUIUtility.RotateAroundPivot(cursorAngle, pivot);
+           
+            //GUIUtility.RotateAroundPivot(cursorAngle,
+            //    GUIUtility.GUIToScreenPoint(new Vector2(hintTextureRect.x + scaledHintDimensions.x*0.5f,
+            //        hintTextureRect.y + scaledHintDimensions.y*0.5f)));
+            //GUIUtility.RotateAroundPivot(cursorAngle, GUIUtility.GUIToScreenPoint(hintTextureRect.center));
+
+            //GUIUtility.ScaleAroundPivot(HintScale, guiMousePos);
+            //hintTextureRect.center = new Vector2(100f, 200f);
+            //Graphics.DrawTexture(hintTextureRect, HintTexture);
+           
+
+            //GUI.matrix = originalMatrix;
         }
 
 
-        private float GetCursorAngle(Vector2 guiPos)
+        private float GetCursorAngle()
         {
-            var currentMode = _dragging != null ? _mode : GetMouseMode(guiPos);
+            var currentMode = _dragging != null ? _mode : GetMouseMode();
 
             switch (currentMode)
             {
@@ -202,7 +242,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private bool ShouldShowCursor()
         {
-            return _dragging != null || GetMouseMode(GUIUtility.ScreenToGUIPoint(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y))) != ActiveMode.None;
+            return _dragging != null || GetMouseMode() != ActiveMode.None;
         }
 
 
@@ -214,24 +254,38 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        private IEnumerator UpdateMouseDrag()
+        private IEnumerator UpdateMouseDrag(Matrix4x4 guiMatrix) // note: should GUI.matrix's scaling change while dragging, drag will break. So don't do that
         {
             do
             {
-                var newWidth = (_mode & ActiveMode.Right) != 0 ? Input.mousePosition.x - Dimensions.x : Dimensions.width;
-                var newHeight = (_mode & ActiveMode.Bottom) != 0 ? (Screen.height - Input.mousePosition.y) - Dimensions.y : Dimensions.height;
+                // note: the user is dragging the scaled dimensions of the rect. We'll treat the current
+                // coordinates as though they're dragging that scaled version and work backwards to come up
+                // with a set of dimensions that would result in that size when scaled by GUI.matrix
+                var mousePos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+                var visibleDimensions = Dimensions.Multiply(guiMatrix);
 
+                var newWidth = (_mode & ActiveMode.Right) != 0 ? mousePos.x - visibleDimensions.x : visibleDimensions.width;
+                var newHeight = (_mode & ActiveMode.Bottom) != 0 ? mousePos.y - visibleDimensions.y : visibleDimensions.height;
+
+                
                 Dimensions = new Rect(
-                    Dimensions.x, 
-                    Dimensions.y, 
-                    Mathf.Max(MinSize.x, newWidth),
-                    Mathf.Max(MinSize.y, newHeight));
+                    Dimensions.x,
+                    Dimensions.y,
+                    Mathf.Max(MinSize.x, newWidth / guiMatrix.m00),
+                    Mathf.Max(MinSize.y, newHeight / guiMatrix.m11));
 
                 yield return 0;
             } while (Input.GetMouseButton(0) && !Input.GetKeyDown(KeyCode.Escape));
 
             _mode = ActiveMode.None;
             _dragging = null;
+        }
+
+        
+        // in screen space (inverted y)
+        private static Vector2 GetScreenPositionOfMouse()
+        {
+            return new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
         }
     }
 }
