@@ -20,7 +20,19 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         public Vector2 HotzoneSize { get; set; }
         public Vector2 MinSize { get; set; }
-        public Texture2D HintTexture { get; set; }
+
+        public Texture2D HintTexture
+        {
+            get { return _hintTexture; }
+            set
+            {
+                if (value == null) throw new ArgumentException("Texture cannot be null");
+                
+                _hintTexture = value;
+                _hintScreenRect.Set(0f, 0f, _hintTexture.width, _hintTexture.height);
+            }
+        }
+
         public float HintPopupDelay { get; set; }
         public Vector2 HintScale { get; set; }
 
@@ -29,6 +41,9 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private Rect _rightRect = default(Rect);        // hotzone for changing width
         private Rect _bottomRect = default(Rect);       // hotzone for changing height
+
+        private Texture2D _hintTexture;
+        private Rect _hintScreenRect = default(Rect); 
         private IEnumerator _dragging;
         private float _delayAccumulator = 0f;
         
@@ -86,18 +101,15 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private void UpdateHotzoneRects()
         {
-            var hzScaledWidth = HotzoneSize.x * GUI.matrix.m00;
-            var hzScaledHeight = HotzoneSize.y * GUI.matrix.m11;
-
-            _rightRect = new Rect(Dimensions.width - hzScaledWidth,
+            _rightRect = new Rect(Dimensions.width - HotzoneSize.x,
                 0f,
-                hzScaledWidth,
+                HotzoneSize.x,
                 Dimensions.height);
 
             _bottomRect = new Rect(0f,
-                Dimensions.height - hzScaledHeight,
+                Dimensions.height - HotzoneSize.y,
                 Dimensions.width,
-                hzScaledHeight);
+                HotzoneSize.y);
         }
 
 
@@ -113,19 +125,12 @@ namespace ReeperCommon.Gui.Window.Decorators
         private ActiveMode GetMouseMode()
         {
             var m = ActiveMode.None;
-            var log = new DebugLog("ActiveMode");
 
             if (_bottomRect.Contains(Event.current.mousePosition))
-            {
                 m = ActiveMode.Bottom;
-                log.Normal("bottom rect contains");
-            }
 
             if (_rightRect.Contains(Event.current.mousePosition))
-            {
                 m |= ActiveMode.Right;
-                log.Normal("right rect contains");
-            }
 
             return m;
         }
@@ -156,66 +161,36 @@ namespace ReeperCommon.Gui.Window.Decorators
             if (_delayAccumulator < HintPopupDelay)
                 return;
 
+            var originalMatrix = GUI.matrix;
+            var cursorAngle = GetCursorAngle();
             var pos = GetScreenPositionOfMouse();
 
-            var texRect = new Rect(0f, 0f, HintTexture.width, HintTexture.height);
-            texRect.center = GUIUtility.ScreenToGUIPoint(pos);
-            Graphics.DrawTexture(texRect, HintTexture);
+            GUIUtility.RotateAroundPivot(cursorAngle, pos);
+            GUIUtility.ScaleAroundPivot(HintScale, pos);
 
-            //var guiMousePos = GUIUtility.ScreenToGUIPoint(pos); // note: this does take scale into effect...
-            //var scaledHintDimensions = new Vector2(HintTexture.width * GUI.matrix.m00 * HintScale.x, HintTexture.height * GUI.matrix.m11 * HintScale.y);
-
-            //var cursorAngle = GetCursorAngle();
-            //cursorAngle = 45f;
-            //var originalMatrix = GUI.matrix;
-
-            //var hintTextureRect = new Rect(guiMousePos.x - HintTexture.width * 0.5f, guiMousePos.y - HintTexture.height * 0.5f,
-            //    HintTexture.width, HintTexture.height);
-
-            //var pivot =
-            //    GUIUtility.GUIToScreenPoint(new Vector2(hintTextureRect.x + HintTexture.width * 0.5f,
-            //        hintTextureRect.y + HintTexture.height * 0.5f));
+            _hintScreenRect.center = GUIUtility.ScreenToGUIPoint(pos);
 
             // note: this is a fix for blur caused by rotation > 0
-            //if (!Mathf.Approximately(0f, cursorAngle))
-            //{
-            //    var mat = originalMatrix;
+            if (!Mathf.Approximately(0f, cursorAngle))
+            {
+                var mat = GUI.matrix;
 
-            //    var m = mat.GetRow(0);
-            //    m.w += 0.5f;
-            //    mat.SetRow(0, m);
+                var m = mat.GetRow(0);
+                m.w += 0.5f;
+                mat.SetRow(0, m);
 
-            //    m = mat.GetRow(1);
-            //    m.w += 0.5f;
-            //    mat.SetRow(1, m);
+                m = mat.GetRow(1);
+                m.w += 0.5f;
+                mat.SetRow(1, m);
 
-            //    GUI.matrix = mat;
-            //}
+                GUI.matrix = mat;
+            }
+
+            Graphics.DrawTexture(_hintScreenRect, HintTexture);
+
+            GUI.matrix = originalMatrix;
 
 
-            //var log = new DebugLog("Resizable");
-
-            //log.Normal("Correct: " +
-            //           GUIUtility.GUIToScreenPoint(new Vector2(hintTextureRect.x + scaledHintDimensions.x*0.5f,
-            //               hintTextureRect.y + scaledHintDimensions.y*0.5f)));
-
-            //log.Normal("pos: " + pos);
-            //log.Normal("input: " + Input.mousePosition);
-            //log.Normal("guiMouse: " + guiMousePos);
-
-            ////GUIUtility.RotateAroundPivot(cursorAngle, pivot);
-           
-            //GUIUtility.RotateAroundPivot(cursorAngle,
-            //    GUIUtility.GUIToScreenPoint(new Vector2(hintTextureRect.x + scaledHintDimensions.x*0.5f,
-            //        hintTextureRect.y + scaledHintDimensions.y*0.5f)));
-            //GUIUtility.RotateAroundPivot(cursorAngle, GUIUtility.GUIToScreenPoint(hintTextureRect.center));
-
-            //GUIUtility.ScaleAroundPivot(HintScale, guiMousePos);
-            //hintTextureRect.center = new Vector2(100f, 200f);
-            //Graphics.DrawTexture(hintTextureRect, HintTexture);
-           
-
-            //GUI.matrix = originalMatrix;
         }
 
 
