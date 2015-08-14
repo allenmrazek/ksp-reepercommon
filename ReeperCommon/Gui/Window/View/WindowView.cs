@@ -11,15 +11,6 @@ namespace ReeperCommon.Gui.Window.View
         public IWindowComponent Logic { get; private set; }
 
 
-
-// ReSharper disable once UnusedMember.Global
-        private void OnDestroy()
-        {
-
-        }
-
-
-
 // ReSharper disable once InconsistentNaming
 // ReSharper disable once UnusedMember.Global
         private void OnGUI()

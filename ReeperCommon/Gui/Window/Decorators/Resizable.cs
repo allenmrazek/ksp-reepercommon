@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using ReeperCommon.Extensions;
-using ReeperCommon.Logging;
 using UnityEngine;
 
 namespace ReeperCommon.Gui.Window.Decorators

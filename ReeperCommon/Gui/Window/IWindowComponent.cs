@@ -17,5 +17,8 @@ namespace ReeperCommon.Gui.Window
         GUISkin Skin { get; set;}
         bool Draggable { get; set; }
         bool Visible { get; set; }
+
+        float Width { get; set; }
+        float Height { get; set; }
     }
 }

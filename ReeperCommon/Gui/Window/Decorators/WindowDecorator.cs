@@ -93,7 +93,19 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-
         public WindowID Id { get { return _base.Id; } }
+
+
+        public float Width
+        {
+            get { return _base.Width; }
+            set { _base.Width = value; }
+        }
+
+        public float Height
+        {
+            get { return _base.Height; }
+            set { _base.Height = value; }
+        }
     }
 }

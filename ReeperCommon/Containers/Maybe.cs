@@ -22,6 +22,7 @@ namespace ReeperCommon.Containers
             return maybe;
         }
 
+
         public IEnumerator<T> GetEnumerator()
         {
             LazyInitialize();
@@ -49,10 +50,17 @@ namespace ReeperCommon.Containers
         {
             return this.Any() ? this : other;
         }
+
+        public T Value
+        {
+            get { return this.SingleOrDefault(); }
+        }
+
+
     }
 
 
-    public static class ToMaybeExtension
+    public static class MaybeExtension
     {
         public static Maybe<T> ToMaybe<T>(this T value)
         {
@@ -62,20 +70,35 @@ namespace ReeperCommon.Containers
 
             return Maybe<T>.With(value);
         }
-    }
 
 
-    public static class IfNotNullExtension
-    {
-        public static U IfNotNull<T, U>(this Maybe<T> value, Func<T, U> func) 
-            where T:class
-            where U:class
+        public static U IfNotNull<T, U>(this Maybe<T> value, Func<T, U> func)
+            where T : class
+            where U : class
         {
             if (!value.Any() || value.Single() == null) return null;
 
             return value.Any()
                 ? func(value.Single())
                 : null;
+        }
+
+
+        public static Maybe<T> Unit<T>(this T value)
+        {
+            return Maybe<T>.With(value);
+        }
+
+
+        public static Maybe<V> Bind<U, V>(this Maybe<U> maybe, Func<U, Maybe<V>> func)
+        {
+            return maybe.Any() ? func(maybe.Value) : Maybe<V>.Nothing;
+        }
+
+
+        public static Func<T, Maybe<V>> Compose<T, U, V>(this Func<U, Maybe<V>> f, Func<T, Maybe<U>> g)
+        {
+            return x => Bind(g(x), f);
         }
     }
 }

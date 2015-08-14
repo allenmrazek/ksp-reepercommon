@@ -102,5 +102,18 @@ namespace ReeperCommon.Gui.Window
             get { return _id; }
             set { _id = value; }
         }
+
+
+        public float Width
+        {
+            get { return _windowRect.width; }
+            set { _windowRect.width = value; }
+        }
+
+        public float Height
+        {
+            get { return _windowRect.height; }
+            set { _windowRect.height = value; }
+        }
     }
 }
