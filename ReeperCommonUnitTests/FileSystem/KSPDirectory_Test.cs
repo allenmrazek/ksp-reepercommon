@@ -10,7 +10,7 @@ namespace ReeperCommonUnitTests.FileSystem
 {
     public class KSPDirectory_Test
     {
-        private static class Factory
+        public static class Factory
         {
             public static IDirectory Create(string name, IUrlDir root)
             {
@@ -67,6 +67,23 @@ namespace ReeperCommonUnitTests.FileSystem
 
         }
 
+
+        [Fact]
+        void Directory_WithNestedName()
+        {
+            var builder = Factory.CreateBuilder();
+
+            builder.WithFile("toplevel")
+                .MakeDirectory("nested")
+                .WithDirectory("nested");
+
+            var sut = builder.Build();
+
+            Assert.NotEmpty(sut.Directory(new KSPUrlIdentifier("nested")));
+            Assert.NotEmpty(sut.Directory(new KSPUrlIdentifier("nested/nested")));
+            Assert.Empty(sut.Directory(new KSPUrlIdentifier("toplevel")));
+            Assert.Empty(sut.Directory(new KSPUrlIdentifier("nested/toplevel")));
+        }
 
 
         [Fact]
@@ -148,17 +165,20 @@ namespace ReeperCommonUnitTests.FileSystem
             var sut = Factory.CreateBuilder()
                                 .WithFile("test.txt")
                                 .WithFile("another")
-                                    .MakeDirectory("subdir")
-                                    .WithFile("subfile.txt").Build();
+                                .MakeDirectory("assemblyreloader")
+                                    .WithFile("subfile.txt")
+                                    .WithFile("assemblyreloader")
+                                    .Build();
 
             Assert.True(sut.File(new KSPUrlIdentifier("test.txt")).Any());
             Assert.True(sut.File(new KSPUrlIdentifier("test")).Any()); // remember -- we accept extensionless also
             Assert.True(sut.File(new KSPUrlIdentifier("another")).Any());
-            Assert.True(sut.File(new KSPUrlIdentifier("subdir/subfile.txt")).Any());
-            Assert.True(sut.File(new KSPUrlIdentifier("subdir/subfile")).Any());
+            Assert.True(sut.File(new KSPUrlIdentifier("assemblyreloader/subfile.txt")).Any());
+            Assert.True(sut.File(new KSPUrlIdentifier("assemblyreloader/subfile")).Any());
+            Assert.True(sut.File(new KSPUrlIdentifier("assemblyreloader/assemblyreloader")).Any());
 
             Assert.False(sut.File(new KSPUrlIdentifier("nonexistent")).Any());
-            Assert.False(sut.File(new KSPUrlIdentifier("subdir/nonexistent")).Any());
+            Assert.False(sut.File(new KSPUrlIdentifier("assemblyreloader/nonexistent")).Any());
             Assert.False(sut.File(new KSPUrlIdentifier("nonexistent/subfile.txt")).Any());
         }
 

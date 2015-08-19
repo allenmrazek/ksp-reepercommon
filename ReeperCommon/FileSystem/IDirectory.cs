@@ -12,6 +12,7 @@ namespace ReeperCommon.FileSystem
         bool DirectoryExists(IUrlIdentifier url);
 
         Maybe<IFile> File(IUrlIdentifier url);
+        Maybe<IFile> File(string filename);
         IEnumerable<IFile> Files();
         IEnumerable<IFile> Files(string extension);
         IEnumerable<IFile> RecursiveFiles();

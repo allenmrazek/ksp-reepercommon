@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
+using ReeperCommon.Logging;
 
 namespace ReeperCommon.FileSystem
 {
@@ -33,10 +34,13 @@ namespace ReeperCommon.FileSystem
 
         public Maybe<IDirectory> Directory(IUrlIdentifier url)
         {
-            if (url.Depth < 1) return Maybe<IDirectory>.None;
+            if (url.Depth < 1)
+                return Maybe<IDirectory>.None;
+            
 
             var dir = RootDirectory.Children.FirstOrDefault(d => d.Name == url[0]);
-            if (dir.IsNull()) return Maybe<IDirectory>.None;
+            if (dir.IsNull())
+                return Maybe<IDirectory>.None;
 
             var found = FileSystemFactory.GetDirectory(dir);
 
@@ -133,6 +137,7 @@ namespace ReeperCommon.FileSystem
             var filename = System.IO.Path.GetFileName(url.Path);
             var dirPath = System.IO.Path.GetDirectoryName(url.Path);
 
+
             if (!string.IsNullOrEmpty(dirPath))
             {
                 var owningDirectory = Directory(new KSPUrlIdentifier(dirPath));
@@ -155,6 +160,11 @@ namespace ReeperCommon.FileSystem
                 : Maybe<IFile>.With(FileSystemFactory.GetFile(this, file));
         }
 
+
+        public Maybe<IFile> File(string filename)
+        {
+            throw new NotImplementedException();
+        }
 
 
         public string FullPath

@@ -70,6 +70,7 @@
     <Compile Include="FileSystem\Providers\KSPGameDataUrlDirProvider.cs" />
     <Compile Include="FileSystem\IUrlFile.cs" />
     <Compile Include="FileSystem\IUrlIdentifier.cs" />
+    <Compile Include="FileSystem\UrlType.cs" />
     <Compile Include="Gui\Controls\ColorPickerControl.cs" />
     <Compile Include="Gui\Controls\ColorPickerBox.cs" />
     <Compile Include="Gui\Controls\ColorSaturationSlider.cs" />
@@ -137,6 +138,9 @@
     <Compile Include="Serialization\Surrogates\Vector3Surrogate.cs" />
     <Compile Include="Serialization\Exceptions\WrongNativeSerializerException.cs" />
     <Compile Include="Serialization\Exceptions\WrongSerializerException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

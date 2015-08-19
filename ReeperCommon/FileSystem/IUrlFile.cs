@@ -8,5 +8,6 @@
         string Url { get; } // path from GameData, excluding extension
 
         IUrlDir Directory { get; }
+        UrlDir.UrlFile file { get; }
     }
 }

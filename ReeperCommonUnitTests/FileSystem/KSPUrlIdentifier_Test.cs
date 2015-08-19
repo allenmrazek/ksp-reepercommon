@@ -1,4 +1,5 @@
 ﻿using System;
+using NSubstitute;
 using ReeperCommon.FileSystem;
 using Xunit;
 using Xunit.Extensions;

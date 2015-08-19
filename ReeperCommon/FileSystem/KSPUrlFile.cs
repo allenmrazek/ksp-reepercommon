@@ -29,5 +29,10 @@ namespace ReeperCommon.FileSystem
         {
             get { return new KSPUrlDir(_file.parent); }
         }
+
+        public UrlDir.UrlFile file
+        {
+            get { return _file; }
+        }
     }
 }
