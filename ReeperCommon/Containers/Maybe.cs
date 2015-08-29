@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using KSP.Testing;
 using ReeperCommon.Extensions;
+using UnityEngine;
 
 namespace ReeperCommon.Containers
 {
@@ -72,33 +74,83 @@ namespace ReeperCommon.Containers
         }
 
 
-        public static U IfNotNull<T, U>(this Maybe<T> value, Func<T, U> func)
-            where T : class
-            where U : class
+        public static TInput If<TInput>(this TInput o, Func<TInput, bool> evaluator)
+               where TInput : class
         {
-            if (!value.Any() || value.Single() == null) return null;
+            if (o == null) return null;
+            return evaluator(o) ? o : null;
+        }
 
-            return value.Any()
-                ? func(value.Single())
-                : null;
+        public static Maybe<TInput> If<TInput>(this Maybe<TInput> o, Func<TInput, bool> evaluator)
+        {
+            if (!o.Any()) return o;
+
+            return evaluator(o.Single()) ? o : Maybe<TInput>.None;
         }
 
 
-        public static Maybe<T> Unit<T>(this T value)
+
+        public static TInput Unless<TInput>(this TInput o, Func<TInput, bool> evaluator)
+               where TInput : class
         {
-            return Maybe<T>.With(value);
+            if (o == null) return null;
+            return evaluator(o) ? null : o;
+        }
+
+        public static Maybe<TInput> Unless<TInput>(this Maybe<TInput> o, Func<TInput, bool> evaluator)
+        {
+            if (!o.Any()) return Maybe<TInput>.None;
+
+            return evaluator(o.Single()) ? Maybe<TInput>.None : o;
         }
 
 
-        public static Maybe<V> Bind<U, V>(this Maybe<U> maybe, Func<U, Maybe<V>> func)
+
+        public static TInput Do<TInput>(this TInput o, Action<TInput> action)
+            where TInput : class
         {
-            return maybe.Any() ? func(maybe.Value) : Maybe<V>.Nothing;
+            if (o == null) return null;
+            action(o);
+            return o;
+        }
+
+        public static Maybe<TInput> Do<TInput>(this Maybe<TInput> o, Action<TInput> action)
+        {
+            if (!o.Any()) return Maybe<TInput>.None;
+            action(o.Single());
+
+            return o;
         }
 
 
-        public static Func<T, Maybe<V>> Compose<T, U, V>(this Func<U, Maybe<V>> f, Func<T, Maybe<U>> g)
+        public static TResult Return<TInput, TResult>(this TInput o,
+            Func<TInput, TResult> evaluator, TResult failureValue) where TInput : class
         {
-            return x => Bind(g(x), f);
+            if (o == null) return failureValue;
+            return evaluator(o);
+        }
+
+        public static TResult Return<TInput, TResult>(this Maybe<TInput> o,
+            Func<TInput, TResult> evaulator, TResult failureValue)
+        {
+            return !o.Any() ? failureValue : evaulator(o.Single());
+        }
+
+
+        public static TResult With<TInput, TResult>(this TInput o,
+           Func<TInput, TResult> evaluator)
+                where TResult : class
+                where TInput : class
+        {
+            if (o == null) return null;
+            return evaluator(o);
+        }
+
+        public static Maybe<TResult> With<TInput, TResult>(this Maybe<TInput> o,
+            Func<TInput, TResult> evaulator)
+        {
+            if (!o.Any()) return Maybe<TResult>.None;
+            return evaulator(o.Single()).ToMaybe();
         }
     }
 }
