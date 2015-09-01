@@ -59,6 +59,7 @@
     <Compile Include="FileSystem\IFileSystemFactory.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
     <Compile Include="FileSystem\IFile.cs" />
+    <Compile Include="FileSystem\ITemporaryFileFactory.cs" />
     <Compile Include="FileSystem\IUrlDir.cs" />
     <Compile Include="FileSystem\IUrlDirProvider.cs" />
     <Compile Include="FileSystem\KSPDirectory.cs" />
@@ -70,6 +71,8 @@
     <Compile Include="FileSystem\Providers\KSPGameDataUrlDirProvider.cs" />
     <Compile Include="FileSystem\IUrlFile.cs" />
     <Compile Include="FileSystem\IUrlIdentifier.cs" />
+    <Compile Include="FileSystem\TemporaryFile.cs" />
+    <Compile Include="FileSystem\TemporaryFileFactory.cs" />
     <Compile Include="FileSystem\UrlType.cs" />
     <Compile Include="Gui\Controls\ColorPickerControl.cs" />
     <Compile Include="Gui\Controls\ColorPickerBox.cs" />
