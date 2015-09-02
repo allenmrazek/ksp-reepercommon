@@ -74,20 +74,32 @@ namespace ReeperCommon.Containers
         }
 
 
-        public static TInput If<TInput>(this TInput o, Func<TInput, bool> evaluator)
-               where TInput : class
+        //public static TInput If<TInput>(this TInput o, Func<TInput, bool> evaluator)
+        //       where TInput : class
+        //{
+        //    if (o == null) return null;
+        //    return evaluator(o) ? o : null;
+        //}
+
+        //public static Maybe<TInput> If<TInput>(this Maybe<TInput> o, Func<TInput, bool> evaluator)
+        //{
+        //    if (!o.Any()) return o;
+
+        //    return evaluator(o.Single()) ? o : Maybe<TInput>.None;
+        //}
+
+        public static TSource If<TSource>(this TSource source, Func<TSource, bool> condition)
+    where TSource : class
         {
-            if (o == null) return null;
-            return evaluator(o) ? o : null;
+            if ((source != default(TSource)) && (condition(source) == true))
+            {
+                return source;
+            }
+            else
+            {
+                return default(TSource);
+            }
         }
-
-        public static Maybe<TInput> If<TInput>(this Maybe<TInput> o, Func<TInput, bool> evaluator)
-        {
-            if (!o.Any()) return o;
-
-            return evaluator(o.Single()) ? o : Maybe<TInput>.None;
-        }
-
 
 
         public static TInput Unless<TInput>(this TInput o, Func<TInput, bool> evaluator)
