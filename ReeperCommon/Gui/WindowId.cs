@@ -24,12 +24,12 @@ namespace ReeperCommon.Gui
             Value = value;
         }
 
-        public void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
+        public void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
             node.AddValue("WindowID", Value);
         }
 
-        public void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
+        public void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
             Value = node.Parse("WindowID", UniqueWindowIdProvider.Get());
         }

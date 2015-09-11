@@ -21,12 +21,12 @@ namespace ReeperCommonUnitTests.TestData
                 throw new NotImplementedException();
             }
 
-            public void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
+            public void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
                 node.AddValue("InternalPersistent", "TestValue");
             }
 
-            public void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
+            public void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
                 if (!node.HasValue("InternalPersistent")) throw new Exception("No value named InternalPersistent");
             }

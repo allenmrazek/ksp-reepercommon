@@ -115,6 +115,7 @@
     <Compile Include="Serialization\Exceptions\DuplicateSurrogateException.cs" />
     <Compile Include="Serialization\Exceptions\NoConversionException.cs" />
     <Compile Include="Serialization\Exceptions\NoDefaultValueException.cs" />
+    <Compile Include="Serialization\Exceptions\ReeperSerializationException.cs" />
     <Compile Include="Serialization\GetSerializationSurrogates.cs" />
     <Compile Include="Serialization\GetSurrogateSupportedTypes.cs" />
     <Compile Include="Serialization\IGetSerializationSurrogates.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Serialization\SurrogateProvider.cs" />
     <Compile Include="Serialization\Surrogates\ColorSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ConfigNodeSurrogateSerializer.cs" />
+    <Compile Include="Serialization\Surrogates\ListSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\PrimitiveSurrogateSerializer.cs" />
     <Compile Include="Serialization\Surrogates\SurrogateToSingleValueBase.cs" />
     <Compile Include="Serialization\Surrogates\QuaternionSurrogate.cs" />

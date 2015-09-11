@@ -2,7 +2,7 @@
 
 namespace ReeperCommon.Serialization.Exceptions
 {
-    public class DuplicateSurrogateException : Exception
+    public class DuplicateSurrogateException : ReeperSerializationException
     {
         public DuplicateSurrogateException(Type serializedType)
             : base("Already contains a surrogate for " + serializedType.FullName)

@@ -101,6 +101,14 @@ namespace ReeperCommon.Containers
             }
         }
 
+        public static TSource IfNull<TSource>(this TSource source, Action func)
+            where TSource : class
+        {
+            if (source == null)
+                func();
+            return source;
+        }
+
 
         public static TInput Unless<TInput>(this TInput o, Func<TInput, bool> evaluator)
                where TInput : class

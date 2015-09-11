@@ -10,7 +10,7 @@ namespace ReeperCommon.Serialization
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class DefaultConfigNodeItemSerializerSelector : IConfigNodeItemSerializerSelector
     {
-        public delegate Maybe<IConfigNodeItemSerializer> SurrogateFactory(Type target);
+        
    
         private class SurrogateInfo
         {

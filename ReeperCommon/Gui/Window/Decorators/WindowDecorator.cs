@@ -41,15 +41,15 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        public virtual void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
+        public virtual void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            _base.Serialize(formatter, node);
+            _base.DuringSerialize(formatter, node);
         }
 
 
-        public virtual void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
+        public virtual void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            _base.Deserialize(formatter, node);
+            _base.DuringDeserialize(formatter, node);
         }
 
 

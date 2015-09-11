@@ -54,7 +54,7 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-        public virtual void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
+        public virtual void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 
@@ -62,7 +62,7 @@ namespace ReeperCommon.Gui.Window
         }
 
 
-        public virtual void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
+        public virtual void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using ReeperCommon.Containers;
 
 namespace ReeperCommon.Extensions
 {
@@ -76,6 +79,61 @@ namespace ReeperCommon.Extensions
             if (node.HasValue(valueName))
                 node.SetValue(valueName, value.ToString());
             else node.AddValue(valueName, value);
+        }
+
+
+        public static void Write(this ConfigNode node, string fullPath, string header)
+        {
+            if (node == null) throw new ArgumentNullException("node");
+            if (string.IsNullOrEmpty(fullPath))
+                throw new ArgumentException("Invalid path: " + fullPath, "fullPath");
+
+            
+            using (var stream = new StreamWriter(new FileStream(fullPath, FileMode.Create, FileAccess.Write)))
+            {
+                if (!string.IsNullOrEmpty(header))
+                    stream.WriteLine(header.StartsWith("\\\\") ? header : "\\\\ " + header.Trim());
+
+                WriteNode(stream, node, 0);
+            }
+        }
+
+
+        private static void WriteNode(TextWriter stream, ConfigNode node, int depth)
+        {
+            if (stream == null) throw new ArgumentNullException("stream");
+            if (node == null) throw new ArgumentNullException("node");
+            if (depth < 0)
+                throw new ArgumentException("Invalid depth: " + depth, "depth");
+
+
+            WriteNestedLine(stream, depth, node.name.Trim());
+            WriteNestedLine(stream, depth, "{");
+
+            {
+                // write all values of this node
+                foreach (ConfigNode.Value value in node.values)
+                    WriteNestedLine(stream, depth + 1,
+                        value.name.Trim() + " = " + value.value.Trim());
+            }
+
+            if (node.CountValues > 0 && node.CountNodes > 0)
+                stream.Write(stream.NewLine);
+
+            { // write all sub nodes of this node
+                foreach (ConfigNode sub in node.nodes)
+                    WriteNode(stream, sub, depth + 1);
+            }
+
+            WriteNestedLine(stream, depth, "}");
+        }
+
+
+        private static void WriteNestedLine(TextWriter stream, int depth, string data)
+        {
+            stream.Write(new string('\t', depth));
+            stream.Write(data);
+            stream.Write(stream.NewLine);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace ReeperCommonUnitTests.Fixtures
     public class DomainCustomization : CompositeCustomization
     {
         public DomainCustomization()
-            : base(new AutoNSubstituteCustomization())
+            : base(new AutoNSubstituteCustomization(), new MultipleCustomization())
         {
         }
     }

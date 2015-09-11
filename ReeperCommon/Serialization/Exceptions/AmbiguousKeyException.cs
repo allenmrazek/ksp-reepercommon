@@ -2,7 +2,7 @@
 
 namespace ReeperCommon.Serialization.Exceptions
 {
-    public class AmbiguousKeyException : Exception
+    public class AmbiguousKeyException : ReeperSerializationException
     {
         public AmbiguousKeyException(string key) : base("More than one match for key \"" + key + "\" found")
         {

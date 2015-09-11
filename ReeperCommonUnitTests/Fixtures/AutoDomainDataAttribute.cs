@@ -4,6 +4,7 @@ using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 using ReeperCommon.Serialization;
 using ReeperCommon.Serialization.Surrogates;
+using ReeperCommon.Serialization.Surrogates.Tests;
 using ReeperCommonUnitTests.TestData;
 using UnityEngine;
 

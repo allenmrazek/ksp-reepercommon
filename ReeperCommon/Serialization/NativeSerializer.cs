@@ -30,7 +30,7 @@ namespace ReeperCommon.Serialization
             if (target is IPersistenceSave)
                 (target as IPersistenceSave).PersistenceSave();
 
-            reeperPersistent.Serialize(serializer, persistentConfig);
+            reeperPersistent.DuringSerialize(serializer, persistentConfig);
         }
 
 
@@ -55,11 +55,11 @@ namespace ReeperCommon.Serialization
             if (reeperPersistent == null) // uh ... how??
                 throw new Exception("Failed to create instance of type " + type.FullName + " for unknown reasons");
 
-            // we'll add a brand new node so any keys the target's serialization methods use won't
+            // new node so any keys the target's serialization methods use won't
             // clash with existing keys
             var configValue = config.GetNode(uniqueKey);
 
-            reeperPersistent.Deserialize(serializer, configValue);
+            reeperPersistent.DuringDeserialize(serializer, configValue);
 
             if (reeperPersistent is IPersistenceLoad)
                 (reeperPersistent as IPersistenceLoad).PersistenceLoad();

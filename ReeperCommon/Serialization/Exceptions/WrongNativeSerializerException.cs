@@ -2,7 +2,7 @@
 
 namespace ReeperCommon.Serialization.Exceptions
 {
-    public class WrongNativeSerializerException : Exception
+    public class WrongNativeSerializerException : ReeperSerializationException
     {
         public WrongNativeSerializerException(Type expectedType, object recvd)
             : base(

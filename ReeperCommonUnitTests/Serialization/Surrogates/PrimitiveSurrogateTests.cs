@@ -149,4 +149,9 @@ namespace ReeperCommonUnitTests.Serialization.Surrogates
     public class FloatSurrogate : PrimitiveSurrogateTests<float>
     {
     }
+
+    public class BooleanSurrogate : PrimitiveSurrogateTests<bool>
+    {
+        
+    }
 }

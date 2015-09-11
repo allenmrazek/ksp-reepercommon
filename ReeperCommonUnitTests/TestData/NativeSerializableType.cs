@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ReeperCommon.Serialization;
+﻿using ReeperCommon.Serialization;
 
 namespace ReeperCommonUnitTests.TestData
 {
-    class SimplePersistentObjectNative : IReeperPersistent
+    public class NativeSerializableType : IReeperPersistent
     {
         public void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {

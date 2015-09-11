@@ -2,7 +2,7 @@
 
 namespace ReeperCommon.Serialization.Exceptions
 {
-    public class ConfigNodeDuplicateKeyException : Exception
+    public class ConfigNodeDuplicateKeyException : ReeperSerializationException
     {
         public ConfigNodeDuplicateKeyException(string key) : base("ConfigNode already contains key \"" + key + "\"")
         {

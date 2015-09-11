@@ -26,12 +26,12 @@ namespace ReeperCommonUnitTests.Serialization
         {
             [ReeperPersistent] public IReeperPersistent First = Substitute.For<IReeperPersistent>();
             [ReeperPersistent] public IReeperPersistent Second = Substitute.For<IReeperPersistent>();
-            public void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
+            public void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
                 node.AddValue("ObjectWithTwo", "SerialValue");
             }
 
-            public void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
+            public void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
             }
         }
@@ -108,8 +108,8 @@ namespace ReeperCommonUnitTests.Serialization
 
             sut.Serialize(target, config);
 
-            target.Received(1).Serialize(Arg.Is(sut), Arg.Is<ConfigNode>(param => !ReferenceEquals(param, config))); // IReeperPersistent should have its OWN node
-            target.DidNotReceive().Deserialize(Arg.Any<IConfigNodeSerializer>(), Arg.Any<ConfigNode>());
+            target.Received(1).DuringSerialize(Arg.Is(sut), Arg.Is<ConfigNode>(param => !ReferenceEquals(param, config))); // IReeperPersistent should have its OWN node
+            target.DidNotReceive().DuringDeserialize(Arg.Any<IConfigNodeSerializer>(), Arg.Any<ConfigNode>());
         }
 
 
@@ -128,9 +128,9 @@ namespace ReeperCommonUnitTests.Serialization
             sut.Serialize(objectToSerialize, config);
 
             objectToSerialize.First.Received(1)
-                .Serialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
+                .DuringSerialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
             objectToSerialize.Second.Received(1)
-                .Serialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
+                .DuringSerialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
 
             Assert.True(config.HasData);
             Assert.True(config.nodes.Count > 0);
@@ -238,9 +238,90 @@ namespace ReeperCommonUnitTests.Serialization
             sut.Deserialize(objectToDeserialize, config);
 
             objectToDeserialize.First.Received(1)
-                .Deserialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
+                .DuringDeserialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
             objectToDeserialize.Second.Received(1)
-                .Deserialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
+                .DuringDeserialize(Arg.Is(sut), Arg.Is<ConfigNode>(recvd => !ReferenceEquals(recvd, config)));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Serialize_WithIPersistenceSaveTarget_WithNoNativeSerializer_CallsPersistenceSave(ConfigNode config)
+        {
+            var objectToSerialize = Substitute.For<IPersistenceSave, IPersistenceLoad>();
+            var surrogate = Substitute.For<IConfigNodeItemSerializer>();
+            var selector = new DefaultConfigNodeItemSerializerSelector();
+
+            selector.AddSerializer(objectToSerialize.GetType(), surrogate);
+
+            var sut = new ConfigNodeSerializer(selector, new GetSerializableFields());
+
+            sut.Serialize(objectToSerialize, config);
+
+            objectToSerialize.Received(1).PersistenceSave();
+            ((IPersistenceLoad) objectToSerialize).DidNotReceive().PersistenceLoad();
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithIPersistenceSaveTarget_WithNoNativeSerializer_CallsPersistenceSave(ConfigNode config)
+        {
+            var objectToSerialize = Substitute.For<IPersistenceLoad, IPersistenceSave>();
+            var surrogate = Substitute.For<IConfigNodeItemSerializer>();
+
+            surrogate.Deserialize(Arg.Is(objectToSerialize.GetType()), Arg.Is(objectToSerialize), Arg.Any<string>(),
+                Arg.Any<ConfigNode>(), Arg.Any<IConfigNodeSerializer>())
+                .Returns(ci => ci.Arg<object>());
+
+            var selector = new DefaultConfigNodeItemSerializerSelector();
+
+            selector.AddSerializer(objectToSerialize.GetType(), surrogate);
+
+            var sut = new ConfigNodeSerializer(selector, new GetSerializableFields());
+            config.AddNode(objectToSerialize.GetType().Name);
+
+            sut.Deserialize(objectToSerialize, config);
+
+            objectToSerialize.Received(1).PersistenceLoad();
+            ((IPersistenceSave)objectToSerialize).DidNotReceive().PersistenceSave();
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Serialize_WithIPersistenceSaveTarget_WithNativeSerializer_CallsPersistenceSave(ConfigNode config)
+        {
+            var objectToSerialize = Substitute.For<IPersistenceSave, IPersistenceLoad, IReeperPersistent>();
+            var selector = Substitute.For<IConfigNodeItemSerializerSelector>();
+            selector.GetSerializer(Arg.Any<Type>())
+                .Returns(ci => Maybe<IConfigNodeItemSerializer>.With(new NativeSerializer()));
+
+            var sut = new ConfigNodeSerializer(selector, new GetSerializableFields());
+
+            sut.Serialize(objectToSerialize, config);
+
+            objectToSerialize.Received(1).PersistenceSave();
+            ((IPersistenceLoad)objectToSerialize).DidNotReceive().PersistenceLoad();
+            ((IReeperPersistent) objectToSerialize).Received(1).DuringSerialize(Arg.Is(sut), Arg.Any<ConfigNode>());
+            ((IReeperPersistent) objectToSerialize).DidNotReceive().DuringDeserialize(Arg.Is(sut), Arg.Any<ConfigNode>());
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WithIPersistenceSaveTarget_WithNativeSerializer_CallsPersistenceSave(ConfigNode config)
+        {
+            var objectToSerialize = Substitute.For<IPersistenceLoad, IPersistenceSave, IReeperPersistent>();
+            var selector = Substitute.For<IConfigNodeItemSerializerSelector>();
+            selector.GetSerializer(Arg.Any<Type>())
+                .Returns(ci => Maybe<IConfigNodeItemSerializer>.With(new NativeSerializer()));
+
+            var sut = new ConfigNodeSerializer(selector, new GetSerializableFields());
+            config.AddNode(objectToSerialize.GetType().Name);
+
+            sut.Deserialize(objectToSerialize, config);
+
+            objectToSerialize.Received(1).PersistenceLoad();
+            ((IPersistenceSave)objectToSerialize).DidNotReceive().PersistenceSave();
+            ((IReeperPersistent)objectToSerialize).DidNotReceive().DuringSerialize(Arg.Is(sut), Arg.Any<ConfigNode>());
+            ((IReeperPersistent)objectToSerialize).Received(1).DuringDeserialize(Arg.Is(sut), Arg.Any<ConfigNode>());
         }
     }
 

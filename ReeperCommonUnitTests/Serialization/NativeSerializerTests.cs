@@ -5,6 +5,7 @@ using NSubstitute.Core;
 using ReeperCommon.Serialization;
 using ReeperCommon.Serialization.Exceptions;
 using ReeperCommonUnitTests.Fixtures;
+using ReeperCommonUnitTests.TestData;
 using Xunit;
 using Xunit.Extensions;
 
@@ -12,25 +13,6 @@ namespace ReeperCommonUnitTests.Serialization
 {
     public class NativeSerializerTests
     {
-        private class DefaultConstructableType : IReeperPersistent
-        {
-            public DefaultConstructableType()
-            {
-                
-            }
-
-            public void Serialize(IConfigNodeSerializer formatter, ConfigNode node)
-            {
-                
-            }
-
-            public void Deserialize(IConfigNodeSerializer formatter, ConfigNode node)
-            {
-
-            }
-        }
-
-
         [Theory, AutoDomainData]
         public void Serialize_WithNullParameters_Throws(string key, ConfigNode config)
         {
@@ -69,7 +51,7 @@ namespace ReeperCommonUnitTests.Serialization
 
             sut.Serialize(testObject.GetType(), testObject, key, config, serializer);
 
-            testObject.Received(1).Serialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && config.GetNodes().Any(n => ReferenceEquals(n, cfg))));
+            testObject.Received(1).DuringSerialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && config.GetNodes().Any(n => ReferenceEquals(n, cfg))));
         }
 
 
@@ -90,7 +72,7 @@ namespace ReeperCommonUnitTests.Serialization
 
             var result = sut.Deserialize(testObject.GetType(), testObject, key, config, serializer);
 
-            testObject.Received(1).Deserialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && config.GetNodes().Any(n => ReferenceEquals(n, cfg))));
+            testObject.Received(1).DuringDeserialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && config.GetNodes().Any(n => ReferenceEquals(n, cfg))));
         }
 
 
@@ -156,7 +138,6 @@ namespace ReeperCommonUnitTests.Serialization
             Assert.Same(actual.GetType(), typeof (DefaultConstructableType));
             Assert.True(actual is IReeperPersistent);
         }
+
     }
-
-
 }
