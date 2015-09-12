@@ -109,7 +109,6 @@
     <Compile Include="TestData\NativeSerializableType.cs" />
     <Compile Include="Serialization\ValueTypeSerializationTests.cs" />
     <Compile Include="Serialization\WindowSerializationTests.cs" />
-    <Compile Include="TestData\SimplePersistentObjectWithList.cs" />
     <Compile Include="TestData\StrangeViewStandin.cs" />
     <Compile Include="TestData\DefaultConstructableType.cs" />
     <Compile Include="Serialization\DefaultSerializerSelectorTests.cs" />

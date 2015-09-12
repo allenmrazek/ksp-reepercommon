@@ -64,6 +64,16 @@ namespace ReeperCommon.Serialization
                     serializer.Serialize(target.GetType(), target, target.GetType().Name, config, nodeSerializer));
         }
 
+        public ConfigNode CreateConfigNodeFromObject(object target)
+        {
+            var cfg = new ConfigNode(target.GetType().Name);
+
+            Serialize(target, cfg);
+
+            return cfg;
+        }
+
+
 
         private void DoOperation(object target, ConfigNode config, FieldAction fieldAction, ObjectAction objectAction)
         {

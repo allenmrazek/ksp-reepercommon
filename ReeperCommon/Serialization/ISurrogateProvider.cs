@@ -4,7 +4,7 @@ using ReeperCommon.Containers;
 
 namespace ReeperCommon.Serialization
 {
-    public delegate Maybe<IConfigNodeItemSerializer> SurrogateFactory(Type target);
+
 
     public interface ISurrogateProvider
     {

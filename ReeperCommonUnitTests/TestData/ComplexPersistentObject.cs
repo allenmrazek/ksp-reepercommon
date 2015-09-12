@@ -16,10 +16,6 @@ namespace ReeperCommonUnitTests.TestData
                 return true;
             }
 
-            public override int GetHashCode()
-            {
-                throw new NotImplementedException();
-            }
 
             public void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
@@ -28,7 +24,7 @@ namespace ReeperCommonUnitTests.TestData
 
             public void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
             {
-                if (!node.HasValue("InternalPersistent")) throw new Exception("No value named InternalPersistent");
+
             }
 
             public void PersistenceLoad()
@@ -76,5 +72,6 @@ namespace ReeperCommonUnitTests.TestData
                 return hashCode;
             }
         }
+
     }
 }

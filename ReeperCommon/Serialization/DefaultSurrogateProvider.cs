@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ReeperCommon.Containers;
 using ReeperCommon.Serialization.Surrogates;
 
 namespace ReeperCommon.Serialization
@@ -45,6 +46,7 @@ namespace ReeperCommon.Serialization
                                     new KeyValuePair<Type, IConfigNodeItemSerializer>(surrogateIdentifier,
                                         Activator.CreateInstance(t) as IConfigNodeItemSerializer)));
         }
+
 
 
         public virtual IEnumerable<Assembly> GetTargets()

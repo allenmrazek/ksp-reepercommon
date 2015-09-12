@@ -4,20 +4,21 @@ using System.Linq;
 using System.Reflection;
 using ReeperCommon.Containers;
 using ReeperCommon.Serialization.Exceptions;
+using ReeperCommon.Serialization.Surrogates;
 
 namespace ReeperCommon.Serialization
 {
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class DefaultConfigNodeItemSerializerSelector : IConfigNodeItemSerializerSelector
     {
-        
+        public delegate Maybe<IConfigNodeItemSerializer> SurrogateFactoryMethod(Type target);
    
         private class SurrogateInfo
         {
             public readonly Type SurrogateType;
-            public readonly SurrogateFactory Factory;
+            public readonly SurrogateFactoryMethod Factory;
 
-            public SurrogateInfo(Type surrogateType, SurrogateFactory factory)
+            public SurrogateInfo(Type surrogateType, SurrogateFactoryMethod factory)
             {
                 if (surrogateType == null) throw new ArgumentNullException("surrogateType");
                 if (factory == null) throw new ArgumentNullException("factory");
@@ -64,8 +65,10 @@ namespace ReeperCommon.Serialization
             SurrogateProvider = surrogateProvider;
 
             SurrogateProvider.Get().ToList().ForEach(kvp => AddSerializer(kvp.Key, kvp.Value));
-        }
 
+            // support for List<T>
+            AddSerializer(typeof (List<>), CreateGenericInstance);
+        }
 
 
         private void AddSerializer(Type target, SurrogateInfo info)
@@ -99,7 +102,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public void AddSerializer(Type target, SurrogateFactory factory)
+        public void AddSerializer(Type target, SurrogateFactoryMethod factory)
         {
             if (target == null) throw new ArgumentNullException("target");
             if (factory == null) throw new ArgumentNullException("factory");
@@ -182,6 +185,19 @@ namespace ReeperCommon.Serialization
         {
             return "DefaultConfigNodeItemSerializerSelector: surrogates: " +
                    string.Join(",", _surrogates.Keys.Select(k => k.FullName).ToArray());
+        }
+
+
+        private static Maybe<IConfigNodeItemSerializer> CreateGenericInstance(Type type)
+        {
+            if (type == null) throw new ArgumentNullException("type");
+
+            return type.GetGenericArguments().Any() && type.GetGenericArguments().Length == 1
+                ? ((IConfigNodeItemSerializer)
+                    Activator.CreateInstance(
+                        typeof(ListSurrogate<>).MakeGenericType(type.GetGenericArguments()[0]))).ToMaybe()
+                : Maybe<IConfigNodeItemSerializer>.None;
+
         }
     }
 }
