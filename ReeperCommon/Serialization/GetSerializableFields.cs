@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -10,7 +9,8 @@ namespace ReeperCommon.Serialization
     {
         public IEnumerable<FieldInfo> Get(object target)
         {
-            if (target == null) throw new ArgumentNullException("target");
+            if (target == null)
+                return Enumerable.Empty<FieldInfo>();
             
             return target.GetType()
                 .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)

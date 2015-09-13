@@ -2,11 +2,14 @@
 
 namespace ReeperCommon.Serialization
 {
-    public class ReeperPersistentMethodCaller : IConfigNodeItemSerializer
+    /// <summary>
+    /// Calls IPersistenceSave/IPersistenceLoad on serialized type at appropriate time
+    /// </summary>
+    public class PersistenceMethodCaller : IConfigNodeItemSerializer
     {
         public readonly IConfigNodeItemSerializer DecoratedSerializer;
 
-        public ReeperPersistentMethodCaller(IConfigNodeItemSerializer decoratedSerializer)
+        public PersistenceMethodCaller(IConfigNodeItemSerializer decoratedSerializer)
         {
             if (decoratedSerializer == null) throw new ArgumentNullException("decoratedSerializer");
 
@@ -14,7 +17,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (target == null) return;
 
@@ -23,20 +26,18 @@ namespace ReeperCommon.Serialization
             if (persistObject != null && typeof(IPersistenceSave).IsAssignableFrom(type))
                 persistObject.PersistenceSave();
 
-            DecoratedSerializer.Serialize(type, target, uniqueKey, config, serializer);
+            DecoratedSerializer.Serialize(type, ref target, config, serializer);
         }
 
 
-        public object Deserialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Deserialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
         {
-            var result = DecoratedSerializer.Deserialize(type, target, uniqueKey, config, serializer);
+            DecoratedSerializer.Deserialize(type, ref target, config, serializer);
 
-            var persistObject = result as IPersistenceLoad;
+            var persistObject = target as IPersistenceLoad;
 
             if (persistObject != null && typeof(IPersistenceLoad).IsAssignableFrom(type))
                 persistObject.PersistenceLoad();
-
-            return result;
         }
     }
 }

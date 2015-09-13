@@ -4,7 +4,8 @@ using System.Reflection;
 using ReeperCommon.Serialization;
 using Xunit;
 
-namespace ReeperCommonUnitTests.Serialization
+// ReSharper disable once CheckNamespace
+namespace ReeperCommon.Serialization.Tests
 {
     public class GetSerializationSurrogatesTests
     {

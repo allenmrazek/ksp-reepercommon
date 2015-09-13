@@ -6,7 +6,8 @@ using ReeperCommonUnitTests.Fixtures;
 using Xunit;
 using Xunit.Extensions;
 
-namespace ReeperCommonUnitTests.Serialization
+// ReSharper disable once CheckNamespace
+namespace ReeperCommon.Serialization.Tests
 {
     public abstract class GetSurrogateSupportedTypesTests<T>
     {

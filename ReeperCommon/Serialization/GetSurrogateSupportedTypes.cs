@@ -13,7 +13,9 @@ namespace ReeperCommon.Serialization
         {
             return surrogateType.GetInterfaces()
               .Where(interfaceType => interfaceType.IsGenericType &&
-                                      typeof(IConfigNodeItemSerializer).IsAssignableFrom(interfaceType))
+                                      typeof(IConfigNodeItemSerializer).IsAssignableFrom(interfaceType)
+                                      && interfaceType.GetGenericArguments().Length == 1)
+                                     
               .Select(interfaceType => interfaceType.GetGenericArguments().First());
         }
     }

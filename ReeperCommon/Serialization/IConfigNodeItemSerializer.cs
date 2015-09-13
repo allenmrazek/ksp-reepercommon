@@ -4,8 +4,11 @@ namespace ReeperCommon.Serialization
 {
     public interface IConfigNodeItemSerializer
     {
-        void Serialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer);
-        object Deserialize(Type type, object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer);
+        //void Serialize(Type type, ref object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer);
+        //object Deserialize(Type type, ref object target, string uniqueKey, ConfigNode config, IConfigNodeSerializer serializer);
+
+        void Serialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer);
+        void Deserialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer);
     }
 
 

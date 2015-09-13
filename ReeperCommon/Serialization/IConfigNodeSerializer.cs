@@ -2,11 +2,11 @@
 {
     public interface IConfigNodeSerializer
     {
-        void Deserialize(object target, ConfigNode config);
-        void Serialize(object source, ConfigNode config);
-
         ConfigNode CreateConfigNodeFromObject(object target);
 
-        IConfigNodeItemSerializerSelector ConfigNodeItemSerializerSelector { get; set; }
+        void WriteObjectToConfigNode(ref object source, ConfigNode config);
+        void LoadObjectFromConfigNode(ref object target, ConfigNode config);
+
+        ISerializerSelector SerializerSelector { get; set; }
     }
 }

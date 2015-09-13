@@ -7,7 +7,7 @@ using Xunit;
 using Xunit.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace ReeperCommonUnitTests.Serialization
+namespace ReeperCommon.Serialization.Tests
 {
     public class SerializableFieldQueryTests
     {

@@ -56,17 +56,17 @@ namespace ReeperCommon.Gui.Window
 
         public virtual void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            if (node == null) throw new ArgumentNullException("node");
+            //if (node == null) throw new ArgumentNullException("node");
 
-            formatter.Serialize(this, node);
+            //formatter.Serialize(this, node);
         }
 
 
         public virtual void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            if (node == null) throw new ArgumentNullException("node");
+            //if (node == null) throw new ArgumentNullException("node");
 
-            formatter.Deserialize(this, node);
+            //formatter.Deserialize(this, node);
         }
 
 

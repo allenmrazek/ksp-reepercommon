@@ -44,6 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Containers\Lazy.cs" />
     <Compile Include="Containers\Maybe.cs" />
     <Compile Include="DataObjects\ColorHsl.cs" />
     <Compile Include="Extensions\CameraExtensions.cs" />
@@ -110,8 +111,10 @@
     <Compile Include="Serialization\Exceptions\AmbiguousKeyException.cs" />
     <Compile Include="Serialization\Exceptions\ConfigNodeDuplicateKeyException.cs" />
     <Compile Include="Serialization\ConfigNodeSerializer.cs" />
-    <Compile Include="Serialization\DefaultSurrogateProvider.cs" />
-    <Compile Include="Serialization\DefaultConfigNodeItemSerializerSelector.cs" />
+    <Compile Include="Serialization\FieldSerializer.cs" />
+    <Compile Include="Serialization\PreferNativeSerializer.cs" />
+    <Compile Include="Serialization\SurrogateProvider.cs" />
+    <Compile Include="Serialization\old\DefaultSerializerSelector.cs" />
     <Compile Include="Serialization\Exceptions\DuplicateSurrogateException.cs" />
     <Compile Include="Serialization\Exceptions\NoConversionException.cs" />
     <Compile Include="Serialization\Exceptions\NoDefaultValueException.cs" />
@@ -127,11 +130,11 @@
     <Compile Include="Serialization\ReeperPersistentAttribute.cs" />
     <Compile Include="Serialization\IConfigNodeSerializer.cs" />
     <Compile Include="Serialization\IGetObjectFields.cs" />
-    <Compile Include="Serialization\IConfigNodeItemSerializerSelector.cs" />
+    <Compile Include="Serialization\ISerializerSelector.cs" />
     <Compile Include="Serialization\GetSerializableFields.cs" />
     <Compile Include="Serialization\NativeSerializer.cs" />
-    <Compile Include="Serialization\ReeperPersistentMethodCaller.cs" />
-    <Compile Include="Serialization\SurrogateProvider.cs" />
+    <Compile Include="Serialization\PersistenceMethodCaller.cs" />
+    <Compile Include="Serialization\SerializerSelector.cs" />
     <Compile Include="Serialization\Surrogates\ColorSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\ConfigNodeSurrogateSerializer.cs" />
     <Compile Include="Serialization\Surrogates\ListSurrogate.cs" />

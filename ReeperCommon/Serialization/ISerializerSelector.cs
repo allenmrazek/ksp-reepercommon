@@ -3,7 +3,9 @@ using ReeperCommon.Containers;
 
 namespace ReeperCommon.Serialization
 {
-    public interface IConfigNodeItemSerializerSelector
+    public delegate Maybe<IConfigNodeItemSerializer> SurrogateFactoryMethod();
+
+    public interface ISerializerSelector
     {
         Maybe<IConfigNodeItemSerializer> GetSerializer(Type target);
     }
