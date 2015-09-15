@@ -17,7 +17,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public void Serialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize(Type type, ref object target, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (target == null) return;
 
@@ -26,13 +26,13 @@ namespace ReeperCommon.Serialization
             if (persistObject != null && typeof(IPersistenceSave).IsAssignableFrom(type))
                 persistObject.PersistenceSave();
 
-            DecoratedSerializer.Serialize(type, ref target, config, serializer);
+            DecoratedSerializer.Serialize(type, ref target, key, config, serializer);
         }
 
 
-        public void Deserialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Deserialize(Type type, ref object target, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
-            DecoratedSerializer.Deserialize(type, ref target, config, serializer);
+            DecoratedSerializer.Deserialize(type, ref target, key, config, serializer);
 
             var persistObject = target as IPersistenceLoad;
 

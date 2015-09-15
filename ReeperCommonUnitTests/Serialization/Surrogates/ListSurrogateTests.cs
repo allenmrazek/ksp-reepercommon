@@ -1,216 +1,177 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Reflection;
-//using System.Text;
-//using NSubstitute;
-//using Ploeh.AutoFixture;
-//using ReeperCommon.Containers;
-//using ReeperCommon.Extensions;
-//using ReeperCommon.Serialization;
-//using ReeperCommon.Serialization.Surrogates;
-//using ReeperCommonUnitTests.Fixtures;
-//using ReeperCommonUnitTests.TestData;
-//using UnityEngine;
-//using Xunit;
-//using Xunit.Extensions;
-//using Random = System.Random;
+﻿using System;
+using System.CodeDom;
+using System.Collections.Generic;
+using System.Linq;
+using KSPAchievements;
+using NSubstitute;
+using Ploeh.AutoFixture;
+using ReeperCommon.Containers;
+using ReeperCommon.Extensions;
+using ReeperCommon.Serialization;
+using ReeperCommon.Serialization.Exceptions;
+using ReeperCommon.Serialization.Surrogates;
+using ReeperCommonUnitTests.Fixtures;
+using ReeperCommonUnitTests.Serialization.Complex;
+using ReeperCommonUnitTests.Serialization.Surrogates;
+using ReeperCommonUnitTests.TestData;
+using Xunit;
+using Xunit.Extensions;
 
-//// ReSharper disable once CheckNamespace
-//namespace ReeperCommonUnitTests.Serialization.Surrogates
-//{
-//// ReSharper disable once ClassNeverInstantiated.Global
+// ReSharper disable once CheckNamespace
+namespace ReeperCommon.Serialization.Tests.Surrogates
+{
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public abstract class ListSurrogateTests<T>
+    {
 
+        [Theory, AutoDomainData]
+        public void Serialize_ParameterCheck(ListSurrogate<T> sut, IEnumerable<T> dataList, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var badType = (object) sut;
+            var data = new List<T>(dataList);
+            var objData = (object) data;
+            var defaultList = (object)default(List<T>);
 
-//    public abstract class ListSurrogateTests<T>
-//    {
-//        static class Factory
-//        {
-//// ReSharper disable once StaticFieldInGenericType
-//            private static readonly Random RandomGenerator = new Random();
+            Assert.Throws<ArgumentNullException>(() => sut.Serialize(null, ref objData, key, config, serializer));
+            Assert.Throws<WrongSerializerException>(
+                () => sut.Serialize(typeof (ListSurrogateTests<T>), ref objData, key, config, serializer));
+            Assert.Throws<WrongSerializerException>(
+                () => sut.Serialize(typeof(List<T>), ref badType, key, config, serializer));
 
-//            public static IFixture Create()
-//            {
-//                var fixture = new Fixture {RepeatCount = 5};
-//                var rnd = new Random();
-
-//                fixture.Customize(new DomainCustomization());
-
-//                fixture.Register(() => new NativeSerializableType());
-//                fixture.Register(() => new ConfigNode());
-
-//                var itemSurrogate = Substitute.For<IConfigNodeItemSerializer>();
-//                var serializer = Substitute.For<IConfigNodeSerializer>();
-//                serializer.ConfigNodeItemSerializerSelector.GetSerializer(Arg.Any<Type>())
-//                    .Returns(ci => itemSurrogate.ToMaybe());
-
-//                fixture.Register(() => itemSurrogate);
-//                fixture.Register(() => serializer);
-//                //fixture.Register(() => new SimplePersistentObjectWithList());
-//                fixture.Register(() => new Rect(NextFloat(), NextFloat(), NextFloat(), NextFloat()));
-//                //fixture.Register(() => new ComplexPersistentObject());
-//                fixture.Register(() => new NativeSerializableType {FloatField = NextFloat()});
-//                fixture.Register(() => new SimplePersistentObjectWithList {ListField = fixture.CreateMany<T>().ToList() });
-
-//                return fixture;
-//            }
-
-
-//            private static float NextFloat()
-//            {
-//                return (float)(RandomGenerator.NextDouble());
-//            }
-//        }
-
-
-//        private class SimplePersistentObjectWithList
-//        {
-//            [ReeperPersistent, Persistent]
-//            public List<T> ListField = new List<T>
-//            {
-//                default(T), default(T), default(T)
-//            };
-//        }
-
-
-//        [Fact]
-//        public void SerializeTest()
-//        {
-//            var fixture = Factory.Create();
-
-//            var testList = new List<T>(fixture.CreateMany<T>());
-//            var config = fixture.CreateAnonymous<ConfigNode>();
-
-//            var itemSurrogate = Substitute.For<IConfigNodeItemSerializer>();
-//            var serializer = Substitute.For<IConfigNodeSerializer>();
-//            serializer.ConfigNodeItemSerializerSelector.GetSerializer(Arg.Any<Type>())
-//                .Returns(ci => itemSurrogate.ToMaybe());
-            
-//            var sut = new ListSurrogate<T>();
-
-//            sut.Serialize(typeof (List<T>), testList, fixture.CreateAnonymous<string>(), config, serializer);
-
-//            itemSurrogate.Received(fixture.RepeatCount).Serialize(
-//                Arg.Is(typeof(T)), Arg.Any<object>(), Arg.Any<string>(), Arg.Any<ConfigNode>(),
-//                Arg.Is(serializer));
-//        }
-
-
-//        [Fact]
-//        public void Serialize_WithActualListField_Test()
-//        {
-//            var fixture = Factory.Create();
-//            var testObject = new SimplePersistentObjectWithList {ListField = fixture.CreateMany<T>().ToList()};
-//            //var config = fixture.CreateAnonymous<ConfigNode>();
-
-//            var selector = new DefaultConfigNodeItemSerializerSelector(new DefaultSurrogateProvider(new GetSerializationSurrogates(new GetSurrogateSupportedTypes()), new GetSurrogateSupportedTypes()));
-
-//            var serializer = new ConfigNodeSerializer(selector, new GetSerializableFields());
-//            var config = serializer.CreateConfigNodeFromObject(testObject); //serializer.Serialize(testObject, config));
-
-
-//            Assert.True(config.HasData);
-//            Assert.Equal(1, config.CountNodes);
-//            Assert.Equal(testObject.ListField.Count,
-//                typeof (SimplePersistentObjectWithList).GetFields(BindingFlags.Public | BindingFlags.Instance)
-//                    .FirstOrDefault(
-//                        pi =>
-//                            pi.FieldType.IsGenericType &&
-//                            pi.FieldType.GetGenericTypeDefinition() == typeof(List<>))
-//                    .With(pi => pi.Name)
-//                    .With(config.GetNode)
-//                    .Return(c => c.CountNodes, 0));
-
-//            if (typeof(T) != typeof(ComplexPersistentObject)) return;
-//            config.Write("D:\\ListSurrogateTest.cfg", "Surrogate Test");
-//            ConfigNode.CreateConfigFromObject(testObject).Write("D:\\Persistent.cfg", string.Empty);
-//        }
-
-
-//        //[Fact]
-//        //public void DeserializeTest()
-//        //{
-//        //    var fixture = Factory.Create();
-
-//        //    var testList = new List<T>(fixture.CreateMany<T>());
-//        //    var config = fixture.CreateAnonymous<ConfigNode>();
-
-//        //    var itemSurrogate = Substitute.For<IConfigNodeItemSerializer>();
-//        //    var serializer = Substitute.For<IConfigNodeSerializer>();
-//        //    serializer.ConfigNodeItemSerializerSelector.GetSerializer(Arg.Any<Type>())
-//        //        .Returns(ci => itemSurrogate.ToMaybe());
-
-//        //    itemSurrogate.Deserialize(Arg.Any<Type>(), Arg.Any<object>(), Arg.Any<string>(), Arg.Any<ConfigNode>(),
-//        //        Arg.Is(serializer))
-//        //        .Returns(ci => ci.Arg<object>());
-
-//        //    var sut = new ListSurrogate<T>();
-//        //    var key = fixture.CreateAnonymous<string>();
-
-//        //    sut.Serialize(typeof(List<T>), testList, key, config, serializer);
-//        //    sut.Deserialize(typeof(List<T>), testList, key, config, serializer);
-
-//        //    itemSurrogate.Received(fixture.RepeatCount).Deserialize(
-//        //        Arg.Is(typeof(T)), Arg.Any<object>(), Arg.Any<string>(), Arg.Any<ConfigNode>(),
-//        //        Arg.Is(serializer));
-//        //}
-
-
-
-//        [Fact]
-//        public void Deserialize_WithActualListField_Test()
-//        {
-//            var fixture = Factory.Create();
-//            var originalContents = fixture.CreateMany<T>().ToList();
-//            var testObject = new SimplePersistentObjectWithList { ListField = originalContents };
-//            var config = fixture.CreateAnonymous<ConfigNode>();
-
-//            var selector = new DefaultConfigNodeItemSerializerSelector(new DefaultSurrogateProvider(new GetSerializationSurrogates(new GetSurrogateSupportedTypes()), new GetSurrogateSupportedTypes()));
-
-//            var serializer = new ConfigNodeSerializer(selector, new GetSerializableFields());
-//            serializer.Serialize(testObject, config);
-
-//            testObject.ListField = fixture.CreateMany<T>().Union(fixture.CreateMany<T>()).ToList(); // create more random stuff
-//            serializer.Deserialize(testObject, config);
-
-//            if (typeof (T) == typeof (NativeSerializableType))
-//                config.Write("D:\\NativeSerializeTypeDebug.cfg", string.Empty);
-
-//            Assert.True(config.HasData);
-//            Assert.Equal(1, config.CountNodes);
-//            Assert.Equal(testObject.ListField.Count,
-//                typeof(SimplePersistentObjectWithList).GetFields(BindingFlags.Public | BindingFlags.Instance)
-//                    .FirstOrDefault(
-//                        pi =>
-//                            pi.FieldType.IsGenericType &&
-//                            pi.FieldType.GetGenericTypeDefinition() == typeof(List<>))
-//                    .With(pi => pi.Name)
-//                    .With(config.GetNode)
-//                    .Return(c => c.CountNodes, 0));
-//            Assert.NotEmpty(testObject.ListField);
-//            Assert.Equal(fixture.RepeatCount, testObject.ListField.Count);
-//            Assert.True(originalContents.All(originalValue => testObject.ListField.Contains(originalValue)));
-//        }
-//    }
-
-
-//    public class ListSurrogateStringTests : ListSurrogateTests<string>
-//    {
+            Assert.DoesNotThrow(() => sut.Serialize(typeof(List<T>), ref defaultList, key, config, serializer));
+            Assert.Throws<ArgumentNullException>(() => sut.Serialize(typeof (T), ref objData, null, config, serializer));
+            Assert.Throws<ArgumentNullException>(
+                () => sut.Serialize(typeof (List<T>), ref objData, key, null, serializer));
+            Assert.Throws<ArgumentNullException>(() => sut.Serialize(typeof (List<T>), ref objData, key, config, null));
+        }
         
-//    }
+        [Theory, AutoDomainData]
+        public void Serialize_UsesSerializerSelector_ToChooseSerializer(ListSurrogate<T> sut, IEnumerable<T> listData,
+            string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var list = new List<T>(listData);
+            serializer.SerializerSelector.GetSerializer(Arg.Any<Type>())
+                .Returns(Maybe<IConfigNodeItemSerializer>.With(Substitute.For<IConfigNodeItemSerializer>()));
 
-//    public class ListSurrogateIntTests : ListSurrogateTests<int>
-//    {
+            var objData = (object)list;
+            sut.Serialize(typeof(List<T>), ref objData, key, config, serializer);
 
-//    }
+            serializer.SerializerSelector.Received().GetSerializer(Arg.Is(typeof (T)));
+            serializer.DidNotReceive().CreateConfigNodeFromObject(Arg.Any<object>());
+            serializer.DidNotReceive().WriteObjectToConfigNode(ref objData, Arg.Any<ConfigNode>());
+        }
 
-//    public class ListSurrogateWithNativeSerializableTypeTests : ListSurrogateTests<NativeSerializableType>
-//    {
 
-//    }
+        [Theory, AutoDomainData]
+        public void Deserialize_UsesSerializerSelector_ToChooseSerializer(ListSurrogate<T> sut, IEnumerable<T> listData,
+            string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var list = new List<T>(listData);
+            serializer.SerializerSelector.GetSerializer(Arg.Any<Type>())
+                .Returns(Maybe<IConfigNodeItemSerializer>.With(Substitute.For<IConfigNodeItemSerializer>()));
 
-//    public class ListSurrogateWithSurrogateSerializableTypeTests : ListSurrogateTests<ComplexPersistentObject>
-//    {
+            var objData = (object)list;
+            sut.Deserialize(typeof(List<T>), ref objData, key, config, serializer);
 
-//    }
-//}
+            serializer.SerializerSelector.Received().GetSerializer(Arg.Is(typeof(T)));
+            serializer.DidNotReceive().LoadObjectFromConfigNode(ref objData, Arg.Any<ConfigNode>());
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Serialize_UsingLiveSerializer_CreatesData(ListSurrogate<T> sut, IEnumerable<T> listData, string key, ConfigNode config, ConfigNodeSerializer serializer)
+        {
+            var list = new List<T>(listData);
+            var objList = (object)list;
+            sut.Serialize(typeof (List<T>), ref objList, key, config, serializer);
+
+            Assert.True(config.HasData);
+            Assert.Equal(list.Count, config.CountNodes);
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Deserialize_WorksCorrectly(ListSurrogate<T> sut, IEnumerable<T> listData, string key, ConfigNode config, ConfigNodeSerializer serializer)
+        {
+            var listDataValues = listData.ToList();
+            var items = config.AddNode(key);
+            var list = new List<T>();
+            var objList = (object) list;
+
+            foreach (var item in listDataValues)
+            {
+                var itemValue = item;
+                var itemNode = items.AddNode("item");
+                serializer.WriteObjectToConfigNode(ref itemValue, itemNode);
+            }
+
+            sut.Deserialize(typeof (List<T>), ref objList, key, config, serializer);
+            list = (List<T>) objList;
+
+            Assert.NotNull(list);
+            Assert.NotEmpty(list);
+
+            
+            if (typeof (T) != typeof (ConfigNode))
+            {
+                foreach (var originalValue in listDataValues)
+                    Assert.True(list.Contains(originalValue));
+            }
+            else
+            {
+                var configNodeList = list.Cast<ConfigNode>().ToList();
+                var originalValueList = listDataValues.Cast<ConfigNode>().ToList();
+
+                //originalValueList.First().Write("D:\\original.cfg", string.Empty);
+                //configNodeList.First().Write("D:\\deserialized.cfg", string.Empty);
+
+                foreach (var originalNode in originalValueList)
+                    Assert.True(configNodeList.Any(t => ConfigNodeComparer.Similar(t, originalNode)));
+            }
+        }
+
+
+
+    }
+
+
+    public class ListSurrogateStringTests : ListSurrogateTests<string>
+    {
+
+    }
+
+    public class ListSurrogateIntTests : ListSurrogateTests<int>
+    {
+
+    }
+
+    public class ListSurrogateConfigNodeTests : ListSurrogateTests<ConfigNode>
+    {
+
+    }
+
+    public class ListSurrogateWithNativeSerializableTypeTests : ListSurrogateTests<NativeSerializableType>
+    {
+
+    }
+
+    public class ListSurrogateWithSurrogateSerializableTypeTests : ListSurrogateTests<ComplexPersistentObject>
+    {
+
+    }
+
+
+    public class ListSurrogateLiveTests
+    {
+        [Theory, AutoDomainData]
+        public void Test_ComplexObject(DefaultConfigNodeSerializer serializer)
+        {
+            var testObject = new SerializeObjectWithComplexFieldsAndNative();
+            var result = serializer.CreateConfigNodeFromObject(testObject);
+
+            Assert.True(result.HasData);
+
+            result.Write("D:\\verycomplex.cfg", "Look at this!");
+        }
+    }
+}

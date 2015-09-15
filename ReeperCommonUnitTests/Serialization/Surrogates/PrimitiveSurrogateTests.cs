@@ -1,157 +1,194 @@
-﻿//using System;
-//using System.ComponentModel;
-//using System.IO;
-//using System.Linq;
-//using NSubstitute;
-//using ReeperCommon.Serialization;
-//using ReeperCommon.Serialization.Exceptions;
-//using ReeperCommon.Serialization.Surrogates;
-//using ReeperCommonUnitTests.Fixtures;
-//using Xunit;
-//using Xunit.Extensions;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using NSubstitute;
+using ReeperCommon.Serialization;
+using ReeperCommon.Serialization.Exceptions;
+using ReeperCommon.Serialization.Surrogates;
+using ReeperCommonUnitTests.Fixtures;
+using Xunit;
+using Xunit.Extensions;
 
-//namespace ReeperCommonUnitTests.Serialization.Surrogates
-//{
-//    public class PrimitiveSurrogateTests
-//    {
-//        [Theory, AutoDomainData]
-//        public void Serialize_With_NullData_ReturnsWithoutThrowing_And_DoesNotMakeAnyChanges(PrimitiveSurrogateSerializer sut, ConfigNode config, string key)
-//        {
-//            Assert.DoesNotThrow(
-//                () => sut.Serialize(typeof(string), null, key, config, Substitute.For<IConfigNodeSerializer>()));
+// ReSharper disable once CheckNamespace
+namespace ReeperCommonUnitTests.Serialization.Tests.Surrogates
+{
+    public class PrimitiveSurrogateTests
+    {
+        [Theory, AutoDomainData]
+        public void Serialize_With_NullData_ReturnsWithoutThrowing_And_DoesNotMakeAnyChanges(PrimitiveSurrogateSerializer sut, ConfigNode config, string key)
+        {
+            var nullObj = (object) null;
 
-//            Assert.False(config.HasData);
-//        }
+            Assert.DoesNotThrow(
+                () => sut.Serialize(typeof(string), ref nullObj, key, config, Substitute.For<IConfigNodeSerializer>()));
 
-
-//        [Theory, AutoDomainData]
-//        public void Serialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogateSerializer sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
-//        {
-//            Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, null, config, serializer));
-//            Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, key, null, serializer));
-//            Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), data, key, config, null));
-//        }
+            Assert.False(config.HasData);
+        }
 
 
-//        [Theory, AutoDomainData]
-//        public void Serialize_With_ExistingKey_Throws(PrimitiveSurrogateSerializer sut, float data, string key,
-//            ConfigNode config, IConfigNodeSerializer serializer)
-//        {
-//            config.AddValue(key, data);
-
-//            Assert.Throws<ConfigNodeDuplicateKeyException>(
-//                () => sut.Serialize(data.GetType(), data, key, config, serializer));
-//        }
-
-
-//        [Theory, AutoDomainData]
-//        public void Deserialize_WithInvalidData_Throws(PrimitiveSurrogateSerializer sut, float data, string key,
-//            ConfigNode config, IConfigNodeSerializer serializer)
-//        {
-//            config.AddValue(key, "cantconverttofloat");
-
-//            // throw by ConvertFromInvariantString
-//            Assert.Throws<Exception>(() => sut.Deserialize(data.GetType(), data, key, config, serializer));
-//        }
+        [Theory, AutoDomainData]
+        public void Serialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogateSerializer sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var dataObj = (object) data;
+            Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), ref dataObj, null, config, serializer));
+            Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), ref dataObj, key, null, serializer));
+            Assert.Throws<ArgumentNullException>(() => sut.Serialize(data.GetType(), ref dataObj, key, config, null));
+        }
 
 
-//        [Theory, AutoDomainData]
-//        public void Deserialize_With_NullData_DoesNotThrow(PrimitiveSurrogateSerializer sut, ConfigNode config, string key)
-//        {
-//            Assert.DoesNotThrow(
-//                () => sut.Deserialize(typeof(string), null, key, config, Substitute.For<IConfigNodeSerializer>()));
-//        }
+        [Theory, AutoDomainData]
+        public void Serialize_With_ExistingKey_Throws(PrimitiveSurrogateSerializer sut, float data, string key,
+            ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            config.AddValue(key, data);
+            var dataObj = (object)data;
+
+            Assert.Throws<ConfigNodeDuplicateKeyException>(
+                () => sut.Serialize(data.GetType(), ref dataObj, key, config, serializer));
+        }
 
 
-//        [Theory, AutoDomainData]
-//        public void Deserialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogateSerializer sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
-//        {
-//            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), data, null, config, serializer));
-//            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), data, key, null, serializer));
-//            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), data, key, config, null));
-//        }
-//    }
+        [Theory, AutoDomainData]
+        public void Deserialize_WithInvalidData_Throws(PrimitiveSurrogateSerializer sut, float data, string key,
+            ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            config.AddValue(key, "cantconverttofloat");
+            var dataObj = (object)data;
+
+            // throw by ConvertFromInvariantString
+            Assert.Throws<Exception>(() => sut.Deserialize(data.GetType(), ref dataObj, key, config, serializer));
+        }
 
 
-//    public abstract class PrimitiveSurrogateTests<T>
-//    {
-//        [Theory, AutoDomainData]
-//        public void Serialize_With_SupportedTypes_AddsSingleKeyToConfigNode(PrimitiveSurrogateSerializer sut, T data, ConfigNode config, string key)
-//        {
-//            sut.Serialize(typeof(T), data, key, config, Substitute.For<IConfigNodeSerializer>());
+        [Theory, AutoDomainData]
+        public void Deserialize_With_NullData_DoesNotThrow(PrimitiveSurrogateSerializer sut, ConfigNode config, string key)
+        {
+            var dataObj = (object)null;
 
-//            Assert.True(config.HasData);
-//            Assert.True(config.HasValue(key));
-//        }
+            Assert.DoesNotThrow(
+                () => sut.Deserialize(typeof(string), ref dataObj, key, config, Substitute.For<IConfigNodeSerializer>()));
+        }
 
 
-//        [Theory, AutoDomainData]
-//        public void Deserialize_With_SupportedTypes_ResultsInExpectedValue(PrimitiveSurrogateSerializer sut, T data, ConfigNode config)
-//        {
-//            var serializer = Substitute.For<IConfigNodeSerializer>();
-//            var tc = TypeDescriptor.GetConverter(typeof (T));
-//            config.AddValue("key", tc.ConvertToInvariantString(data));
-//            var expected = data;
+        [Theory, AutoDomainData]
+        public void Deserialize_With_NullParams_ExceptData_Throws(PrimitiveSurrogateSerializer sut, float data, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var objData = (object) data;
+
+            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), ref objData, null, config, serializer));
+            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), ref objData, key, null, serializer));
+            Assert.Throws<ArgumentNullException>(() => sut.Deserialize(data.GetType(), ref objData, key, config, null));
+        }
+    }
 
 
-//            var actual = (T)sut.Deserialize(typeof(T), expected, "key", config, serializer);
+    public abstract class PrimitiveSurrogateTests<T>
+    {
+        private class UnsupportedTestObject
+        {
             
+        }
 
-//            Assert.True(tc.CanConvertTo(typeof (string)));
-//            serializer.DidNotReceive().Deserialize(Arg.Any<object>(), Arg.Any<ConfigNode>());
-//            Assert.Equal(expected, actual);
-//        }
+        [Theory, AutoDomainData]
+        public void Serialize_With_SupportedTypes_AddsSingleKeyToConfigNode(PrimitiveSurrogateSerializer sut, T data, ConfigNode config, string key)
+        {
+            var dataObj = (object)data;
 
+            sut.Serialize(typeof(T), ref dataObj, key, config, Substitute.For<IConfigNodeSerializer>());
 
-//        [Theory, AutoDomainData]
-//        public void Serializer_With_SupportedTypes_ThenDeserialize_ReturnsEquivalentValues(PrimitiveSurrogateSerializer sut,
-//            T data, ConfigNode config)
-//        {
-//            var serializer = Substitute.For<IConfigNodeSerializer>();
-//            var expected = data;
-
-//            sut.Serialize(typeof(T), data, "key", config, serializer);
-
-//            var actual = sut.Deserialize(typeof(T), default(T), "key", config, serializer);
+            Assert.True(config.HasData);
+            Assert.True(config.HasValue(key));
+        }
 
 
-//            serializer.DidNotReceive().Serialize(Arg.Any<object>(), Arg.Any<ConfigNode>());
-//            serializer.DidNotReceive().Deserialize(Arg.Any<object>(), Arg.Any<ConfigNode>());
-//            var tmp = serializer.DidNotReceive().ConfigNodeItemSerializerSelector;
+        [Theory, AutoDomainData]
+        public void Deserialize_With_SupportedTypes_ResultsInExpectedValue(PrimitiveSurrogateSerializer sut, T data, ConfigNode config)
+        {
+            var serializer = Substitute.For<IConfigNodeSerializer>();
+            var tc = TypeDescriptor.GetConverter(typeof(T));
+            config.AddValue("key", tc.ConvertToInvariantString(data));
+            var expected = data;
+            var dataObj = (object)default(T);
 
-//            Assert.Equal(actual, expected);
-//            Assert.True(config.HasData);
-//            Assert.True(config.HasValue("key"));
-//        }
-
-
-//        [Theory, AutoDomainData]
-//        public void GetSupportedTypes_ReturnsCorrectResults(PrimitiveSurrogateSerializer sut)
-//        {
-//            var result = sut.GetSupportedTypes().ToList();
-
-//            Assert.NotEmpty(result);
-//            Assert.Contains(typeof (T), result);
-//        }
-//    }
+            sut.Deserialize(typeof(T), ref dataObj, "key", config, serializer);
 
 
-//    public class StringSurrogate : PrimitiveSurrogateTests<string>
-//    {
-//    }
+            Assert.True(tc.CanConvertTo(typeof(string)));
+            serializer.DidNotReceive().WriteObjectToConfigNode(ref dataObj, Arg.Any<ConfigNode>());
+        }
 
 
-//    public class IntSurrogate : PrimitiveSurrogateTests<int>
-//    {
-//    }
+        [Theory, AutoDomainData]
+        public void Serialize_WithUnsupportedType_Throws(PrimitiveSurrogateSerializer sut, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var data = (object)new UnsupportedTestObject();
+
+            Assert.Throws<WrongSerializerException>(
+                () => sut.Serialize(typeof (UnsupportedTestObject), ref data, key, config, serializer));
+        }
 
 
-//    public class FloatSurrogate : PrimitiveSurrogateTests<float>
-//    {
-//    }
+        [Theory, AutoDomainData]
+        public void Deserialize_WithUnsupportedType_Throws(PrimitiveSurrogateSerializer sut, string key, ConfigNode config, IConfigNodeSerializer serializer)
+        {
+            var data = (object)new UnsupportedTestObject();
 
-//    public class BooleanSurrogate : PrimitiveSurrogateTests<bool>
-//    {
-        
-//    }
-//}
+            Assert.Throws<WrongSerializerException>(
+                () => sut.Deserialize(typeof(UnsupportedTestObject), ref data, key, config, serializer));
+        }
+
+
+        [Theory, AutoDomainData]
+        public void Serializer_With_SupportedTypes_ThenDeserialize_ReturnsEquivalentValues(PrimitiveSurrogateSerializer sut,
+            T data, string key, ConfigNode config)
+        {
+            var serializer = Substitute.For<IConfigNodeSerializer>();
+            var expected = data;
+            var objData = (object) data;
+
+            sut.Serialize(typeof (T), ref objData, key, config, serializer);
+
+            Assert.True(config.HasData);
+            Assert.True(config.HasValue(key));
+            serializer.DidNotReceive().WriteObjectToConfigNode(ref objData, Arg.Any<ConfigNode>());
+            serializer.DidNotReceive().CreateConfigNodeFromObject(objData);
+            objData = default(T);
+
+            sut.Deserialize(typeof (T), ref objData, key, config, serializer);
+
+            Assert.Equal(expected, (T)objData);
+            serializer.DidNotReceive().LoadObjectFromConfigNode(ref objData, Arg.Any<ConfigNode>());
+        }
+
+
+        [Theory, AutoDomainData]
+        public void GetSupportedTypes_ReturnsCorrectResults(PrimitiveSurrogateSerializer sut)
+        {
+            var result = sut.GetSupportedTypes().ToList();
+
+            Assert.NotEmpty(result);
+            Assert.Contains(typeof(T), result);
+        }
+    }
+
+
+    public class StringSurrogate : PrimitiveSurrogateTests<string>
+    {
+    }
+
+
+    public class IntSurrogate : PrimitiveSurrogateTests<int>
+    {
+    }
+
+
+    public class FloatSurrogate : PrimitiveSurrogateTests<float>
+    {
+    }
+
+    public class BooleanSurrogate : PrimitiveSurrogateTests<bool>
+    {
+
+    }
+}

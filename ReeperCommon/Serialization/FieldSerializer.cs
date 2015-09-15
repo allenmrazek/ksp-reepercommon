@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq;
+using ReeperCommon.Containers;
+using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization
 {
     public class FieldSerializer : IConfigNodeItemSerializer
     {
-        private readonly IConfigNodeItemSerializer _decorated;
+        private readonly Maybe<IConfigNodeItemSerializer> _decorated;
         private readonly IGetObjectFields _fields;
 
-        public FieldSerializer(IConfigNodeItemSerializer decorated, IGetObjectFields fields)
+        public FieldSerializer(Maybe<IConfigNodeItemSerializer> decorated, IGetObjectFields fields)
         {
-            if (decorated == null) throw new ArgumentNullException("decorated");
             if (fields == null) throw new ArgumentNullException("fields");
 
             _decorated = decorated;
@@ -18,7 +19,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public void Serialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize(Type type, ref object target, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (type == null) throw new ArgumentNullException("type");
             if (config == null) throw new ArgumentNullException("config");
@@ -28,35 +29,37 @@ namespace ReeperCommon.Serialization
                 foreach (var field in _fields.Get(target))
                 {
                     var fieldSerializer = serializer.SerializerSelector.GetSerializer(field.FieldType);
-                    if (!fieldSerializer.Any()) continue;
+                    if (!fieldSerializer.Any()) throw new NoSerializerFoundException(field.FieldType);
 
                     var value = field.GetValue(target);
 
-                    fieldSerializer.Single().Serialize(field.FieldType, ref value, config, serializer);
+                    fieldSerializer.Single().Serialize(field.FieldType, ref value, field.Name, config, serializer);
                 }
 
-            _decorated.Serialize(type, ref target, config, serializer);
+            if (_decorated.Any())
+                _decorated.Single().Serialize(type, ref target, key, config, serializer);
         }
 
 
-        public void Deserialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Deserialize(Type type, ref object target, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (type == null) throw new ArgumentNullException("type");
             if (config == null) throw new ArgumentNullException("config");
             if (serializer == null) throw new ArgumentNullException("serializer");
 
             // deserialize first, in case the target is null (or is going to be null)
-            _decorated.Deserialize(type, ref target, config, serializer);
+            if (_decorated.Any())
+                _decorated.Single().Deserialize(type, ref target, key, config, serializer);
 
             if (target != null)
                 foreach (var field in _fields.Get(target))
                 {
                     var fieldSerializer = serializer.SerializerSelector.GetSerializer(field.FieldType);
-                    if (!fieldSerializer.Any()) continue;
+                    if (!fieldSerializer.Any()) throw new NoSerializerFoundException(field.FieldType);
 
                     var value = field.GetValue(target);
 
-                    fieldSerializer.Single().Deserialize(field.FieldType, ref value, config, serializer);
+                    fieldSerializer.Single().Deserialize(field.FieldType, ref value, field.Name, config, serializer);
                     field.SetValue(target, value);
                 }
         }

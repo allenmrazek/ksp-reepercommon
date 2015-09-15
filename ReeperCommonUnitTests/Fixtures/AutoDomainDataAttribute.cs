@@ -1,10 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using NSubstitute;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
+using ReeperCommon.Containers;
 using ReeperCommon.Serialization;
 using ReeperCommonUnitTests.TestData;
 using UnityEngine;
+using Random = System.Random;
 
 namespace ReeperCommonUnitTests.Fixtures
 {
@@ -13,7 +17,9 @@ namespace ReeperCommonUnitTests.Fixtures
         public AutoDomainDataAttribute()
             : base(new Fixture().Customize(new DomainCustomization()))
         {
-            Fixture.Register(() => new ConfigNode("ROOT"));
+            var rnd = new Random();
+
+            Fixture.Register(() => new ConfigNode("root"));
             Fixture.Register(() => new SimplePersistentObject());
             Fixture.Register(() => new ComplexPersistentObject());
             Fixture.Register(() => new GetSerializableFields());
@@ -29,7 +35,26 @@ namespace ReeperCommonUnitTests.Fixtures
             Fixture.Register(() => new GetSurrogateSupportedTypes());
             //Fixture.Register(() => new PrimitiveSurrogateSerializer());
             Fixture.Register(() => new NativeSerializer());
-            Fixture.Register(() => new PersistenceMethodCaller(Substitute.For<IConfigNodeItemSerializer>()));
+            //Fixture.Register(() => new PersistenceMethodCaller(Substitute.For<IConfigNodeItemSerializer>()));
+
+            Fixture.Register(() =>
+            {
+                var serializer = new ConfigNodeSerializer(
+                    new SerializerSelectorDecorator(
+                        new PreferNativeSerializer(
+                            new SerializerSelector(
+                                new SurrogateProvider(
+                                    new GetSerializationSurrogates(new GetSurrogateSupportedTypes()),
+                                    new GetSurrogateSupportedTypes(),
+                                    AppDomain.CurrentDomain.GetAssemblies()
+                                        .Where(a => a.GetName().Name.StartsWith("ReeperCommon")).ToArray()))),
+                    result => Maybe<IConfigNodeItemSerializer>.With(new FieldSerializer(result, new GetSerializableFields()))));
+
+                return serializer;
+            });
+
+            Fixture.Register(
+                () => new Quaternion((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble()));
         }
     }
     

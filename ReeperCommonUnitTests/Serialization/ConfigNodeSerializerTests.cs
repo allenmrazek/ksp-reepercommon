@@ -33,7 +33,7 @@ namespace ReeperCommon.Serialization.Tests
             sut.CreateConfigNodeFromObject(dataObj);
 
             selector.Received().GetSerializer(Arg.Is(typeof(T)));
-            surrogate.Received().Serialize(Arg.Is(typeof(T)), ref dataObj, Arg.Any<ConfigNode>(), Arg.Is(sut));
+            surrogate.Received().Serialize(Arg.Is(typeof(T)), ref dataObj, Arg.Any<string>(), Arg.Any<ConfigNode>(), Arg.Is(sut));
         }
 
 
@@ -52,7 +52,7 @@ namespace ReeperCommon.Serialization.Tests
             sut.WriteObjectToConfigNode(ref dataObj, new ConfigNode());
 
             selector.Received().GetSerializer(Arg.Is(typeof(T)));
-            surrogate.Received().Serialize(Arg.Is(typeof(T)), ref dataObj, Arg.Any<ConfigNode>(), Arg.Is(sut));
+            surrogate.Received().Serialize(Arg.Is(typeof(T)), ref dataObj, Arg.Any<string>(), Arg.Any<ConfigNode>(), Arg.Is(sut));
         }
 
 
@@ -71,7 +71,7 @@ namespace ReeperCommon.Serialization.Tests
             sut.LoadObjectFromConfigNode(ref dataObj, new ConfigNode());
 
             selector.Received().GetSerializer(Arg.Is(typeof(T)));
-            surrogate.Received().Deserialize(Arg.Is(typeof(T)), ref dataObj, Arg.Any<ConfigNode>(), Arg.Is(sut));
+            surrogate.Received().Deserialize(Arg.Is(typeof(T)), ref dataObj, Arg.Any<string>(), Arg.Any<ConfigNode>(), Arg.Is(sut));
         }
     }
 

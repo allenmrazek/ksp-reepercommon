@@ -48,15 +48,34 @@ namespace ReeperCommon.Serialization
             if (config == null) throw new ArgumentNullException("config");
 
             GetSerializer(source.GetType())
-                .Serialize(source.GetType(), ref source, new ConfigNode(source.GetType().FullName), this);
+                .Serialize(source.GetType(), ref source, source.GetType().FullName, config, this);
         }
- 
+
+        public void WriteObjectToConfigNode<T>(ref T source, ConfigNode config)
+        {
+            if (config == null) throw new ArgumentNullException("config");
+
+            var src = (object) source;
+            WriteObjectToConfigNode(ref src, config);
+        }
+
 
         public void LoadObjectFromConfigNode(ref object target, ConfigNode config)
         {
             if (target == null) throw new ArgumentNullException("target");
 
-            GetSerializer(target.GetType()).Deserialize(target.GetType(), ref target, config, this);
+            GetSerializer(target.GetType()).Deserialize(target.GetType(), ref target, target.GetType().FullName, config, this);
+        }
+
+        public void LoadObjectFromConfigNode<T>(ref T target, ConfigNode config)
+        {
+            if (config == null) throw new ArgumentNullException("config");
+
+            var deserialized = (object) target;
+
+            LoadObjectFromConfigNode(ref deserialized, config);
+
+            target = (T) deserialized;
         }
 
 

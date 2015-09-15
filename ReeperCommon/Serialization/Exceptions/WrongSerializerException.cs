@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace ReeperCommon.Serialization.Exceptions
 {
@@ -7,6 +8,20 @@ namespace ReeperCommon.Serialization.Exceptions
     {
         public WrongSerializerException(Type objectType, Type expected)
             : base("This serializer is for " + expected.FullName + "; received " + objectType.FullName)
+        {
+        }
+
+        public WrongSerializerException() : base("Wrong serializer for given type")
+        {
+            
+        }
+
+        public WrongSerializerException(string message) : base(message)
+        {
+            
+        }
+
+        public WrongSerializerException(string message, Exception inner) : base(message, inner)
         {
         }
     }

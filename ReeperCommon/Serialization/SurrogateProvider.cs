@@ -9,6 +9,9 @@ using FactoryMethodList = System.Collections.Generic.List<ReeperCommon.Serializa
 namespace ReeperCommon.Serialization
 {
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+    /// <summary>
+    /// This is your standard, non-generic surrogate provider
+    /// </summary>
     public class SurrogateProvider : ISurrogateProvider
     {
         // This simply prevents creating a new serializer on every single request, by lazily
@@ -46,7 +49,7 @@ namespace ReeperCommon.Serialization
 
 // ReSharper disable once FieldCanBeMadeReadOnly.Global
 // ReSharper disable once MemberCanBePrivate.Global
-        protected Lazy<Dictionary<Type, Surrogate>> Surrogates;
+        protected readonly Lazy<Dictionary<Type, Surrogate>> Surrogates;
 
 
         public SurrogateProvider(
@@ -74,20 +77,27 @@ namespace ReeperCommon.Serialization
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
                 .Where(t => _getSurrogateSupportedTypes.Get(t).Any());
 
-            return surrogateTypes.ToDictionary(surrogateType => surrogateType,
-                surrogateType =>
-                    new Surrogate(
-                        new FactoryMethodList(
-                            _getSurrogateSupportedTypes.Get(surrogateType)
-                                .Select(surrogateSupportedType =>
-                                {
-                                    SurrogateFactoryMethod m = () => CreateSurrogate(surrogateSupportedType, surrogateType);
+            var dictionary = new Dictionary<Type, List<SurrogateFactoryMethod>>();
 
-                                    return m;
-                                })
-                        )
-                    )
-                );
+            foreach (var surrogateType in surrogateTypes)
+            {
+                var supportedSerializedTypes = _getSurrogateSupportedTypes.Get(surrogateType);
+
+                foreach (var serializedType in supportedSerializedTypes)
+                {
+                    List<SurrogateFactoryMethod> list;
+                    Type typeToBeSerialized = serializedType;
+                    Type surrogateTypeToCreate = surrogateType;
+
+                    SurrogateFactoryMethod m = () => CreateSurrogate(typeToBeSerialized, surrogateTypeToCreate);
+
+                    if (dictionary.TryGetValue(serializedType, out list))
+                        list.Add(m);
+                    else dictionary.Add(serializedType, new List<SurrogateFactoryMethod> {m});
+                }
+            }
+
+            return dictionary.ToDictionary(kvp => kvp.Key, kvp => new Surrogate(kvp.Value));
         }
 
 
@@ -96,7 +106,7 @@ namespace ReeperCommon.Serialization
             if (typeToBeSerialized == null) throw new ArgumentNullException("typeToBeSerialized");
             if (surrogateType == null) throw new ArgumentNullException("surrogateType");
 
-            if (typeof(IConfigNodeItemSerializer).IsAssignableFrom(surrogateType))
+            if (!typeof(IConfigNodeItemSerializer).IsAssignableFrom(surrogateType))
                 throw new ArgumentException(surrogateType.FullName + " cannot be assigned to IConfigNodeItemSerializer");
 
 

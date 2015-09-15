@@ -104,13 +104,25 @@
     <Compile Include="Fixtures\AutoDomainDataAttribute.cs" />
     <Compile Include="Fixtures\DomainCustomization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\Complex\SerializeObjectWithComplexFieldsAndNative.cs" />
+    <Compile Include="Serialization\Complex\SerializeObjectWithFieldsNoSurrogateOrNativeTests.cs" />
+    <Compile Include="Serialization\Complex\SerializeObjectWithFieldsWithNativeTests.cs" />
+    <Compile Include="Serialization\CompositeSurrogateProviderTests.cs" />
     <Compile Include="Serialization\ConfigNodeSerializerTests.cs" />
     <Compile Include="Serialization\FieldSerializerTests.cs" />
+    <Compile Include="Serialization\GenericSurrogateProviderTests.cs" />
     <Compile Include="Serialization\GetSerializableFieldsTests.cs" />
     <Compile Include="Serialization\PersistenceMethodCallerTests.cs" />
     <Compile Include="Serialization\PreferNativeSerializerTests.cs" />
     <Compile Include="Serialization\SerializerSelectorTests.cs" />
+    <Compile Include="Serialization\Surrogates\ColorSurrogateTests.cs" />
+    <Compile Include="Serialization\Surrogates\ConfigNodeComparer.cs" />
+    <Compile Include="Serialization\Surrogates\ConfigNodeSurrogateTests.cs" />
     <Compile Include="Serialization\Surrogates\ListSurrogateTests.cs" />
+    <Compile Include="Serialization\Surrogates\QuaternionSurrogateTests.cs" />
+    <Compile Include="Serialization\Surrogates\RectSurrogateTests.cs" />
+    <Compile Include="Serialization\Surrogates\Vector2SurrogateTests.cs" />
+    <Compile Include="Serialization\Surrogates\Vector3SurrogateTests.cs" />
     <Compile Include="TestData\NativeSerializableType.cs" />
     <Compile Include="Serialization\ValueTypeSerializationTests.cs" />
     <Compile Include="TestData\StrangeViewStandin.cs" />
@@ -120,7 +132,6 @@
     <Compile Include="Serialization\NativeSerializerTests.cs" />
     <Compile Include="Serialization\ReeperPersistentMethodCallerTests.cs" />
     <Compile Include="Serialization\SerializableFieldQueryTests.cs" />
-    <Compile Include="Serialization\Surrogates\ConfigNodeSurrogateSerializerTests.cs" />
     <Compile Include="Serialization\Surrogates\PrimitiveSurrogateTests.cs" />
     <Compile Include="TestData\ComplexPersistentObject.cs" />
     <Compile Include="TestData\SimplePersistentObject.cs" />
@@ -138,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Serialization\old\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

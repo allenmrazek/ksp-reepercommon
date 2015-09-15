@@ -8,7 +8,7 @@ namespace ReeperCommon.Serialization
     {
         private const string NativeNodeName = "NativeData";
 
-        public void Serialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Serialize(Type type, ref object target, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (type == null) throw new ArgumentNullException("type");
             if (config == null) throw new ArgumentNullException("config");
@@ -32,7 +32,7 @@ namespace ReeperCommon.Serialization
         }
 
 
-        public void Deserialize(Type type, ref object target, ConfigNode config, IConfigNodeSerializer serializer)
+        public void Deserialize(Type type, ref object target, string key, ConfigNode config, IConfigNodeSerializer serializer)
         {
             if (config == null) throw new ArgumentNullException("config");
             if (serializer == null) throw new ArgumentNullException("serializer");
