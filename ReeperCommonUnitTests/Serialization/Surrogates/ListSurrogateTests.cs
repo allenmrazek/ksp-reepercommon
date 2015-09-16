@@ -184,7 +184,9 @@ namespace ReeperCommon.Serialization.Tests.Surrogates
             Assert.True(result.HasNode("StringListField"));
             Assert.True(result.HasNode("ConfigNodeListField"));
             Assert.True(result.HasNode("InnerPersistentListField"));
-            Assert.True(result.HasNode("NativeData"));
+            Assert.True(
+                result.HasNode("ReeperCommonUnitTests.Serialization.Complex.SerializeObjectWithComplexFieldsAndNative"));
+            Assert.True(result.GetNode("ReeperCommonUnitTests.Serialization.Complex.SerializeObjectWithComplexFieldsAndNative").HasNode(NativeSerializer.NativeNodeName));
         }
 
 
@@ -206,7 +208,7 @@ namespace ReeperCommon.Serialization.Tests.Surrogates
             config.AddNode("StringListField").AddNode("item").AddValue("System.String", "TestString");
             config.AddNode("ConfigNodeListField").AddNode("item").AddNode("ConfigNode").AddNode("ConfigNodeListItem");
             config.AddNode("InnerPersistentListField").AddNode("item").AddValue("SomeStringField", "SomeStringValue");
-            config.AddNode("NativeData");
+            config.AddNode("ReeperCommonUnitTests.Serialization.Complex.SerializeObjectWithComplexFieldsAndNative").AddNode("NativeData");
 
             serializer.LoadObjectFromConfigNode(ref testObject, config);
 

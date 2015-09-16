@@ -61,7 +61,7 @@ namespace ReeperCommonUnitTests.Serialization.Tests.Complex
             rectConfig.AddValue("width", 75f);
             rectConfig.AddValue("height", 100f);
 
-            var persistentData = config.AddNode("NativeData");
+            var persistentData = config.AddNode("ReeperCommonUnitTests.Serialization.Tests.Complex.SerializeObjectWithFieldsWithNativeTests+TestObject").AddNode("NativeData");
             persistentData.AddValue("custom", "value");
 
             serializer.LoadObjectFromConfigNode(ref testObject, config);

@@ -52,7 +52,7 @@ namespace ReeperCommon.Serialization.Tests
             var objTestObject = (object) testObject;
             sut.Serialize(testObject.GetType(), ref objTestObject, key, config, serializer);
 
-            testObject.Received(1).DuringSerialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && config.GetNodes().Any(n => ReferenceEquals(n, cfg))));
+            testObject.Received(1).DuringSerialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && cfg.name == NativeSerializer.NativeNodeName));
         }
 
 
@@ -72,11 +72,11 @@ namespace ReeperCommon.Serialization.Tests
             var testObject = Substitute.For<IReeperPersistent>();
             var objTestObject = (object)testObject;
 
-            config.AddNode(NativeSerializer.NativeNodeName);
+            config.AddNode(key).AddNode(NativeSerializer.NativeNodeName);
 
             sut.Deserialize(testObject.GetType(), ref objTestObject, key, config, serializer);
 
-            testObject.Received(1).DuringDeserialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && config.GetNodes().Any(n => ReferenceEquals(n, cfg))));
+            testObject.Received(1).DuringDeserialize(Arg.Is(serializer), Arg.Is<ConfigNode>(cfg => !ReferenceEquals(cfg, config) && cfg.name == NativeSerializer.NativeNodeName));
         }
 
 
@@ -87,7 +87,7 @@ namespace ReeperCommon.Serialization.Tests
             var expected = Substitute.For<IReeperPersistent>();
             var copy = expected;
             var objExpected = (object)expected;
-            config.AddNode(NativeSerializer.NativeNodeName);
+            config.AddNode(key).AddNode(NativeSerializer.NativeNodeName);
 
             sut.Deserialize(expected.GetType(), ref objExpected, key, config, serializer);
 
@@ -142,7 +142,7 @@ namespace ReeperCommon.Serialization.Tests
             ConfigNode config, IConfigNodeSerializer serializer)
         {
             var nullInstance = (object) (DefaultConstructableType) null;
-            config.AddNode(NativeSerializer.NativeNodeName);
+            config.AddNode(key).AddNode(NativeSerializer.NativeNodeName);
 
             sut.Deserialize(typeof(DefaultConstructableType), ref nullInstance, key, config, serializer);
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using NSubstitute;
 using ReeperCommon.Containers;
+using ReeperCommon.Extensions;
 using ReeperCommon.Serialization;
 using ReeperCommonUnitTests.Fixtures;
 using ReeperCommonUnitTests.Serialization.Complex;
@@ -109,7 +110,11 @@ namespace ReeperCommon.Serialization.Tests
             var result = serializer.CreateConfigNodeFromObject(testObject);
 
             Assert.True(result.HasData);
-            Assert.Equal(1, result.GetNodes(NativeSerializer.NativeNodeName).Length);
+            Assert.Equal(2, result.CountNodes); // 1 node for field + 1 scoping node
+            Assert.Equal(0, result.GetNodes(NativeSerializer.NativeNodeName).Length); // shouldn't be any NativeData nodes at this level
+
+            for (int i = 0; i < result.CountNodes; ++i)
+                Assert.Equal(1, result.nodes[i].GetNodes(NativeSerializer.NativeNodeName).Length);
         }
     }
 }

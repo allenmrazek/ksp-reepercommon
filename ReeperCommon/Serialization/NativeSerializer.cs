@@ -26,9 +26,13 @@ namespace ReeperCommon.Serialization
                 throw new Exception("Failed to cast target " + type.FullName + " to " +
                                     typeof(IReeperPersistent).FullName);
 
+            // it's necessary to add a scope node here in case other same-level serialized objects are
+            // also natively serialized; if they are, there would be multiple NativeData nodes
+            var scope = config.AddNode(key);
+
             // we'll add a brand new node so any keys the target's serialization methods use won't
             // clash with existing keys
-            var persistentConfig = config.AddNode(NativeNodeName);
+            var persistentConfig = scope.AddNode(NativeNodeName);
 
             reeperPersistent.DuringSerialize(serializer, persistentConfig);
         }
@@ -50,9 +54,10 @@ namespace ReeperCommon.Serialization
             if (!canCreateDefault && target == null)
                 throw new NoDefaultValueException(type);
 
-            if (!config.HasNode(NativeNodeName))
-                throw new ReeperSerializationException("Can't deserialize " + type.FullName + " because given ConfigNode is missing " + NativeNodeName + " node");
+            if (!config.HasNode(key))
+                throw new ReeperSerializationException("Can't deserialize " + type.FullName + " because given ConfigNode is missing scope node");
 
+            var scope = config.GetNode(key);
 
             var reeperPersistent = (target ?? Activator.CreateInstance(type)) as IReeperPersistent;
             if (reeperPersistent == null) // uh ... how??
@@ -60,7 +65,7 @@ namespace ReeperCommon.Serialization
 
             // new node so any keys the target's serialization methods use won't
             // clash with existing keys
-            var configValue = config.GetNode(NativeNodeName);
+            var configValue = scope.GetNode(NativeNodeName);
 
             reeperPersistent.DuringDeserialize(serializer, configValue);
 
