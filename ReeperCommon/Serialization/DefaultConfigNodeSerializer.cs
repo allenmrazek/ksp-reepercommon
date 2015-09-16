@@ -7,29 +7,12 @@ using ReeperCommon.Containers;
 
 namespace ReeperCommon.Serialization
 {
+// ReSharper disable once ClassNeverInstantiated.Global
     public class DefaultConfigNodeSerializer : IConfigNodeSerializer
     {
-        //public DefaultConfigNodeSerializer(IEnumerable<Assembly> assembliesToSearchForSurrogates) 
-        //    : base(
-        //        new SerializerSelectorDecorator(
-        //            new PreferNativeSerializer(
-        //                new SerializerSelector(
-        //                    new SurrogateProvider(
-        //                        new GetSerializationSurrogates(
-        //                            new GetSurrogateSupportedTypes()
-        //                        ), 
-        //                        new GetSurrogateSupportedTypes(), 
-        //                        assembliesToSearchForSurrogates
-        //                    ))
-        //                )
-        //            ,
-        //            s => Maybe<IConfigNodeItemSerializer>.With(new FieldSerializer(s, new GetSerializableFields())
-        //        )))
-        //{
-           
-        //}
+        private readonly IConfigNodeSerializer _serializer;
 
-        public DefaultConfigNodeSerializer(IEnumerable<Assembly> assembliesToScanForSurrogates)
+        public DefaultConfigNodeSerializer(params Assembly[] assembliesToScanForSurrogates)
         {
             if (assembliesToScanForSurrogates == null) throw new ArgumentNullException("assembliesToScanForSurrogates");
 
@@ -38,32 +21,44 @@ namespace ReeperCommon.Serialization
             var serializableFieldQuery = new GetSerializableFields();
 
             var standardSerializerSelector =
-                new SerializerSelector(new SurrogateProvider(surrogateQuery, supportedTypeQuery,
-                    assembliesToScanForSurrogates));
+                new SerializerSelector(
+                    new CompositeSurrogateProvider(
+                        new GenericSurrogateProvider(surrogateQuery, supportedTypeQuery, assembliesToScanForSurrogates),
+                        new SurrogateProvider(surrogateQuery, supportedTypeQuery, assembliesToScanForSurrogates)));
 
-            //standardSerializerSelector.
-            throw new NotImplementedException();
+            var preferNativeSelector = new PreferNativeSerializer(standardSerializerSelector);
+            var includePersistentFieldsSelector = new SerializerSelectorDecorator(
+                preferNativeSelector,
+                s => Maybe<IConfigNodeItemSerializer>.With(new FieldSerializer(s, serializableFieldQuery)));
+
+            _serializer = new ConfigNodeSerializer(includePersistentFieldsSelector);
         }
+
+
         public ConfigNode CreateConfigNodeFromObject(object target)
         {
-            throw new NotImplementedException();
+            return _serializer.CreateConfigNodeFromObject(target);
         }
 
         public void WriteObjectToConfigNode(ref object source, ConfigNode config)
         {
-            throw new NotImplementedException();
+            _serializer.WriteObjectToConfigNode(ref source, config);
         }
 
         public void WriteObjectToConfigNode<T>(ref T source, ConfigNode config)
         {
-            throw new NotImplementedException();
+            _serializer.WriteObjectToConfigNode(ref source, config);
         }
 
         public void LoadObjectFromConfigNode<T>(ref T target, ConfigNode config)
         {
-            throw new NotImplementedException();
+            _serializer.LoadObjectFromConfigNode(ref target, config);
         }
 
-        public ISerializerSelector SerializerSelector { get; set; }
+        public ISerializerSelector SerializerSelector
+        {
+            get { return _serializer.SerializerSelector; }
+            set { _serializer.SerializerSelector = value; }
+        }
     }
 }

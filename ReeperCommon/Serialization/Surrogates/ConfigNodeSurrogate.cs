@@ -55,7 +55,7 @@ namespace ReeperCommon.Serialization.Surrogates
             var scopingNode = serializedNodes.First();
 
             if (scopingNode.CountNodes != 1)
-                throw new SerializationException("Scoping node has multiple subnodes");
+                throw new ReeperSerializationException("Scoping node has multiple subnodes");
 
             var sourceNode = scopingNode.GetNodes().First();
 

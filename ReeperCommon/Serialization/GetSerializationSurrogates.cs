@@ -7,7 +7,7 @@ using System.Reflection;
 namespace ReeperCommon.Serialization
 {
     /// <summary>
-    /// Retrieve surrogates from target assembly. Note that abstract and generics aren't permitted
+    /// Retrieve surrogates from target assembly. Note that abstract aren't permitted
     /// </summary>
     public class GetSerializationSurrogates : IGetSerializationSurrogates
     {
@@ -24,7 +24,7 @@ namespace ReeperCommon.Serialization
         {
             return fromAssembly
                 .GetTypes()
-                .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract && !t.ContainsGenericParameters)
+                .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract)
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
                 .Where(ImplementsGenericSerializationSurrogateInterface);
         }

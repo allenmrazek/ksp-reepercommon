@@ -86,7 +86,9 @@ namespace ReeperCommon.Serialization.Tests.Surrogates
             sut.Serialize(typeof (List<T>), ref objList, key, config, serializer);
 
             Assert.True(config.HasData);
-            Assert.Equal(list.Count, config.CountNodes);
+            Assert.True(config.HasNode(key));
+            Assert.Equal(1, config.CountNodes); // one sub node to contain all items should be created...
+            Assert.Equal(list.Count, config.nodes[0].CountNodes); // each item in list should have corresponding item {} ConfigNode
         }
 
 
@@ -163,15 +165,69 @@ namespace ReeperCommon.Serialization.Tests.Surrogates
 
     public class ListSurrogateLiveTests
     {
-        [Theory, AutoDomainData]
-        public void Test_ComplexObject(DefaultConfigNodeSerializer serializer)
+        [Fact]
+        public void Test_ComplexObject_Serialization()
         {
+            var serializer =
+                new DefaultConfigNodeSerializer(
+                    AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(a => a.GetName().Name.StartsWith("Reeper"))
+                        .ToArray());
+
             var testObject = new SerializeObjectWithComplexFieldsAndNative();
             var result = serializer.CreateConfigNodeFromObject(testObject);
-
+            
             Assert.True(result.HasData);
+            Assert.True(result.HasValue("HelloWorldField"));
+            Assert.True(result.HasNode("SimpleConfigNodeField"));
+            Assert.True(result.HasNode("FloatListField"));
+            Assert.True(result.HasNode("StringListField"));
+            Assert.True(result.HasNode("ConfigNodeListField"));
+            Assert.True(result.HasNode("InnerPersistentListField"));
+            Assert.True(result.HasNode("NativeData"));
+        }
 
-            result.Write("D:\\verycomplex.cfg", "Look at this!");
+
+        [Fact]
+        public void Test_ComplexObject_Deserialization()
+        {
+            var serializer =
+                new DefaultConfigNodeSerializer(
+                    AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(a => a.GetName().Name.StartsWith("Reeper"))
+                        .ToArray());
+
+            var testObject = new SerializeObjectWithComplexFieldsAndNative();
+            var config = new ConfigNode();
+
+            config.AddValue("HelloWorldField", "Small world");
+            config.AddNode("SimpleConfigNodeField").AddNode("SimpleConfigNodeName");
+            config.AddNode("FloatListField").AddNode("item").AddValue("System.Single", 13f);
+            config.AddNode("StringListField").AddNode("item").AddValue("System.String", "TestString");
+            config.AddNode("ConfigNodeListField").AddNode("item").AddNode("ConfigNode").AddNode("ConfigNodeListItem");
+            config.AddNode("InnerPersistentListField").AddNode("item").AddValue("SomeStringField", "SomeStringValue");
+            config.AddNode("NativeData");
+
+            serializer.LoadObjectFromConfigNode(ref testObject, config);
+
+            Assert.True(config.HasValue("HelloWorldField"));
+            Assert.Same("Small world", config.GetValue("HelloWorldField"));
+
+            Assert.Same("SimpleConfigNodeName", testObject.SimpleConfigNodeField.name);
+            Assert.NotEmpty(testObject.FloatListField);
+            Assert.Contains(13f, testObject.FloatListField);
+            Assert.Equal(1, testObject.FloatListField.Count);
+
+            Assert.NotEmpty(testObject.StringListField);
+            Assert.Contains("TestString", testObject.StringListField);
+            Assert.Equal(1, testObject.StringListField.Count);
+
+            Assert.NotEmpty(testObject.ConfigNodeListField);
+            Assert.Contains("ConfigNodeListItem", testObject.ConfigNodeListField.Select(c => c.name));
+            Assert.Equal(1, testObject.ConfigNodeListField.Count);
+
+            Assert.NotEmpty(testObject.InnerPersistentListField);
+            Assert.Equal("SomeStringValue", testObject.InnerPersistentListField.Single().SomeStringField);
         }
     }
 }

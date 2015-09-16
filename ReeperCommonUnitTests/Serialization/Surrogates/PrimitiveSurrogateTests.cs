@@ -1,9 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using NSubstitute;
-using ReeperCommon.Serialization;
 using ReeperCommon.Serialization.Exceptions;
 using ReeperCommon.Serialization.Surrogates;
 using ReeperCommonUnitTests.Fixtures;
@@ -11,7 +9,7 @@ using Xunit;
 using Xunit.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace ReeperCommonUnitTests.Serialization.Tests.Surrogates
+namespace ReeperCommon.Serialization.Tests.Surrogates
 {
     public class PrimitiveSurrogateTests
     {

@@ -1,50 +1,109 @@
-﻿//using ReeperCommon.Gui;
-//using ReeperCommon.Gui.Window;
-//using ReeperCommon.Serialization;
-//using UnityEngine;
+﻿using ReeperCommon.Extensions;
+using ReeperCommon.Gui;
+using ReeperCommon.Gui.Window;
+using ReeperCommon.Serialization;
+using UnityEngine;
 
-//namespace ReeperCommonUnitTests.TestData
-//{
-//    public abstract class StrangeViewStandin : IWindowComponent
-//    {
-//        [ReeperPersistent] private string TestField = "blah";
+namespace ReeperCommonUnitTests.TestData
+{
+    public abstract class StrangeViewStandin : IWindowComponent
+    {
+        [ReeperPersistent]
+        private Rect _windowRect = new Rect(0f, 0f, 200f, 300f);
+        [ReeperPersistent]
+        private WindowID _id = new WindowID();
+        [ReeperPersistent]
+        private string _title = string.Empty;
+        [ReeperPersistent]
+        private bool _draggable = false;
+        [ReeperPersistent]
+        private bool _visible = true;
 
-//        public void OnWindowPreDraw()
-//        {
-//            throw new System.NotImplementedException();
-//        }
+        #region IWindowComponent
 
-//        public void OnWindowDraw(int winid)
-//        {
-//            throw new System.NotImplementedException();
-//        }
+        public virtual void OnWindowPreDraw()
+        {
 
-//        public void OnWindowFinalize(int winid)
-//        {
-//            throw new System.NotImplementedException();
-//        }
+        }
 
-//        public void OnUpdate()
-//        {
-//            throw new System.NotImplementedException();
-//        }
+        public virtual void OnWindowDraw(int winid)
+        {
 
-//        public Rect Dimensions { get; set; }
-//        public WindowID Id { get; private set; }
-//        public string Title { get; set; }
-//        public GUISkin Skin { get; set; }
-//        public bool Draggable { get; set; }
-//        public bool Visible { get; set; }
-//        public float Width { get; set; }
-//        public float Height { get; set; }
-//        public void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
-//        {
-//            formatter.Serialize(this, node);
-//        }
+        }
 
-//        public void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
-//        {
-//            formatter.Deserialize(this, node);
-//        }
-//    }
-//}
+
+        public virtual void OnWindowFinalize(int winid)
+        {
+  
+        }
+
+
+        public virtual void OnUpdate()
+        {
+
+        }
+
+        public virtual void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
+        {
+        }
+
+
+        public virtual void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
+        {
+        }
+
+
+        public Rect Dimensions
+        {
+            get { return _windowRect; }
+            set { _windowRect = value; }
+        }
+
+
+        public string Title
+        {
+            get { return _title; }
+            set { _title = value; }
+        }
+
+
+        public GUISkin Skin { get; set; }
+
+
+        public bool Draggable
+        {
+            get { return _draggable; }
+            set { _draggable = value; }
+        }
+
+
+        public bool Visible
+        {
+            get { return _visible; }
+            set { _visible = value; }
+        }
+
+
+        public WindowID Id
+        {
+            get { return _id; }
+            // ReSharper disable once UnusedMember.Global
+            set { _id = value; }
+        }
+
+
+        public float Width
+        {
+            get { return _windowRect.width; }
+            set { _windowRect.width = value; }
+        }
+
+        public float Height
+        {
+            get { return _windowRect.height; }
+            set { _windowRect.height = value; }
+        }
+
+        #endregion
+    }
+}

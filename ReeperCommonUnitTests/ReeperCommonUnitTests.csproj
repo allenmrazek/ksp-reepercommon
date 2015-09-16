@@ -104,6 +104,7 @@
     <Compile Include="Fixtures\AutoDomainDataAttribute.cs" />
     <Compile Include="Fixtures\DomainCustomization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\Complex\NativeSerializableObjectWithNativeSerializableField.cs" />
     <Compile Include="Serialization\Complex\SerializeObjectWithComplexFieldsAndNative.cs" />
     <Compile Include="Serialization\Complex\SerializeObjectWithFieldsNoSurrogateOrNativeTests.cs" />
     <Compile Include="Serialization\Complex\SerializeObjectWithFieldsWithNativeTests.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Serialization\PersistenceMethodCallerTests.cs" />
     <Compile Include="Serialization\PreferNativeSerializerTests.cs" />
     <Compile Include="Serialization\SerializerSelectorTests.cs" />
+    <Compile Include="Serialization\SurrogateProviderTests.cs" />
     <Compile Include="Serialization\Surrogates\ColorSurrogateTests.cs" />
     <Compile Include="Serialization\Surrogates\ConfigNodeComparer.cs" />
     <Compile Include="Serialization\Surrogates\ConfigNodeSurrogateTests.cs" />
@@ -149,7 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
-    <Folder Include="Serialization\old\" />
+    <Folder Include="Serialization\Live\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

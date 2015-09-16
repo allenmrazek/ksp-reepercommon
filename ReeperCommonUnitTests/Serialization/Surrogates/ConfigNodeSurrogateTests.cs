@@ -148,9 +148,9 @@ namespace ReeperCommon.Serialization.Tests.Surrogates
         public void Deserialize_ObjectWithPersistentField_StartingWithNullFieldValue_Test(ConfigNodeSerializer serializer, ConfigNode config)
         {
             config.AddNode("ConfigNodeField").AddNode("NameOfConfigNodeInField");
+            config.AddNode(NativeSerializer.NativeNodeName);
 
-            var testObject = new ObjectWithConfigNodeField();
-            testObject.ConfigNodeField = null;
+            var testObject = new ObjectWithConfigNodeField {ConfigNodeField = null};
 
             serializer.LoadObjectFromConfigNode(ref testObject, config);
 

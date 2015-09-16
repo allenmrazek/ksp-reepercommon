@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using ReeperCommon.Serialization;
+using ReeperCommon.Serialization.Surrogates;
 using Xunit;
 
 // ReSharper disable once CheckNamespace
@@ -24,6 +25,7 @@ namespace ReeperCommon.Serialization.Tests
             var results = sut.Get(typeof(IGetSerializationSurrogates).Assembly).ToList();
 
             Assert.NotEmpty(results);
+            Assert.Contains(typeof (ListSurrogate<>), results);
         }
     }
 }

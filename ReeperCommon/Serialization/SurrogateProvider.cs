@@ -10,7 +10,8 @@ namespace ReeperCommon.Serialization
 {
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     /// <summary>
-    /// This is your standard, non-generic surrogate provider
+    /// This is your standard, non-generic surrogate provider which uses lazy loading to cache
+    /// serializers
     /// </summary>
     public class SurrogateProvider : ISurrogateProvider
     {
@@ -73,7 +74,7 @@ namespace ReeperCommon.Serialization
         {
             var surrogateTypes = _assembliesToSearch
                 .SelectMany(targetAssembly => _getSerializationSurrogates.Get(targetAssembly))
-                .Where(t => !t.IsAbstract && !t.ContainsGenericParameters)
+                .Where(t => !t.IsAbstract && !t.ContainsGenericParameters && !t.IsGenericTypeDefinition)
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
                 .Where(t => _getSurrogateSupportedTypes.Get(t).Any());
 
@@ -86,8 +87,8 @@ namespace ReeperCommon.Serialization
                 foreach (var serializedType in supportedSerializedTypes)
                 {
                     List<SurrogateFactoryMethod> list;
-                    Type typeToBeSerialized = serializedType;
-                    Type surrogateTypeToCreate = surrogateType;
+                    var typeToBeSerialized = serializedType;
+                    var surrogateTypeToCreate = surrogateType;
 
                     SurrogateFactoryMethod m = () => CreateSurrogate(typeToBeSerialized, surrogateTypeToCreate);
 
@@ -109,15 +110,6 @@ namespace ReeperCommon.Serialization
             if (!typeof(IConfigNodeItemSerializer).IsAssignableFrom(surrogateType))
                 throw new ArgumentException(surrogateType.FullName + " cannot be assigned to IConfigNodeItemSerializer");
 
-
-            if (!surrogateType.IsGenericTypeDefinition)
-                return (Activator.CreateInstance(surrogateType) as IConfigNodeItemSerializer).ToMaybe();
-
-            if (surrogateType.GetGenericArguments().Length != 1)
-                return Maybe<IConfigNodeItemSerializer>.None;
-
-            surrogateType = surrogateType.MakeGenericType(new[] {typeToBeSerialized});
-
             return (Activator.CreateInstance(surrogateType) as IConfigNodeItemSerializer).ToMaybe();
         }
 
@@ -125,6 +117,8 @@ namespace ReeperCommon.Serialization
         public Maybe<IConfigNodeItemSerializer> Get(Type toBeSerialized)
         {
             if (toBeSerialized == null) throw new ArgumentNullException("toBeSerialized");
+            if (toBeSerialized.IsGenericTypeDefinition)
+                throw new ArgumentException("Cannot provide surrogate for incomplete type");
 
             Surrogate surrogate;
 

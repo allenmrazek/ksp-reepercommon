@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using NSubstitute;
 using ReeperCommon.Containers;
 using ReeperCommon.Serialization;
 using ReeperCommonUnitTests.Fixtures;
+using ReeperCommonUnitTests.Serialization.Complex;
 using ReeperCommonUnitTests.TestData;
 using Xunit;
 using Xunit.Extensions;
@@ -89,5 +91,25 @@ namespace ReeperCommon.Serialization.Tests
     public class ConfigNodeSerializerTestsWithSimple : ConfigNodeSerializerTests<SimplePersistentObject>
     {
         
+    }
+
+
+    public class LiveTests
+    {
+        [Theory, AutoDomainData]
+        public void CreateConfigNodeFromObject_WithNativeObject_ThatHasNativeField_DoesNotResultInTwoNativeDataNodesCoexisting_Test()
+        {
+            var testObject = new NativeSerializableObjectWithNativeSerializableField();
+            var serializer =
+                new DefaultConfigNodeSerializer(
+                    AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(a => a.GetName().Name.StartsWith("ReeperCommon"))
+                        .ToArray());
+
+            var result = serializer.CreateConfigNodeFromObject(testObject);
+
+            Assert.True(result.HasData);
+            Assert.Equal(1, result.GetNodes(NativeSerializer.NativeNodeName).Length);
+        }
     }
 }
