@@ -15,7 +15,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         public HideOnF2(IWindowComponent baseComponent) : base(baseComponent)
         {
-            throw new NotImplementedException("this class buggy; don't use");
+            throw new NotImplementedException("this class buggy; don't use till fixed");
             GameEvents.onShowUI.Add(Show);
             GameEvents.onHideUI.Add(Hide);
         }

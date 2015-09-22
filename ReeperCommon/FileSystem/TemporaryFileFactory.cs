@@ -22,8 +22,7 @@ namespace ReeperCommon.FileSystem
 
             var fullPath = Path.GetTempPath() + Path.DirectorySeparatorChar + sanitized;
 
-            using (var f = File.Create(fullPath))
-                return new TemporaryFile(fullPath);
+            return new TemporaryFile(fullPath);
         }
     }
 }

@@ -153,6 +153,9 @@
     <Folder Include="Extensions\" />
     <Folder Include="Serialization\Live\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if NOT $(Configuration) == Coverage GOTO NoCoverage
