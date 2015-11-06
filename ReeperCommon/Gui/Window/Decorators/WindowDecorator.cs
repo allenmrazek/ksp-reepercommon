@@ -1,5 +1,4 @@
 ﻿using System;
-using ReeperCommon.Logging;
 using ReeperCommon.Serialization;
 using UnityEngine;
 
@@ -7,49 +6,52 @@ namespace ReeperCommon.Gui.Window.Decorators
 {
     public abstract class WindowDecorator : IWindowComponent
     {
-        private readonly IWindowComponent _base;
+        public readonly IWindowComponent Decorated;
 
-        public WindowDecorator(IWindowComponent baseComponent)
+        public WindowDecorator(IWindowComponent decoratedComponent)
         {
-            if (baseComponent == null) throw new ArgumentNullException("baseComponent");
+            if (decoratedComponent == null) throw new ArgumentNullException("decoratedComponent");
 
-            _base = baseComponent;
+            Decorated = decoratedComponent;
         }
 
 
         public virtual void OnWindowPreDraw()
         {
-            _base.OnWindowPreDraw();
+            Decorated.OnWindowPreDraw();
         }
 
 
         public virtual void OnWindowDraw(int winid)
         {
-            _base.OnWindowDraw(winid);
+            Decorated.OnWindowDraw(winid);
         }
 
 
         public virtual void OnWindowFinalize(int winid)
         {
-            _base.OnWindowFinalize(winid);
+            Decorated.OnWindowFinalize(winid);
         }
 
 
         public virtual void OnUpdate()
         {
-            _base.OnUpdate();
+            Decorated.OnUpdate();
         }
 
 
         public virtual void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            _base.DuringSerialize(formatter, node);
+            //if (_base == null) return;
+
+            //var innerBase = _base;
+
+            //formatter.WriteObjectToConfigNode(ref innerBase, node);
         }
 
 
         public virtual void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            _base.DuringDeserialize(formatter, node);
         }
 
 
@@ -57,55 +59,55 @@ namespace ReeperCommon.Gui.Window.Decorators
         {
             get
             {
-                return _base.Dimensions;
+                return Decorated.Dimensions;
             }
             set
             {
-                _base.Dimensions = value;
+                Decorated.Dimensions = value;
             }
         }
 
 
         public string Title
         {
-            get { return _base.Title; }
-            set { _base.Title = value; }
+            get { return Decorated.Title; }
+            set { Decorated.Title = value; }
         }
 
 
         public GUISkin Skin
         {
-            get { return _base.Skin; }
-            set { _base.Skin = value; }
+            get { return Decorated.Skin; }
+            set { Decorated.Skin = value; }
         }
 
 
         public bool Draggable { 
-            get { return _base.Draggable; }
-            set { _base.Draggable = value; }
+            get { return Decorated.Draggable; }
+            set { Decorated.Draggable = value; }
         }
 
 
         public virtual bool Visible
         {
-            get { return _base.Visible; }
-            set { _base.Visible = value; }
+            get { return Decorated.Visible; }
+            set { Decorated.Visible = value; }
         }
 
 
-        public WindowID Id { get { return _base.Id; } }
+        public WindowID Id { get { return Decorated.Id; } }
 
 
         public float Width
         {
-            get { return _base.Width; }
-            set { _base.Width = value; }
+            get { return Decorated.Width; }
+            set { Decorated.Width = value; }
         }
 
         public float Height
         {
-            get { return _base.Height; }
-            set { _base.Height = value; }
+            get { return Decorated.Height; }
+            set { Decorated.Height = value; }
         }
     }
 }

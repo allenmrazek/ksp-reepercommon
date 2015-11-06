@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.Serialization;
 using ReeperCommon.Serialization.Exceptions;
 
 namespace ReeperCommon.Serialization
@@ -28,12 +27,8 @@ namespace ReeperCommon.Serialization
 
             // it's necessary to add a scope node here in case other same-level serialized objects are
             // also natively serialized; if they are, there would be multiple NativeData nodes
-            var scope = config.AddNode(key);
 
-            // we'll add a brand new node so any keys the target's serialization methods use won't
-            // clash with existing keys
-            var persistentConfig = scope.AddNode(NativeNodeName);
-
+            var persistentConfig = config.AddNode(GetNativeDataNodeName(key));
             reeperPersistent.DuringSerialize(serializer, persistentConfig);
         }
 
@@ -54,22 +49,27 @@ namespace ReeperCommon.Serialization
             if (!canCreateDefault && target == null)
                 throw new NoDefaultValueException(type);
 
-            if (!config.HasNode(key))
-                throw new ReeperSerializationException("Can't deserialize " + type.FullName + " because given ConfigNode is missing scope node");
+            var nativeNodeName = GetNativeDataNodeName(key);
 
-            var scope = config.GetNode(key);
+            if (!config.HasNode(nativeNodeName))
+                throw new ReeperSerializationException("Can't deserialize " + type.FullName + " because given ConfigNode is missing scope node");
 
             var reeperPersistent = (target ?? Activator.CreateInstance(type)) as IReeperPersistent;
             if (reeperPersistent == null) // uh ... how??
                 throw new Exception("Failed to create instance of type " + type.FullName + " for unknown reasons");
 
-            // new node so any keys the target's serialization methods use won't
-            // clash with existing keys
-            var configValue = scope.GetNode(NativeNodeName);
+
+            var configValue = config.GetNode(nativeNodeName);
 
             reeperPersistent.DuringDeserialize(serializer, configValue);
 
             target = reeperPersistent;
+        }
+
+
+        private static string GetNativeDataNodeName(string key)
+        {
+            return key + ":" + NativeNodeName;
         }
     }
 }

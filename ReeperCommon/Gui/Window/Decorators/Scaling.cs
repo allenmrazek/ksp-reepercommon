@@ -9,7 +9,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 // ReSharper disable once MemberCanBePrivate.Global
         [ReeperPersistent] private Vector3 _scale = Vector3.one;
 
-        public Scaling(IWindowComponent baseComponent, Vector2 initialScale) : base(baseComponent)
+        public Scaling(IWindowComponent decoratedComponent, Vector2 initialScale) : base(decoratedComponent)
         {
             Scale = initialScale;
         }

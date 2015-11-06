@@ -4,8 +4,9 @@ using ReeperCommon.FileSystem;
 
 namespace ReeperCommon.Providers
 {
-    interface IAssemblyLocationProvider
+    public interface IAssemblyLocationProvider
     {
-        Maybe<IDirectory> Get(Assembly target);
+        Maybe<IDirectory> GetDirectory(Assembly target);
+        Maybe<IFile> Get(Assembly target);
     }
 }

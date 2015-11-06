@@ -26,7 +26,7 @@ namespace ReeperCommon.Serialization.Surrogates
             CheckSupportedTypes(type);
 
             if (config.HasValue(key))
-                throw new ConfigNodeDuplicateKeyException(key);
+                throw new ConfigNodeDuplicateKeyException(key, config);
 
             var tc = TypeDescriptor.GetConverter(type);
 

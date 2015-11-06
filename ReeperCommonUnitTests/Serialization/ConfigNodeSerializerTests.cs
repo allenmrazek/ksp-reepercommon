@@ -98,7 +98,7 @@ namespace ReeperCommon.Serialization.Tests
     public class LiveTests
     {
         [Theory, AutoDomainData]
-        public void CreateConfigNodeFromObject_WithNativeObject_ThatHasNativeField_DoesNotResultInTwoNativeDataNodesCoexisting_Test()
+        public void CreateConfigNodeFromObject_WithNativeObject_ThatHasNativeField_DoesNotResultInTwoNativeDataNodes_WithSameName_Coexisting_Test()
         {
             var testObject = new NativeSerializableObjectWithNativeSerializableField();
             var serializer =
@@ -111,10 +111,13 @@ namespace ReeperCommon.Serialization.Tests
 
             Assert.True(result.HasData);
             Assert.Equal(2, result.CountNodes); // 1 node for field + 1 scoping node
-            Assert.Equal(0, result.GetNodes(NativeSerializer.NativeNodeName).Length); // shouldn't be any NativeData nodes at this level
+            //Assert.True(result.nodes.Count(new0, result.GetNodes(NativeSerializer.NativeNodeName).Length); // shouldn't be any NativeData nodes at this level
 
-            for (int i = 0; i < result.CountNodes; ++i)
-                Assert.Equal(1, result.nodes[i].GetNodes(NativeSerializer.NativeNodeName).Length);
+            foreach (var n in result.GetNodes().Where(node => node.name.EndsWith(NativeSerializer.NativeNodeName)))
+            {
+                var n1 = n;
+                Assert.Equal(1, result.GetNodes().Count(node => node.name == n1.name));
+            }
         }
     }
 }

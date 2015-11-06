@@ -72,10 +72,6 @@ namespace ReeperCommon.Extensions
         /// <param name="value"></param>
         public static void Set<T>(this global::ConfigNode node, string valueName, T value)
         {
-            // something seems to be broken with ConfigNode.SetValue so the
-            // following is buggy:
-            //if (!node.SetValue(valueName, value)) node.SetValue(valueName, value);
-
             if (node.HasValue(valueName))
                 node.SetValue(valueName, value.ToString());
             else node.AddValue(valueName, value);

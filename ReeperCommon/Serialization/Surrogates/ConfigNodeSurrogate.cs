@@ -20,7 +20,7 @@ namespace ReeperCommon.Serialization.Surrogates
             if (target == null) return;
 
             if (config.HasNode(key))
-                throw new ConfigNodeDuplicateKeyException(key);
+                throw new ConfigNodeDuplicateKeyException(key, config);
 
             var copy = ((ConfigNode)target).CreateCopy();
 

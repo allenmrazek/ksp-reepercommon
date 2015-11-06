@@ -48,14 +48,14 @@ namespace ReeperCommon.Gui.Window.Decorators
         
 
         public Resizable(
-            IWindowComponent baseComponent, 
+            IWindowComponent decoratedComponent, 
             Vector2 hotzoneSize, 
             Vector2 minSize, 
             Texture2D hintTexture, 
             float hintPopupDelay,
-            Vector2 hintScale) : base(baseComponent)
+            Vector2 hintScale) : base(decoratedComponent)
         {
-            if (baseComponent == null) throw new ArgumentNullException("baseComponent");
+            if (decoratedComponent == null) throw new ArgumentNullException("decoratedComponent");
             if (hintTexture == null) throw new ArgumentNullException("hintTexture");
 
             HotzoneSize = hotzoneSize;
@@ -67,11 +67,11 @@ namespace ReeperCommon.Gui.Window.Decorators
 
 
         public Resizable(
-            IWindowComponent baseComponent,
+            IWindowComponent decoratedComponent,
             Vector2 hotzoneSize,
             Vector2 minSize,
             Texture2D hintTexture,
-            float hintPopupDelay = 0.25f) : this(baseComponent, hotzoneSize, minSize, hintTexture, hintPopupDelay, Vector2.one)
+            float hintPopupDelay = 0.25f) : this(decoratedComponent, hotzoneSize, minSize, hintTexture, hintPopupDelay, Vector2.one)
         {
         }
 

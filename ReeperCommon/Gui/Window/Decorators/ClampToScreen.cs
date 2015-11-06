@@ -5,7 +5,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 {
     public class ClampToScreen : WindowDecorator
     {
-        public ClampToScreen(IWindowComponent baseComponent) : base(baseComponent)
+        public ClampToScreen(IWindowComponent decoratedComponent) : base(decoratedComponent)
         {
         }
 

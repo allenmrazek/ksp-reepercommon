@@ -4,7 +4,7 @@ using ReeperCommon.Serialization;
 namespace ReeperCommon.Gui
 {
 // ReSharper disable once InconsistentNaming
-    public class WindowID : IReeperPersistent
+    public class WindowID// : IReeperPersistent
     {
 // ReSharper disable once MemberCanBePrivate.Global
 // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -26,12 +26,12 @@ namespace ReeperCommon.Gui
 
         public void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            node.AddValue("WindowID", Value);
+            //node.AddValue("WindowID", Value);
         }
 
         public void DuringDeserialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            Value = node.Parse("WindowID", UniqueWindowIdProvider.Get());
+            //Value = node.Parse("WindowID", UniqueWindowIdProvider.Get());
         }
     }
 }

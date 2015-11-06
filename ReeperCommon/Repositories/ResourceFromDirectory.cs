@@ -14,8 +14,15 @@ namespace ReeperCommon.Repositories
         private readonly float _accessTimeout;
 
 
+// ReSharper disable once IntroduceOptionalParameters.Global
+        public ResourceFromDirectory(IDirectory directory) : this(directory, 1f)
+        {
+            
+        }
 
-        public ResourceFromDirectory(IDirectory directory, float accessTimeout = 1f)
+
+// ReSharper disable once MemberCanBePrivate.Global
+        public ResourceFromDirectory(IDirectory directory, float accessTimeout)
         {
             if (directory == null) throw new ArgumentNullException("directory");
             _directory = directory;

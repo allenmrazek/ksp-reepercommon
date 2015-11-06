@@ -29,7 +29,7 @@ namespace ReeperCommon.Serialization.Surrogates
                 throw new WrongSerializerException(target != null ? target.GetType() : type, typeof(List<TListItemType>));
 
             if (config.HasNode(key))
-                throw new ConfigNodeDuplicateKeyException(key);
+                throw new ConfigNodeDuplicateKeyException(key, config);
 
             var list = target as List<TListItemType>;
             if (list == null)
