@@ -38,6 +38,12 @@ namespace ReeperCommonUnitTests.TestData
         }
 
 
+        public virtual void OnWindowPostDraw()
+        {
+            
+        }
+
+
         public virtual void OnUpdate()
         {
 

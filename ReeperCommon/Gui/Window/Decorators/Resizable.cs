@@ -7,8 +7,10 @@ namespace ReeperCommon.Gui.Window.Decorators
 {
     public class Resizable : WindowDecorator
     {
+        private readonly Func<bool> _cbAllowResizing;
+
         [Flags]
-        private enum ActiveMode
+        protected enum ActiveMode
         {
             None = 0,
             Right = 1 << 0,
@@ -36,8 +38,7 @@ namespace ReeperCommon.Gui.Window.Decorators
         public Vector2 HintScale { get; set; }
 
 
-        private ActiveMode _mode = ActiveMode.None;
-
+        protected ActiveMode Mode { get; private set; }
         private Rect _rightRect = default(Rect);        // hotzone for changing width
         private Rect _bottomRect = default(Rect);       // hotzone for changing height
 
@@ -53,16 +54,19 @@ namespace ReeperCommon.Gui.Window.Decorators
             Vector2 minSize, 
             Texture2D hintTexture, 
             float hintPopupDelay,
-            Vector2 hintScale) : base(decoratedComponent)
+            Vector2 hintScale,
+            Func<bool> cbAllowResizing) : base(decoratedComponent)
         {
             if (decoratedComponent == null) throw new ArgumentNullException("decoratedComponent");
             if (hintTexture == null) throw new ArgumentNullException("hintTexture");
+            if (cbAllowResizing == null) throw new ArgumentNullException("cbAllowResizing");
 
             HotzoneSize = hotzoneSize;
             MinSize = minSize;
             HintTexture = hintTexture;
             HintPopupDelay = hintPopupDelay;
             HintScale = hintScale;
+            _cbAllowResizing = cbAllowResizing;
         }
 
 
@@ -71,14 +75,27 @@ namespace ReeperCommon.Gui.Window.Decorators
             Vector2 hotzoneSize,
             Vector2 minSize,
             Texture2D hintTexture,
-            float hintPopupDelay = 0.25f) : this(decoratedComponent, hotzoneSize, minSize, hintTexture, hintPopupDelay, Vector2.one)
+            float hintPopupDelay = 0.25f)
+            : this(decoratedComponent, hotzoneSize, minSize, hintTexture, hintPopupDelay, Vector2.one, DefaultCheck)
         {
         }
 
 
+        private static bool DefaultCheck()
+        {
+            return true;
+        }
+
         public override void OnWindowDraw(int winid)
         {
             base.OnWindowDraw(winid);
+            HandleSupportedEvents();
+        }
+
+
+        protected virtual void HandleSupportedEvents()
+        {
+            if (!_cbAllowResizing()) return;
 
             switch (Event.current.type)
             {
@@ -94,7 +111,6 @@ namespace ReeperCommon.Gui.Window.Decorators
                     OnMouseDrag();
                     break;
             }
-
         }
 
 
@@ -116,7 +132,7 @@ namespace ReeperCommon.Gui.Window.Decorators
         {
             UpdateHotzoneRects();
 
-            if ((_mode = GetMouseMode()) != ActiveMode.None)
+            if ((Mode = GetMouseMode()) != ActiveMode.None)
                 Event.current.Use();
         }
 
@@ -137,7 +153,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private void OnMouseDrag()
         {
-            if (_mode == ActiveMode.None) return;
+            if (Mode == ActiveMode.None) return;
 
             UpdateHotzoneRects();
 
@@ -188,14 +204,12 @@ namespace ReeperCommon.Gui.Window.Decorators
             Graphics.DrawTexture(_hintScreenRect, HintTexture);
 
             GUI.matrix = originalMatrix;
-
-
         }
 
 
         private float GetCursorAngle()
         {
-            var currentMode = _dragging != null ? _mode : GetMouseMode();
+            var currentMode = _dragging != null ? Mode : GetMouseMode();
 
             switch (currentMode)
             {
@@ -232,32 +246,38 @@ namespace ReeperCommon.Gui.Window.Decorators
         {
             do
             {
-                // note: the user is dragging the scaled dimensions of the rect. We'll treat the current
-                // coordinates as though they're dragging that scaled version and work backwards to come up
-                // with a set of dimensions that would result in that size when scaled by GUI.matrix
-                var mousePos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-                var visibleDimensions = Dimensions.Multiply(guiMatrix);
-
-                var newWidth = (_mode & ActiveMode.Right) != 0 ? mousePos.x - visibleDimensions.x : visibleDimensions.width;
-                var newHeight = (_mode & ActiveMode.Bottom) != 0 ? mousePos.y - visibleDimensions.y : visibleDimensions.height;
-
-                
-                Dimensions = new Rect(
-                    Dimensions.x,
-                    Dimensions.y,
-                    Mathf.Max(MinSize.x, newWidth / guiMatrix.m00),
-                    Mathf.Max(MinSize.y, newHeight / guiMatrix.m11));
+                OnDragUpdate(guiMatrix);
 
                 yield return 0;
             } while (Input.GetMouseButton(0) && !Input.GetKeyDown(KeyCode.Escape));
 
-            _mode = ActiveMode.None;
+            Mode = ActiveMode.None;
             _dragging = null;
+        }
+
+
+        protected virtual void OnDragUpdate(Matrix4x4 guiMatrix)
+        {
+            // note: the user is dragging the scaled dimensions of the rect. We'll treat the current
+            // coordinates as though they're dragging that scaled version and work backwards to come up
+            // with a set of dimensions that would result in that size when scaled by GUI.matrix
+
+            var mousePos = GetScreenPositionOfMouse();
+            var visibleDimensions = Dimensions.Multiply(guiMatrix);
+
+            var newWidth = (Mode & ActiveMode.Right) != 0 ? mousePos.x - visibleDimensions.x : visibleDimensions.width;
+            var newHeight = (Mode & ActiveMode.Bottom) != 0 ? mousePos.y - visibleDimensions.y : visibleDimensions.height;
+
+            Dimensions = new Rect(
+                Dimensions.x,
+                Dimensions.y,
+                Mathf.Max(MinSize.x, newWidth / guiMatrix.m00),
+                Mathf.Max(MinSize.y, newHeight / guiMatrix.m11));
         }
 
         
         // in screen space (inverted y)
-        private static Vector2 GetScreenPositionOfMouse()
+        protected static Vector2 GetScreenPositionOfMouse()
         {
             return new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
         }

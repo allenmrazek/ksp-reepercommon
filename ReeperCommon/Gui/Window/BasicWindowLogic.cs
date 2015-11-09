@@ -48,6 +48,12 @@ namespace ReeperCommon.Gui.Window
         }
 
 
+        public virtual void OnWindowPostDraw()
+        {
+            
+        }
+
+
         public virtual void OnUpdate()
         {
 

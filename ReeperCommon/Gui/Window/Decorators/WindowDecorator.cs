@@ -34,6 +34,12 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
+        public virtual void OnWindowPostDraw()
+        {
+            Decorated.OnWindowPostDraw();
+        }
+
+
         public virtual void OnUpdate()
         {
             Decorated.OnUpdate();

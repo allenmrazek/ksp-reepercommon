@@ -8,6 +8,7 @@ namespace ReeperCommon.Gui.Window
         void OnWindowPreDraw();
         void OnWindowDraw(int winid);
         void OnWindowFinalize(int winid);
+        void OnWindowPostDraw();
 
         void OnUpdate();
 

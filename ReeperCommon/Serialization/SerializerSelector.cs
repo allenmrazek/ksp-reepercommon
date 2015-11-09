@@ -7,6 +7,7 @@ namespace ReeperCommon.Serialization
     /// <summary>
     /// The simplest selector just looks for a surrogate to use
     /// </summary>
+// ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class SerializerSelector : ISerializerSelector
     {
         private readonly ISurrogateProvider _surrogates;

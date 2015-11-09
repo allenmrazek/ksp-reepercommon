@@ -72,11 +72,12 @@
     <Compile Include="Gui\Controls\ColorSaturationSlider.cs" />
     <Compile Include="Gui\WindowId.cs" />
     <Compile Include="Gui\Window\Buttons\ITitleBarButton.cs" />
+    <Compile Include="Gui\Window\Decorators\AdjustableScale.cs" />
     <Compile Include="Gui\Window\Decorators\ClampToScreen.cs" />
     <Compile Include="Gui\Window\Decorators\HideOnF2.cs" />
     <Compile Include="Gui\Window\Buttons\BasicTitleBarButton.cs" />
     <Compile Include="Gui\Window\Decorators\Resizable.cs" />
-    <Compile Include="Gui\Window\Decorators\Scaling.cs" />
+    <Compile Include="Gui\Window\Decorators\WindowScale.cs" />
     <Compile Include="Gui\Window\Decorators\TitleBarButtons.cs" />
     <Compile Include="Gui\UniqueWindowIdProvider.cs" />
     <Compile Include="Gui\Window\View\WindowView.cs" />

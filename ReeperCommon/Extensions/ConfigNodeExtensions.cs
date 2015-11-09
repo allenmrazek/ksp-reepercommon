@@ -131,5 +131,11 @@ namespace ReeperCommon.Extensions
             stream.Write(data);
             stream.Write(stream.NewLine);
         }
+
+
+        public static string ToSafeString(this ConfigNode config)
+        {
+            return config.ToString().Replace("{", "{{").Replace("}", "}}");
+        }
     }
 }

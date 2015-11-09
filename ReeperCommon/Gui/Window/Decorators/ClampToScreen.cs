@@ -10,13 +10,10 @@ namespace ReeperCommon.Gui.Window.Decorators
         }
 
 
-        public override void OnWindowPreDraw()
+        public override void OnWindowPostDraw()
         {
-            base.OnWindowPreDraw();
-
-            if (Event.current.type != EventType.Repaint) return;
-
-            Dimensions = KSPUtil.ClampRectToScreen(Dimensions.Multiply(GUI.matrix)).Multiply(GUI.matrix.inverse);
+            base.OnWindowPostDraw();
+            Dimensions = KSPUtil.ClampRectToScreen(Dimensions.MultiplyScale(GUI.matrix)).InvertScale(GUI.matrix);
         }
     }
 }
