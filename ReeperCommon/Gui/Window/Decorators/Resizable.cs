@@ -244,6 +244,8 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         private IEnumerator UpdateMouseDrag(Matrix4x4 guiMatrix) // note: should GUI.matrix's scaling change while dragging, drag will break. So don't do that
         {
+            OnDragBegin(guiMatrix);
+
             do
             {
                 OnDragUpdate(guiMatrix);
@@ -253,8 +255,14 @@ namespace ReeperCommon.Gui.Window.Decorators
 
             Mode = ActiveMode.None;
             _dragging = null;
+
+            OnDragEnd(guiMatrix);
         }
 
+        protected virtual void OnDragBegin(Matrix4x4 guiMatrix)
+        {
+            
+        }
 
         protected virtual void OnDragUpdate(Matrix4x4 guiMatrix)
         {
@@ -273,6 +281,12 @@ namespace ReeperCommon.Gui.Window.Decorators
                 Dimensions.y,
                 Mathf.Max(MinSize.x, newWidth / guiMatrix.m00),
                 Mathf.Max(MinSize.y, newHeight / guiMatrix.m11));
+        }
+
+
+        protected virtual void OnDragEnd(Matrix4x4 guiMatrix)
+        {
+            
         }
 
         

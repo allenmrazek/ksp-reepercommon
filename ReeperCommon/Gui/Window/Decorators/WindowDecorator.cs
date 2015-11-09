@@ -48,11 +48,6 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         public virtual void DuringSerialize(IConfigNodeSerializer formatter, ConfigNode node)
         {
-            //if (_base == null) return;
-
-            //var innerBase = _base;
-
-            //formatter.WriteObjectToConfigNode(ref innerBase, node);
         }
 
 
