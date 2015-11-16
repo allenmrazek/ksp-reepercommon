@@ -24,7 +24,8 @@ namespace ReeperCommon.Serialization
         {
             return fromAssembly
                 .GetTypes()
-                .Where(t => t.IsClass && t.IsVisible && !t.IsAbstract)
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .Where(t => t.IsVisible || ReferenceEquals(Assembly.GetExecutingAssembly(), fromAssembly))
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null && t.GetConstructor(Type.EmptyTypes).IsPublic)
                 .Where(ImplementsGenericSerializationSurrogateInterface);
         }

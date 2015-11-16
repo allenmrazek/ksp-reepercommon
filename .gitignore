@@ -17,3 +17,6 @@
 /ReeperCommonUnitTests/bin/Release
 /ReeperCommon.smp.old
 /ReeperCommon.smproj
+/.nuget
+/_ReSharper.ReeperCommon/DaemonResults/1
+/_ReSharper.ReeperCommon

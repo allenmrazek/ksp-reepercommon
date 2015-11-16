@@ -143,14 +143,6 @@ namespace ReeperCommon.Containers
         }
 
 
-        public static TInput Exists<TInput>(this TInput o, Action<TInput> action) where TInput:class
-        {
-            if (o != null) action(o);
-
-            return o;
-        }
-
-
         public static TResult Return<TInput, TResult>(this TInput o,
             Func<TInput, TResult> evaluator, TResult failureValue) where TInput : class
         {

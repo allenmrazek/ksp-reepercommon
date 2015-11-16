@@ -11,6 +11,7 @@ namespace ReeperCommon.Serialization
         //   MySurrogate : IConfigNodeItemSerializer<bool>, IConfigNodeItemSerializer<string> etc
         public IEnumerable<Type> Get(Type surrogateType)
         {
+
             return surrogateType.GetInterfaces()
               .Where(interfaceType => interfaceType.IsGenericType &&
                                       typeof(IConfigNodeItemSerializer).IsAssignableFrom(interfaceType)
