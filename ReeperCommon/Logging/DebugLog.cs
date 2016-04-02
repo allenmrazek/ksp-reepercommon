@@ -1,4 +1,6 @@
-﻿namespace ReeperCommon.Logging
+﻿using System;
+
+namespace ReeperCommon.Logging
 {
     public class DebugLog : VerboseLog
     {
@@ -9,6 +11,11 @@
         public override void Debug(string format, params string[] args)
         {
             Normal(format, args);
+        }
+
+        public override void Debug(Func<string> message)
+        {
+            Debug(message());
         }
     }
 }

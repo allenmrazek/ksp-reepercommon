@@ -11,8 +11,7 @@
     <AssemblyName>ReeperCommon</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\AssemblyReloader\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -35,9 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ObjectGraph\IConfigNodeObjectFactory.cs" />
+    <Compile Include="ObjectGraph\IObjectFromConfigNodeFactory.cs" />
     <Compile Include="Containers\Lazy.cs" />
     <Compile Include="Containers\Maybe.cs" />
     <Compile Include="DataObjects\ColorHsl.cs" />
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\CameraExtensions.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
@@ -49,6 +51,8 @@
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Extensions\Texture2DExtensions.cs" />
     <Compile Include="Extensions\TransformExtensions.cs" />
+    <Compile Include="FileSystem\DirectoryNotFoundException.cs" />
+    <Compile Include="FileSystem\FilenameMustContainExtensionException.cs" />
     <Compile Include="FileSystem\IFileSystemFactory.cs" />
     <Compile Include="FileSystem\IDirectory.cs" />
     <Compile Include="FileSystem\IFile.cs" />
@@ -86,6 +90,7 @@
     <Compile Include="Gui\Window\Decorators\WindowDecorator.cs" />
     <Compile Include="Logging\BaseLog.cs" />
     <Compile Include="Logging\DebugLog.cs" />
+    <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\NothingLog.cs" />
     <Compile Include="Logging\StandardLog.cs" />
     <Compile Include="Logging\TaggedLog.cs" />
@@ -150,12 +155,17 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(KSP_DIR)\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\KSPUtil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>$(KSP_DIR)\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

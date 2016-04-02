@@ -8,10 +8,12 @@ namespace ReeperCommon.FileSystem
         string FullPath { get; }
         string Url { get; }
         IUrlDir Parent { get; }
-
+        UrlDir KspDir { get; }
 
         IEnumerable<IUrlDir> Children { get; }
         IEnumerable<IUrlFile> Files { get; }
         IEnumerable<IUrlFile> AllFiles { get; }
+
+        void AddFile(IUrlFile file);
     }
 }

@@ -4,7 +4,9 @@ using NSubstitute;
 using ReeperCommon.FileSystem;
 using ReeperCommonUnitTests.FileSystem.Framework;
 using ReeperCommonUnitTests.FileSystem.Framework.Implementations;
+using ReeperCommonUnitTests.Fixtures;
 using Xunit;
+using Xunit.Extensions;
 
 namespace ReeperCommonUnitTests.FileSystem
 {
@@ -186,7 +188,7 @@ namespace ReeperCommonUnitTests.FileSystem
 
 
         [Fact]
-        void FileExists()
+        void FileExists_UsingUrlIdentifier()
         {
             var sut = Factory.CreateBuilder()
                                 .WithFile("test.txt")
@@ -203,6 +205,29 @@ namespace ReeperCommonUnitTests.FileSystem
             Assert.False(sut.FileExists(new KSPUrlIdentifier("nonexistent")));
             Assert.False(sut.FileExists(new KSPUrlIdentifier("subdir/nonexistent")));
             Assert.False(sut.FileExists(new KSPUrlIdentifier("nonexistent/subfile.txt")));
+        }
+
+        [Fact]
+        void FileExists_UsingFilename()
+        {
+            var sut = Factory.CreateBuilder()
+                                .WithFile("test.txt")
+                                .WithFile("test")
+                                .MakeDirectory("subdir")
+                                    .WithFile("subfile.txt")
+                                    .Build();
+
+            Assert.True(sut.FileExists("test.txt"));
+            Assert.True(sut.FileExists("test"));
+            Assert.True(sut.FileExists("subdir/subfile.txt"));
+            Assert.True(sut.FileExists("subdir/subfile"));
+
+            Assert.False(sut.FileExists("nonexistent"));
+            Assert.False(sut.FileExists("nonexistent.txt"));
+            Assert.False(sut.FileExists("subdir/nonexistent"));
+            Assert.False(sut.FileExists("subdir/nonexistent.txt"));
+            Assert.False(sut.FileExists("nonexistent/subfile"));
+            Assert.False(sut.FileExists("nonexistent/subfile.txt"));
         }
 
 
@@ -244,6 +269,57 @@ namespace ReeperCommonUnitTests.FileSystem
             Assert.Equal(new[] {"firstfile.txt", "subfile.txt"}, sut.RecursiveFiles("txt").Select(f => f.FileName));
             Assert.Equal(new[] { "firstfile.txt", "subfile.txt" }, sut.RecursiveFiles(".txt").Select(f => f.FileName));
         }
+
+
+        //[Fact]
+        //void AddFile_ThrowsOnNull()
+        //{
+        //    var sut = Factory.CreateBuilder().Build();
+
+        //    Assert.Throws<ArgumentNullException>(() => sut.AddFileToHierarchy(null));
+        //}
+
+
+        //[Theory, AutoDomainData]
+        //void AddFileToHierarchy_OnRoot_AddsFileCorrectly(IUrlDir innerDir, IFileSystemFactory fsFactory, IUrlFile file)
+        //{
+        //    var sut = new KSPDirectory(fsFactory, innerDir);
+
+        //    file.Name.Returns("testfile");
+        //    file.Url.Returns("/testfile");
+
+        //    sut.AddFileToHierarchy(file);
+
+        //    innerDir.Received(1).AddFile(Arg.Is(file));
+        //}
+
+
+        //[Theory, AutoDomainData]
+        //void AddFileToHierarchy_CallsInnerAddFile_WithSubdirectoryFile(IFileSystemFactory fsFactory, IUrlDir root, IUrlDir sub,
+        //    IUrlFile file)
+        //{
+        //    var sut = new KSPDirectory(fsFactory, root);
+
+        //    fsFactory.GetDirectory(Arg.Is(sub)).Returns(ci => new KSPDirectory(fsFactory, sub));
+
+        //    root.Name.Returns("root");
+        //    root.Parent.Returns((IUrlDir)null);
+
+        //    root.Children.Returns(new[] {sub});
+        //    sub.Name.Returns("subdir");
+        //    sub.Url.Returns("/subdir");
+        //    sub.Parent.Returns(root);
+
+        //    file.Url.Returns("/subdir/testfile");
+        //    file.Name.Returns("testfile.txt");
+
+        //    sut.AddFileToHierarchy(file);
+
+        //    root.DidNotReceive().AddFile(Arg.Any<IUrlFile>()); // root should NOT receive this call!
+        //    sub.Received(1).AddFile(Arg.Is(file));
+
+        //    throw new NotImplementedException();
+        //}
 
 
 

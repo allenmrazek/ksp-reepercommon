@@ -20,3 +20,6 @@
 /.nuget
 /_ReSharper.ReeperCommon/DaemonResults/1
 /_ReSharper.ReeperCommon
+/packages/NSubstitute.1.8.2.0/lib/net40
+/packages/AutoFixture.Xunit.2.16.2
+/packages/NSubstitute.1.8.2.0

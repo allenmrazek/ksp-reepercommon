@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace ReeperCommon.FileSystem
 {
+// ReSharper disable once InconsistentNaming
     public class KSPUrlDir : IUrlDir
     {
         private readonly UrlDir _kspDir;
@@ -30,6 +31,11 @@ namespace ReeperCommon.FileSystem
             get { return new KSPUrlDir(_kspDir.parent); }
         }
 
+        public UrlDir KspDir
+        {
+            get { return _kspDir; }
+        }
+
         public IEnumerable<IUrlDir> Children { get { return _kspDir.children.Select(child => new KSPUrlDir(child)).Cast<IUrlDir>().ToList(); } }
 
 
@@ -47,6 +53,14 @@ namespace ReeperCommon.FileSystem
             {
                 return _kspDir.AllFiles.Select(f => new KSPUrlFile(f)).Cast<IUrlFile>().ToList();
             }
+        }
+
+
+        public void AddFile(IUrlFile file)
+        {
+            if (file == null) throw new ArgumentNullException("file");
+
+            _kspDir.files.AddUnique(file.file);
         }
     }
 }

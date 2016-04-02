@@ -51,6 +51,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\KSPUtil.dll</HintPath>
+    </Reference>
     <Reference Include="NSubstitute, Version=1.8.2.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <HintPath>..\..\AssemblyReloader\packages\NSubstitute.1.8.2.0\lib\net35\NSubstitute.dll</HintPath>
       <Private>True</Private>
@@ -86,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Containers\Maybe_Test.cs" />
+    <Compile Include="Extensions\ConfigNodeExtensionsTests.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryBuilder.cs" />
     <Compile Include="FileSystem\Framework\IFakeDirectoryFactory.cs" />
     <Compile Include="FileSystem\Framework\Implementations\FakeDirectory.cs" />
@@ -150,7 +154,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extensions\" />
     <Folder Include="Serialization\Live\" />
   </ItemGroup>
   <ItemGroup>

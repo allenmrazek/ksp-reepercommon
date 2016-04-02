@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ReeperCommon.Containers;
@@ -135,7 +136,95 @@ namespace ReeperCommon.Extensions
 
         public static string ToSafeString(this ConfigNode config)
         {
-            return config.ToString().Replace("{", "{{").Replace("}", "}}");
+            return config == null ? "<null ConfigNode>" : config.ToString().Replace("{", "{{").Replace("}", "}}"); // these are to escape the brackets which may otherwise be interpeted by String.Format as format tokens
+        }
+
+
+        public static string GetValueOrDefault<T>(this ConfigNode config, string valueName, string defaultValue = "", bool caseSensitive = true)
+        {
+            return config.GetValueEx(valueName, caseSensitive).Or(defaultValue);
+        }
+
+
+        public static Maybe<string> GetValueEx(this ConfigNode config, string valueName, bool caseSensitive = true)
+        {
+            if (string.IsNullOrEmpty(valueName))
+                throw new ArgumentException("Must provide a valueName", "valueName");
+
+            if (!caseSensitive) valueName = valueName.ToUpperInvariant();
+
+            for (int i = 0; i < config.CountValues; ++i)
+                if (string.Equals(caseSensitive ? config.values[i].name : config.values[i].name.ToUpperInvariant(),
+                    valueName))
+                {
+                    return Parse(config, config.values[i].name, string.Empty).ToMaybe();
+                }
+
+            return Maybe<string>.None;
+        }
+
+
+        public static Maybe<ConfigNode> GetNodeEx(this ConfigNode config, string nodeName, bool caseSensitive = true)
+        {
+            if (string.IsNullOrEmpty(nodeName))
+                throw new ArgumentException("Must provide a nodeName", "nodeName");
+
+            if (!caseSensitive) nodeName = nodeName.ToUpperInvariant();
+
+            for (int i = 0; i < config.CountNodes; ++i)
+                if (string.Equals(caseSensitive ? config.nodes[i].name : config.nodes[i].name.ToUpperInvariant(),
+                    nodeName))
+                    return config.nodes[i].ToMaybe();
+
+            return Maybe<ConfigNode>.None;
+        }
+
+
+
+        public static bool MatchesContentsOf(this ConfigNode us, ConfigNode other, bool ignoreTopLevelNodeName = false)
+        {
+            if (other == null) return false;
+            if (us == null) return false;
+
+            if (!ignoreTopLevelNodeName && !string.Equals(us.name, other.name))
+                return false;
+
+            if (us.CountNodes != other.CountNodes || us.CountValues != other.CountValues)
+                return false;
+
+            var ourValues = us.values.Cast<ConfigNode.Value>().ToList();
+            var theirValues = other.values.Cast<ConfigNode.Value>().ToList();
+
+            foreach (var ourValue in ourValues)
+            {
+                var localValue = ourValue;
+                var target = theirValues.FirstOrDefault(v => v.name == localValue.name && v.value == localValue.value);
+
+                if (target == null) return false;
+
+                theirValues.Remove(target);
+            }
+
+            if (theirValues.Any())
+                return false;
+
+            var ourNodes = us.nodes.Cast<ConfigNode>().ToList();
+            var theirNodes = other.nodes.Cast<ConfigNode>().ToList();
+
+            foreach (var ourNode in ourNodes)
+            {
+                var localNode = ourNode;
+                var target = theirNodes.FirstOrDefault(v => v.name == localNode.name && v.MatchesContentsOf(localNode));
+
+                if (target == null) return false;
+
+                theirNodes.Remove(target);
+            }
+
+            if (theirNodes.Any())
+                return false;
+
+            return true;
         }
     }
 }

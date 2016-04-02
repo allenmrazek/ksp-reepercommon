@@ -9,7 +9,12 @@ namespace ReeperCommon.FileSystem
 
 
         bool FileExists(IUrlIdentifier url);
+        bool FileExists(string filename);
+
         bool DirectoryExists(IUrlIdentifier url);
+
+        //void AddFileToHierarchy(IUrlFile file);
+
 
         Maybe<IFile> File(IUrlIdentifier url);
         Maybe<IFile> File(string filename);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 
 namespace ReeperCommon.Logging
@@ -13,11 +14,23 @@ namespace ReeperCommon.Logging
         }
 
         public abstract void Debug(string format, params string[] args);
+        public abstract void Debug(Func<string> message);
+ 
         public abstract void Normal(string format, params string[] args);
+        public abstract void Normal(Func<string> message);
+ 
         public abstract void Warning(string format, params string[] args);
+        public abstract void Warning(Func<string> message);
+ 
         public abstract void Error(string format, params string[] args);
+        public abstract void Error(Func<string> message);
+ 
         public abstract void Performance(string format, params string[] args);
+        public abstract void Performance(Func<string> message);
+ 
         public abstract void Verbose(string format, params string[] args);
+        public abstract void Verbose(Func<string> message);
+ 
 
         public ILog CreateTag(string tag)
         {

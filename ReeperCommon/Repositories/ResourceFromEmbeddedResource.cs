@@ -45,13 +45,16 @@ namespace ReeperCommon.Repositories
 
         public Maybe<Material> GetMaterial(string identifier)
         {
-            var data = GetRaw(identifier);
+            var data = GetStream(identifier);
 
             if (!data.Any()) return Maybe<Material>.None;
 
-            var material = new Material(Convert.ToString(data.Single()));
+            using (var reader = new StreamReader(data.Single()))
+            {
+                var material = new Material(reader.ReadToEnd());
 
-            return material.IsNull() ? Maybe<Material>.None : Maybe<Material>.With(material);
+                return material.IsNull() ? Maybe<Material>.None : Maybe<Material>.With(material);
+            }
         }
 
 

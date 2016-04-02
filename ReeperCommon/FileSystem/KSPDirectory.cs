@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ReeperCommon.Containers;
 using ReeperCommon.Extensions;
@@ -83,6 +84,14 @@ namespace ReeperCommon.FileSystem
         }
 
 
+        public bool FileExists(string filename)
+        {
+            var url = new KSPUrlIdentifier(filename);
+
+            return url.Depth != 0 && FileExists(url);
+        }
+
+
 
         public bool DirectoryExists(IUrlIdentifier url)
         {
@@ -98,6 +107,28 @@ namespace ReeperCommon.FileSystem
                 .Select(url => FileSystemFactory.GetFile(this, url));
         }
 
+
+        //public void AddFileToHierarchy(IUrlFile file)
+        //{
+        //    if (file == null) throw new ArgumentNullException("file");
+
+        //    throw new NotImplementedException();
+        //    //var id = new KSPUrlIdentifier(file.Url);
+
+
+        //    //if (id.Depth > 1) // find the correct subdir 
+        //    //{
+        //    //    var subdirUrl = new KSPUrlIdentifier(id.Parts.Take(id.Depth - 1).Aggregate((s1, s2) => s1 + "/" + s2));
+        //    //    var subdir = Directory(subdirUrl);
+
+        //    //    if (!subdir.Any())
+        //    //        throw new DirectoryNotFoundException(subdirUrl.Url);
+
+        //    //    subdir.Value.AddFile();
+        //    //}
+
+        //    //RootDirectory.AddFile(file);
+        //}
 
 
         public IEnumerable<IFile> Files(string extension)
@@ -163,7 +194,10 @@ namespace ReeperCommon.FileSystem
 
         public Maybe<IFile> File(string filename)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(filename))
+                throw new ArgumentException("Filename cannot be null or empty", "filename");
+
+            return File(new KSPUrlIdentifier(filename));
         }
 
 

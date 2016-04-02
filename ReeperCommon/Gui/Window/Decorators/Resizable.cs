@@ -37,6 +37,8 @@ namespace ReeperCommon.Gui.Window.Decorators
         public float HintPopupDelay { get; set; }
         public Vector2 HintScale { get; set; }
 
+        public event Callback DragBegin = delegate { };
+        public event Callback DragEnd = delegate { };
 
         protected ActiveMode Mode { get; private set; }
         private Rect _rightRect = default(Rect);        // hotzone for changing width
@@ -76,12 +78,12 @@ namespace ReeperCommon.Gui.Window.Decorators
             Vector2 minSize,
             Texture2D hintTexture,
             float hintPopupDelay = 0.25f)
-            : this(decoratedComponent, hotzoneSize, minSize, hintTexture, hintPopupDelay, Vector2.one, DefaultCheck)
+            : this(decoratedComponent, hotzoneSize, minSize, hintTexture, hintPopupDelay, Vector2.one, AllowResizingDefault)
         {
         }
 
 
-        private static bool DefaultCheck()
+        private static bool AllowResizingDefault()
         {
             return true;
         }
@@ -261,7 +263,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         protected virtual void OnDragBegin(Matrix4x4 guiMatrix)
         {
-            
+            DragBegin();
         }
 
         protected virtual void OnDragUpdate(Matrix4x4 guiMatrix)
@@ -286,7 +288,7 @@ namespace ReeperCommon.Gui.Window.Decorators
 
         protected virtual void OnDragEnd(Matrix4x4 guiMatrix)
         {
-            
+            DragEnd();
         }
 
         

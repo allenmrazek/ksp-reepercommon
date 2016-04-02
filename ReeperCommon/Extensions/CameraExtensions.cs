@@ -1,4 +1,6 @@
 ﻿using System;
+using ReeperCommon.Containers;
+using ReeperCommon.Logging;
 using UnityEngine;
 
 namespace ReeperCommon.Extensions
@@ -70,15 +72,24 @@ namespace ReeperCommon.Extensions
         private class SingleFrameCapture : MonoBehaviour
         {
             public string Filename;
+            private Camera _camera;
 
+            // ReSharper disable once UnusedMember.Local
+            private void Awake()
+            {
+                _camera = GetComponent<Camera>();
+
+                _camera.IfNull(() => Log.Error(typeof (SingleFrameCapture).Name + ": no Camera attached"));
+
+            }
 // ReSharper disable once UnusedMember.Local
             void OnPostRender()
             {
-                if (!string.IsNullOrEmpty(Filename))
+                if (!string.IsNullOrEmpty(Filename) && _camera != null)
                 {
-                    var tex = new Texture2D(Mathf.FloorToInt(camera.pixelWidth), Mathf.FloorToInt(camera.pixelHeight), TextureFormat.ARGB32, false);
+                    var tex = new Texture2D(Mathf.FloorToInt(_camera.pixelWidth), Mathf.FloorToInt(_camera.pixelHeight), TextureFormat.ARGB32, false);
 
-                    tex.ReadPixels(camera.pixelRect, 0, 0);
+                    tex.ReadPixels(_camera.pixelRect, 0, 0);
                     tex.SaveToDisk(Filename);
 
                     Filename = "";

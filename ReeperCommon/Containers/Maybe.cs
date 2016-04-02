@@ -1,11 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using KSP.Testing;
 using ReeperCommon.Extensions;
-using UnityEngine;
 
 namespace ReeperCommon.Containers
 {
@@ -23,6 +21,13 @@ namespace ReeperCommon.Containers
             var maybe = new Maybe<T> {_values = new T[] {value}};
             return maybe;
         }
+
+        //public static Maybe<T> With(Maybe<T> value)
+        //{
+        //    if (!value.Any()) return None;
+
+        //    return value;
+        //}
 
 
         public IEnumerator<T> GetEnumerator()
@@ -57,8 +62,6 @@ namespace ReeperCommon.Containers
         {
             get { return this.SingleOrDefault(); }
         }
-
-
     }
 
 
@@ -89,22 +92,34 @@ namespace ReeperCommon.Containers
         //}
 
         public static TSource If<TSource>(this TSource source, Func<TSource, bool> condition)
-    where TSource : class
+            where TSource : class
         {
-            if ((source != default(TSource)) && (condition(source) == true))
+            if ((source != default(TSource)) && condition(source))
             {
                 return source;
             }
-            else
-            {
-                return default(TSource);
-            }
+            return default(TSource);
         }
+
+        public static Maybe<TSource> If<TSource>(this Maybe<TSource> source, Func<TSource, bool> condition)
+        {
+            if (source.Any() && condition(source.Value))
+                return source;
+            return Maybe<TSource>.None;
+        }
+
 
         public static TSource IfNull<TSource>(this TSource source, Action func)
             where TSource : class
         {
             if (source == null)
+                func();
+            return source;
+        }
+
+        public static Maybe<TSource> IfNull<TSource>(this Maybe<TSource> source, Action func)
+        {
+            if (!source.Any())
                 func();
             return source;
         }
@@ -133,6 +148,7 @@ namespace ReeperCommon.Containers
             action(o);
             return o;
         }
+
 
         public static Maybe<TInput> Do<TInput>(this Maybe<TInput> o, Action<TInput> action)
         {
@@ -163,14 +179,22 @@ namespace ReeperCommon.Containers
                 where TInput : class
         {
             if (o == null) return null;
+
             return evaluator(o);
         }
+
 
         public static Maybe<TResult> With<TInput, TResult>(this Maybe<TInput> o,
             Func<TInput, TResult> evaulator)
         {
             if (!o.Any()) return Maybe<TResult>.None;
             return evaulator(o.Single()).ToMaybe();
+        }
+
+        public static Maybe<TResult> With<TInput, TResult>(this Maybe<TInput> o, Func<TInput, Maybe<TResult>> evalulator)
+        {
+            if (!o.Any()) return Maybe<TResult>.None;
+            return evalulator(o.Value);
         }
     }
 }

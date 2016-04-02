@@ -55,7 +55,7 @@ namespace ReeperCommon.Repositories
             {
             }
 
-   
+
             return data.isDone ? Maybe<WWW>.With(data) : Maybe<WWW>.None;
         }
 
