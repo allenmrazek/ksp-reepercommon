@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Text;
 
 namespace ReeperCommon.AssetBundleLoading
 {
     [AttributeUsage(AttributeTargets.Field)]
+    // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class AssetBundleAssetAttribute : Attribute
     {
         public string Name { get; private set; }

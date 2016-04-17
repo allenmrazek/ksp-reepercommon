@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using KSP.Testing;
 using ReeperCommon.Extensions;
 
@@ -51,6 +52,11 @@ namespace ReeperCommon.Containers
         public T Or(T other)
         {
             return this.Any() ? this.Single() : other;
+        }
+
+        public T Or(Func<T> other)
+        {
+            return this.Any() ? this.Single() : other();
         }
 
         public Maybe<T> Or(Maybe<T> other)

@@ -35,12 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AssetBundleLoading\AssetBundleAssetLoader.cs" />
+    <Compile Include="AssetBundleLoading\AssetBundleHandle.cs" />
     <Compile Include="AssetBundleLoading\AssetBundleNotFoundException.cs" />
     <Compile Include="AssetBundleLoading\AssetNotFoundException.cs" />
-    <Compile Include="AssetBundleLoading\AssetBundleAsyncAssetLoader.cs" />
     <Compile Include="AssetBundleLoading\AsyncAssetBundleLoadException.cs" />
     <Compile Include="AssetBundleLoading\FailedToLoadAssetException.cs" />
-    <Compile Include="AssetBundleLoading\IAssetBundleAssetLoader.cs" />
     <Compile Include="AssetBundleLoading\IAssetBundleAssetsInjectedCallbackReceiver.cs" />
     <Compile Include="AssetBundleLoading\LoadedAssemblyNotFoundException.cs" />
     <Compile Include="AssetBundleLoading\AssetBundleAssetAttribute.cs" />
