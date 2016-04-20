@@ -148,43 +148,7 @@ namespace ReeperCommon.Extensions
         }
 
 
-        /// <summary>
-        /// Saves texture into plugin dir with supplied name.
-        /// Precondition: texture must be readable
-        /// </summary>
-        public static bool SaveToDisk(this Texture2D texture, string pathInGameData)
-        {
-            // texture format - needs to be ARGB32, RGBA32, RGB24 or Alpha8
-            var validFormats = new List<TextureFormat>{ TextureFormat.Alpha8, 
-                                                        TextureFormat.RGB24,
-                                                        TextureFormat.RGBA32,
-                                                        TextureFormat.ARGB32};
 
-            if (!validFormats.Contains(texture.format))
-                return CreateReadable(texture).SaveToDisk(pathInGameData);
-            
-
-            if (pathInGameData.StartsWith("/"))
-                pathInGameData = pathInGameData.Substring(1);
-
-            pathInGameData = "/GameData/" + pathInGameData;
-
-            if (!pathInGameData.EndsWith(".png"))
-                pathInGameData += ".png";
-
-            try
-            {
-                var file = new System.IO.FileStream(KSPUtil.ApplicationRootPath + pathInGameData, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write);
-                var writer = new System.IO.BinaryWriter(file);
-                writer.Write(texture.EncodeToPNG());
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
 
 
         public static Texture2D As2D(this Texture tex)

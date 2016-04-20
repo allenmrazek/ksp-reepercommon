@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace System.Runtime.CompilerServices
-{
-    // These aren't normally available in this version of mono but work just fine if we define them explicitly
-    [AttributeUsageAttribute(AttributeTargets.Parameter, Inherited = false)]
+namespace ReeperCommon.Logging
+{ // These aren't normally available in this version of mono but work just fine if we define them explicitly
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
     public sealed class CallerMemberNameAttribute : Attribute
     {
     }
 
-    [AttributeUsageAttribute(AttributeTargets.Parameter, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
     public sealed class CallerFilePathAttribute : Attribute
     {
     }
 
-    [AttributeUsageAttribute(AttributeTargets.Parameter, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
     public sealed class CallerLineNumberAttribute : Attribute
     {
     }
-}
 
-namespace ReeperCommon.Logging
-{
     public static class Log
     {
         private static ILog _instance;

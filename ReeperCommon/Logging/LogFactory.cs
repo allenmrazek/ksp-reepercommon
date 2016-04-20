@@ -1,5 +1,4 @@
 ﻿using System;
-using ReeperCommon.Extensions;
 
 namespace ReeperCommon.Logging
 {
@@ -28,18 +27,6 @@ namespace ReeperCommon.Logging
                 default:
                     throw new NotImplementedException(level.ToString());
             }
-        }
-
-        public static ILog Create(ConfigNode node)
-        {
-            if (node.HasValue("Level"))
-            {
-                var level = node.Parse("Level", LogLevel.Standard);
-
-                return Create(level);
-            }
-
-            return Create(LogLevel.Standard);
         }
     }
 }
