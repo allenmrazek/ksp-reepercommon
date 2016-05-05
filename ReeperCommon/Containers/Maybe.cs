@@ -21,13 +21,6 @@ namespace ReeperCommon.Containers
             return maybe;
         }
 
-        //public static Maybe<T> With(Maybe<T> value)
-        //{
-        //    if (!value.Any()) return None;
-
-        //    return value;
-        //}
-
 
         public IEnumerator<T> GetEnumerator()
         {

@@ -35,17 +35,17 @@ namespace ReeperCommon.Logging
         }
 
 
-        [Conditional("DEBUG")]
-        public static void TraceMessage([CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
-        {
-            var builder = new StringBuilder(100);
-            builder.Append("Trace: ");
-            builder.Append(memberName);
-            builder.Append(", ");
-            builder.Append(System.IO.Path.GetFileName(filePath));
+        //[Conditional("DEBUG")]
+        //public static void TraceMessage([CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
+        //{
+        //    var builder = new StringBuilder(100);
+        //    builder.Append("Trace: ");
+        //    builder.Append(memberName);
+        //    builder.Append(", ");
+        //    builder.Append(System.IO.Path.GetFileName(filePath));
 
-            Instance.Debug(builder.ToString());
-        }
+        //    Instance.Debug(builder.ToString());
+        //}
 
         public static void Debug(string format, params string[] args)
         {
