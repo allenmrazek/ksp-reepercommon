@@ -36,6 +36,8 @@
   <ItemGroup>
     <Compile Include="Extensions\MonoBehaviourExtensions.cs" />
     <Compile Include="GUIComponents\DraggableElement.cs" />
+    <Compile Include="GUIComponents\RectTransformDraggableHandle.cs" />
+    <Compile Include="GUIComponents\RectTransformResizerHandle.cs" />
     <Compile Include="ObjectGraph\IConfigNodeObjectFactory.cs" />
     <Compile Include="ObjectGraph\IObjectFromConfigNodeFactory.cs" />
     <Compile Include="Containers\Lazy.cs" />
