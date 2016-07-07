@@ -1,4 +1,9 @@
-﻿namespace ReeperCommon.Extensions
+﻿using System;
+using System.Linq;
+using ReeperCommon.Containers;
+using ReeperCommon.Logging;
+
+namespace ReeperCommon.Extensions
 {
     public static class ObjectExtensions
     {

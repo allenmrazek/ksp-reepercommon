@@ -4,12 +4,14 @@ using UnityEngine.EventSystems;
 namespace ReeperCommon.UI
 {
     [DisallowMultipleComponent, RequireComponent(typeof(RectTransform))]
-    public class RectTransformDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler
+    public class RectTransformDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         private RectTransform _resizedTarget;
         private RectTransform _parent;
         private Vector2 _dragBegin;
         private Vector3 _originalAnchoredPosition;
+
+        public bool PropogateEvents = false;
 
         private void Awake()
         {
@@ -27,6 +29,9 @@ namespace ReeperCommon.UI
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_parent, eventData.position,
                 eventData.pressEventCamera, out _dragBegin);
+
+            if (PropogateEvents)
+                ExecuteEvents.ExecuteHierarchy(_parent.gameObject, eventData, ExecuteEvents.pointerDownHandler);
         }
 
 
@@ -43,6 +48,21 @@ namespace ReeperCommon.UI
             Vector3 offset = currentMousePosition - _dragBegin;
 
             _resizedTarget.anchoredPosition = _originalAnchoredPosition + offset;
+
+            if (PropogateEvents)
+                ExecuteEvents.ExecuteHierarchy(_parent.gameObject, eventData, ExecuteEvents.dragHandler);
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (PropogateEvents)
+                ExecuteEvents.ExecuteHierarchy(_parent.gameObject, eventData, ExecuteEvents.beginDragHandler);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (PropogateEvents)
+                ExecuteEvents.ExecuteHierarchy(_parent.gameObject, eventData, ExecuteEvents.endDragHandler);
         }
     }
 }

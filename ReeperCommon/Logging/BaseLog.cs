@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace ReeperCommon.Logging
@@ -10,7 +10,7 @@ namespace ReeperCommon.Logging
 
         protected BaseLog(string name = "")
         {
-            LogName = string.IsNullOrEmpty(name) ? System.Reflection.Assembly.GetExecutingAssembly().GetName().Name : name;
+            LogName = string.IsNullOrEmpty(name) ? Assembly.GetExecutingAssembly().GetName().Name : name;
         }
 
         public abstract void Debug(string format, params string[] args);

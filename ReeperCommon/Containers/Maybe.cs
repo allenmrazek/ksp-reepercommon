@@ -59,6 +59,14 @@ namespace ReeperCommon.Containers
         {
             get { return this.SingleOrDefault(); }
         }
+
+        public bool HasValue
+        {
+            get
+            {
+                return !_values.IsNull() && _values.Any();
+            }
+        }
     }
 
 
@@ -100,7 +108,7 @@ namespace ReeperCommon.Containers
 
         public static Maybe<TSource> If<TSource>(this Maybe<TSource> source, Func<TSource, bool> condition)
         {
-            if (source.Any() && condition(source.Value))
+            if (source.HasValue && condition(source.Value))
                 return source;
             return Maybe<TSource>.None;
         }
@@ -116,7 +124,7 @@ namespace ReeperCommon.Containers
 
         public static Maybe<TSource> IfNull<TSource>(this Maybe<TSource> source, Action func)
         {
-            if (!source.Any())
+            if (!source.HasValue)
                 func();
             return source;
         }
@@ -138,19 +146,26 @@ namespace ReeperCommon.Containers
 
 
 
+        //public static TInput Do<TInput>(this TInput o, Action<TInput> action)
+        //    where TInput : class 
+        //{
+        //    if (o == null) return null;
+        //    action(o);
+        //    return o;
+        //}
+
+
         public static TInput Do<TInput>(this TInput o, Action<TInput> action)
-            where TInput : class
         {
-            if (o == null) return null;
-            action(o);
+            if (!typeof(TInput).IsValueType && o != null)
+                action(o);
             return o;
         }
 
-
         public static Maybe<TInput> Do<TInput>(this Maybe<TInput> o, Action<TInput> action)
         {
-            if (!o.Any()) return Maybe<TInput>.None;
-            action(o.Single());
+            if (!o.HasValue) return Maybe<TInput>.None;
+            action(o.Value);
 
             return o;
         }
@@ -159,14 +174,13 @@ namespace ReeperCommon.Containers
         public static TResult Return<TInput, TResult>(this TInput o,
             Func<TInput, TResult> evaluator, TResult failureValue) where TInput : class
         {
-            if (o == null) return failureValue;
-            return evaluator(o);
+            return o == null ? failureValue : evaluator(o);
         }
 
         public static TResult Return<TInput, TResult>(this Maybe<TInput> o,
             Func<TInput, TResult> evaulator, TResult failureValue)
         {
-            return !o.Any() ? failureValue : evaulator(o.Single());
+            return !o.HasValue ? failureValue : evaulator(o.Value);
         }
 
 
@@ -175,23 +189,19 @@ namespace ReeperCommon.Containers
                 where TResult : class
                 where TInput : class
         {
-            if (o == null) return null;
-
-            return evaluator(o);
+            return o == null ? null : evaluator(o);
         }
 
 
         public static Maybe<TResult> With<TInput, TResult>(this Maybe<TInput> o,
             Func<TInput, TResult> evaulator)
         {
-            if (!o.Any()) return Maybe<TResult>.None;
-            return evaulator(o.Single()).ToMaybe();
+            return !o.HasValue ? Maybe<TResult>.None : evaulator(o.Value).ToMaybe();
         }
 
         public static Maybe<TResult> With<TInput, TResult>(this Maybe<TInput> o, Func<TInput, Maybe<TResult>> evalulator)
         {
-            if (!o.Any()) return Maybe<TResult>.None;
-            return evalulator(o.Value);
+            return !o.HasValue ? Maybe<TResult>.None : evalulator(o.Value);
         }
     }
 }

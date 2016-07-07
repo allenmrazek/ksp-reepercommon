@@ -34,8 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Extensions\AttributeExtensions.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\MonoBehaviourExtensions.cs" />
-    <Compile Include="UI\DraggableElement.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="UI\RectTransformDraggable.cs" />
     <Compile Include="UI\RectTransformResizerHandle.cs" />
     <Compile Include="ObjectGraph\IConfigNodeObjectFactory.cs" />
@@ -66,7 +68,9 @@
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\CanvasSortingLayerOverride.cs" />
     <Compile Include="Utilities\CoroutineHoster.cs" />
+    <Compile Include="Utilities\GameObjectStateBlock.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -84,6 +88,8 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath Condition="Exists('..\..\..\Kerbal Space Program\KSP_Data\Managed')">..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath Condition="Exists('..\..\Kerbal Space Program\KSP_Data\Managed')">..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
       <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>

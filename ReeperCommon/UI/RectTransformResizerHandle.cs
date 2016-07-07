@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using ReeperCommon.Logging;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace ReeperCommon.UI
 {
@@ -15,6 +17,13 @@ namespace ReeperCommon.UI
 
         private Vector2 _dragStart;
         private Vector2 _originalSizeDelta;
+        private RectTransform _rectTransform;
+
+        private void OnEnable()
+        {
+            _rectTransform = (RectTransform) transform;
+        }
+
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -39,6 +48,7 @@ namespace ReeperCommon.UI
             var offset = currentPointerLocation - _dragStart;
 
             Vector2 sizeDelta = _originalSizeDelta + new Vector2(offset.x, -offset.y);
+
             sizeDelta = new Vector2(
                 Mathf.Clamp(sizeDelta.x, MinSize.x, MaxSize.x),
                 Mathf.Clamp(sizeDelta.y, MinSize.y, MaxSize.y)

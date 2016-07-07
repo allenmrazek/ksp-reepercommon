@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Text;
 
 namespace ReeperCommon.Logging
 { // These aren't normally available in this version of mono but work just fine if we define them explicitly

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace ReeperCommon.Extensions
 {
@@ -49,10 +49,10 @@ namespace ReeperCommon.Extensions
 
             for (int y = 0; y < tex.height; ++y)
                 for (int x = 0; x < tex.width; ++x)
-                    pixels[y * tex.width + x] = new Color(UnityEngine.Random.Range(0f, 1f),
-                                                            UnityEngine.Random.Range(0f, 1f),
-                                                            UnityEngine.Random.Range(0f, 1f),
-                                                            UnityEngine.Random.Range(0f, 1f));
+                    pixels[y * tex.width + x] = new Color(Random.Range(0f, 1f),
+                                                            Random.Range(0f, 1f),
+                                                            Random.Range(0f, 1f),
+                                                            Random.Range(0f, 1f));
 
             tex.SetPixels32(pixels);
             tex.Apply();

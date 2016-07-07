@@ -82,10 +82,10 @@ namespace ReeperCommon.Repositories
 
         public override string ToString()
         {
-            return "Resource Repository Composite:" + System.Environment.NewLine +
+            return "Resource Repository Composite:" + Environment.NewLine +
                    _providers
                         .Select(p => p.ToString())
-                        .Aggregate((p1, p2) => string.Format("{0}{1}{1}{2}", p1, System.Environment.NewLine, p2));
+                        .Aggregate((p1, p2) => string.Format("{0}{1}{1}{2}", p1, Environment.NewLine, p2));
 
         }
     }
