@@ -152,23 +152,8 @@ namespace ReeperCommon.Extensions
                 {
                     _returnValue = ((T)yielded).ToMaybe();
                     yield break;
-                } /*else if (yieldedType.IsGenericType && yieldedType.GetGenericTypeDefinition() == typeof (Coroutine<>))
-                {
-                    var coroutine = yieldedType.GetField("YieldUntilComplete", BindingFlags.Instance | BindingFlags.Public)
-                        .IfNull(
-                            () => { throw new MissingFieldException("Missing expected field", "YieldUntilComplete"); })
-                        .With(fi => (Coroutine) fi.GetValue(yielded));
-
-                    var errorProperty
-
-                    yield return coroutine; // wait for nested coroutine to finish
-
-                }*/
-                else
-                {
-
-                    yield return userRoutine.Current;
                 }
+                yield return userRoutine.Current;
             }
         }
 

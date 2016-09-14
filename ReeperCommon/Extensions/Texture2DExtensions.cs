@@ -14,14 +14,20 @@ namespace ReeperCommon.Extensions
         }
 
 
-        public static Texture2D CreateReadable(this Texture2D original, Material blitMaterial = null)
+        public static Texture2D CreateReadable(this Texture2D original, TextureFormat format = TextureFormat.ARGB32)
+        {
+            return CreateReadable(original, null, format);
+        }
+
+
+        public static Texture2D CreateReadable(this Texture2D original, Material blitMaterial, TextureFormat format = TextureFormat.ARGB32)
         {
             if (original == null) throw new ArgumentNullException("original");
 
             if (original.width == 0 || original.height == 0)
                 throw new Exception("Invalid image dimensions");
 
-            var finalTexture = new Texture2D(original.width, original.height);
+            var finalTexture = new Texture2D(original.width, original.height, format, false);
 
             // isn't read or writeable ... we'll have to get tricksy
             var rt = RenderTexture.GetTemporary(original.width, original.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB, 1);

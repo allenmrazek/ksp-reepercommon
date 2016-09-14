@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+// ReSharper disable ConvertToConstant.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace ReeperCommon.UI
 {
     [DisallowMultipleComponent, RequireComponent(typeof(RectTransform))]
+    // ReSharper disable once UnusedMember.Global
     public class RectTransformDraggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         private RectTransform _resizedTarget;
@@ -12,11 +15,13 @@ namespace ReeperCommon.UI
         private Vector3 _originalAnchoredPosition;
 
         public bool PropogateEvents = false;
+        
 
         private void Awake()
         {
             _resizedTarget = GetComponent<RectTransform>();
         }
+
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -55,13 +60,13 @@ namespace ReeperCommon.UI
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (PropogateEvents)
+            if (PropogateEvents && _parent)
                 ExecuteEvents.ExecuteHierarchy(_parent.gameObject, eventData, ExecuteEvents.beginDragHandler);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (PropogateEvents)
+            if (PropogateEvents && _parent)
                 ExecuteEvents.ExecuteHierarchy(_parent.gameObject, eventData, ExecuteEvents.endDragHandler);
         }
     }

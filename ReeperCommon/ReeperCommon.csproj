@@ -34,14 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Events\DisposableEvent.cs" />
     <Compile Include="Extensions\AttributeExtensions.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\MonoBehaviourExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Repositories\DictionaryRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
     <Compile Include="UI\RectTransformDraggable.cs" />
     <Compile Include="UI\RectTransformResizerHandle.cs" />
-    <Compile Include="ObjectGraph\IConfigNodeObjectFactory.cs" />
-    <Compile Include="ObjectGraph\IObjectFromConfigNodeFactory.cs" />
     <Compile Include="Containers\Lazy.cs" />
     <Compile Include="Containers\Maybe.cs" />
     <Compile Include="DataObjects\ColorHsl.cs" />
@@ -77,19 +78,17 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition="Exists('..\..\..\Kerbal Space Program\KSP_Data\Managed')">..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <HintPath Condition="Exists('..\..\Kerbal Space Program\KSP_Data\Managed')">..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
       <HintPath>..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
